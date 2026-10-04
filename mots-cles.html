@@ -1,0 +1,599 @@
+<title>Mots-clés Barbier RoyalMK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout : en-tête compact → chiffres clés → graphique des volumes → table filtrable (cœur de la page) → négatifs → décisions. Colonne unique, max 1180px. */
+:root {
+  --bg: #F3F4F7;
+  --surface: #FFFFFF;
+  --ink: #161D2C;
+  --muted: #5A6377;
+  --line: #DCE0E8;
+  --accent: #8C6418;      /* laiton « royal » */
+  --accent-soft: #F3E9D4;
+  --ok: #1E7A4C;   --ok-bg: #E2F3EA;
+  --prop: #8A6A0A; --prop-bg: #FBF1CF;
+  --test: #5B3FA8; --test-bg: #ECE6FA;
+  --wait: #1F5FA8; --wait-bg: #E1ECF9;
+  --no: #A2392F;   --no-bg: #F8E3E0;
+  --bar-ok: #2E8B5E; --bar-test: #7A5FC4; --bar-no: #C9CDD6;
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E131D; --surface: #161D2B; --ink: #E7EAF1; --muted: #9AA3B5; --line: #283245;
+    --accent: #D8A851; --accent-soft: #33291A;
+    --ok: #6FD3A0; --ok-bg: #173327;
+    --prop: #E6C25A; --prop-bg: #352C12;
+    --test: #B9A4F2; --test-bg: #2A2245;
+    --wait: #8DB8EE; --wait-bg: #1A2B44;
+    --no: #EE9488; --no-bg: #3A1F1C;
+    --bar-ok: #4DB884; --bar-test: #9A84E0; --bar-no: #3A4357;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E131D; --surface: #161D2B; --ink: #E7EAF1; --muted: #9AA3B5; --line: #283245;
+  --accent: #D8A851; --accent-soft: #33291A;
+  --ok: #6FD3A0; --ok-bg: #173327;
+  --prop: #E6C25A; --prop-bg: #352C12;
+  --test: #B9A4F2; --test-bg: #2A2245;
+  --wait: #8DB8EE; --wait-bg: #1A2B44;
+  --no: #EE9488; --no-bg: #3A1F1C;
+  --bar-ok: #4DB884; --bar-test: #9A84E0; --bar-no: #3A4357;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 32px 64px; display: grid; gap: 40px; }
+@media (max-width: 560px) { .wrap { padding-inline: 16px; gap: 32px; } }
+
+h1, h2, h3 { font-family: var(--f-display); font-stretch: 85%; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 800; line-height: 1.05; }
+h2 { font-size: 24px; font-weight: 700; }
+h3 { font-size: 16px; font-weight: 700; font-stretch: 90%; }
+p { margin: 0; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* En-tête */
+header { display: grid; gap: 14px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font-size: 14px; }
+.meta b { color: var(--ink); font-weight: 600; }
+
+/* Chiffres clés */
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.kpi { background: var(--surface); padding: 18px 20px; display: grid; gap: 4px; align-content: start; }
+.kpi .v { font-family: var(--f-display); font-stretch: 80%; font-weight: 800; font-size: 34px; line-height: 1; }
+.kpi .l { font-size: 13px; color: var(--muted); }
+@media (max-width: 820px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+section { display: grid; gap: 16px; min-width: 0; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+
+/* Graphique */
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: minmax(120px, 230px) 1fr 52px; gap: 12px; align-items: center; font-size: 14px; }
+.bar-row .k { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { height: 14px; position: relative; background: linear-gradient(to right, var(--line) 1px, transparent 1px) 0 0 / 25% 100%; }
+.bar { height: 100%; border-radius: 0 3px 3px 0; }
+.bar.ok { background: var(--bar-ok); } .bar.test { background: var(--bar-test); } .bar.no { background: var(--bar-no); }
+.bar-row .n { text-align: right; font-family: var(--f-mono); font-size: 13px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); padding-top: 8px; border-top: 1px solid var(--line); margin-top: 6px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+@media (max-width: 560px) { .bar-row { grid-template-columns: minmax(0, 1fr) 44px; } .bar-track { grid-column: 1 / -1; grid-row: 2; } }
+
+/* Filtres */
+.filters { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.frow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.frow .lab { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); width: 74px; flex: none; }
+.chip { font: inherit; font-size: 13px; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.chip:focus-visible, .btn:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="search"] { font: inherit; font-size: 14px; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); min-width: 0; flex: 1 1 220px; max-width: 360px; }
+.btn { font: inherit; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent); cursor: pointer; white-space: nowrap; }
+.btn:hover { background: var(--accent); color: var(--surface); }
+
+/* Table */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-weight: 500; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); position: sticky; top: 0; background: var(--surface); cursor: pointer; user-select: none; white-space: nowrap; }
+th[data-sort]:hover { color: var(--ink); }
+th .arr { opacity: 0.5; }
+tr.grp td { background: var(--bg); font-family: var(--f-display); font-stretch: 90%; font-weight: 700; font-size: 14px; padding-block: 8px; }
+tr.grp td span { font-family: var(--f-body); font-weight: 400; font-size: 13px; color: var(--muted); margin-left: 8px; }
+tbody tr:last-child td { border-bottom: 0; }
+td.kw { font-weight: 600; white-space: nowrap; }
+td.r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.note { color: var(--muted); font-size: 13px; min-width: 240px; }
+.mt { font-family: var(--f-mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.ok { color: var(--ok); background: var(--ok-bg); }
+.pill.prop { color: var(--prop); background: var(--prop-bg); }
+.pill.test { color: var(--test); background: var(--test-bg); }
+.pill.wait { color: var(--wait); background: var(--wait-bg); }
+.pill.no { color: var(--no); background: var(--no-bg); }
+.lang { font-family: var(--f-mono); font-size: 11px; padding: 1px 5px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); margin-left: 6px; }
+.up { color: var(--ok); } .down { color: var(--no); }
+.empty { padding: 28px; text-align: center; color: var(--muted); }
+.count { font-size: 13px; color: var(--muted); }
+
+/* Écartés + négatifs */
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 820px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag { font-family: var(--f-mono); font-size: 12px; padding: 2px 8px; border-radius: 5px; background: var(--bg); border: 1px solid var(--line); }
+.rej { display: grid; gap: 0; }
+.rej-row { display: grid; grid-template-columns: minmax(0, 1fr) 54px; gap: 4px 12px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.rej-row:last-child { border-bottom: 0; }
+.rej-row .why { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+.warn { font-size: 13px; color: var(--muted); border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; }
+
+/* Décisions */
+.todo { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.todo li { list-style: none; display: grid; grid-template-columns: 22px 1fr; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--line); }
+.todo li:last-child { border-bottom: 0; }
+.todo ul { margin: 0; padding: 0; }
+.box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--muted); margin-top: 3px; display: grid; place-items: center; font-size: 11px; line-height: 1; }
+.done .box { background: var(--ok); border-color: var(--ok); color: var(--surface); }
+.done span.t { color: var(--muted); }
+.open .box { border-color: var(--accent); }
+
+.services { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.svc { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
+.svc b { font-family: var(--f-mono); font-weight: 500; }
+.svc .d { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.svc .d b { color: var(--ink); }
+.svc .d i { color: var(--prop); font-style: normal; }
+@media (max-width: 820px) { .services { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--surface); padding: 8px 14px; border-radius: 8px; font-size: 14px; }
+@media (prefers-reduced-motion: no-preference) { .toast { transition: opacity .2s; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Google Ads · Analyse des mots-clés avant lancement</span>
+  <h1>Barbier RoyalMK — mots-clés</h1>
+  <div class="meta">
+    <span><b>331 boul. Saint-Joseph</b>, Gatineau (secteur Hull)</span>
+    <span>Barbershop <b>hommes + enfants</b></span>
+    <span><b>★ 4,9</b> sur 103 avis Google</span>
+    <span>Ouvert <b>7 j/7</b> · sans rendez-vous</span>
+    <span>Campagnes <b>FR + EN</b> · Ottawa exclu</span>
+    <span>Données Keyword Planner du <b>01/10/2026</b></span>
+  </div>
+</header>
+
+<div class="kpis" id="kpis"></div>
+
+<section>
+  <div class="sec-head">
+    <h2>Services et prix</h2>
+    <span class="count">Noms, durées et prix relevés dans Squire</span>
+  </div>
+  <div class="services">
+    <div class="svc"><span>Coupe de Cheveux</span><span class="d">30 min · <b>25 $</b></span></div>
+    <div class="svc"><span>Coupe pour Enfant</span><span class="d">30 min · <b>20 $</b></span></div>
+    <div class="svc"><span>Coupe + Barbe</span><span class="d">30 min · <b>36 $</b></span></div>
+    <div class="svc"><span>Taillage de Barbe</span><span class="d">30 min · <b>19 $</b></span></div>
+    <div class="svc"><span>Rasage à l'ancienne</span><span class="d">30 min · <b>25 $</b></span></div>
+    <div class="svc"><span>Épilation Faciale</span><span class="d">30 min · <b>10 $</b></span></div>
+    <div class="svc"><span>Shampooing</span><span class="d">15 min · <b>4 $</b></span></div>
+    <div class="svc"><span>Forfait VIP</span><span class="d">1 h · <b>55 $</b></span></div>
+  </div>
+  <p class="warn">Le Forfait VIP à 55 $ remplace 65 $ de services à la pièce : c'est l'offre à mettre en avant. Reste à vérifier que son prix s'affiche aussi sur la page de réservation Squire.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Volume de recherche mensuel</h2>
+    <span class="count">Mots-clés avec 20 recherches/mois ou plus</span>
+  </div>
+  <div class="chart" id="chart"></div>
+  <p class="warn">Les plus gros volumes (« hair salon near me », « hair salon ») sont écartés : ce sont surtout des recherches de femmes. Le vrai potentiel du salon tient en cinq mots-clés barbier.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Tous les mots-clés</h2>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="filters">
+    <div class="frow"><span class="lab">Groupe</span><span id="f-group" class="frow"></span></div>
+    <div class="frow"><span class="lab">Statut</span><span id="f-status" class="frow"></span></div>
+    <div class="frow"><span class="lab">Langue</span><span id="f-lang" class="frow"></span></div>
+    <div class="frow"><span class="lab">Chercher</span>
+      <input type="search" id="q" placeholder="ex. rasage, near me…" aria-label="Chercher un mot-clé">
+      <button class="btn" id="copy-kw" type="button">Copier pour Google Ads</button>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th data-sort="kw">Mot-clé <span class="arr"></span></th>
+        <th data-sort="mt">Corresp. <span class="arr"></span></th>
+        <th data-sort="st">Statut <span class="arr"></span></th>
+        <th data-sort="vol" style="text-align:right">Vol./mois <span class="arr"></span></th>
+        <th data-sort="cpc" style="text-align:right">Enchère haut de page <span class="arr"></span></th>
+        <th style="text-align:right">3 mois</th>
+        <th style="text-align:right">1 an</th>
+        <th data-sort="comp">Concurrence <span class="arr"></span></th>
+        <th>Note</th>
+      </tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+  </div>
+  <p class="count">Le bouton copie les mots-clés affichés au format Google Ads : <span class="mt">[exact]</span> et <span class="mt">"expression"</span>. Les mots-clés écartés ne sont jamais copiés.</p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Écartés et à tester plus tard</h2></div>
+  <div class="two">
+    <div class="panel">
+      <h3>Écartés</h3>
+      <div class="rej" id="rej-no"></div>
+    </div>
+    <div class="panel">
+      <h3>Phase 2 (si budget restant)</h3>
+      <div class="rej" id="rej-later"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Mots-clés négatifs</h2>
+    <span class="count">Niveau campagne · cliquer « Copier » colle une liste prête pour Google Ads</span>
+  </div>
+  <div class="two" id="negs"></div>
+  <p class="warn">« québec » n'est pas exclu seul, sinon « barber aylmer quebec » serait bloqué. On exclut « ville de québec » et « quebec city ». « razor » n'est pas exclu seul non plus, pour garder « straight razor shave ».</p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Décisions</h2></div>
+  <div class="todo"><ul id="todo"></ul></div>
+</section>
+
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+// s : ok = validé, prop = proposé, test = test enchère basse, wait = à confirmer, no = écarté
+// g : groupe d'annonces · l : langue · m : exact / phrase
+const KW = [
+  // GA1 — Barbier générique
+  {k:"barbier gatineau", g:"GA1", l:"FR", m:"exact", s:"ok", v:720, c:[0.86,3.00], t3:22, t1:0, co:"Faible", n:"Mot-clé n°1, concurrence faible"},
+  {k:"barbier gatineau", g:"GA1", l:"FR", m:"phrase", s:"ok", v:720, c:[0.86,3.00], t3:22, t1:0, co:"Faible", n:""},
+  {k:"barbershop gatineau", g:"GA1", l:"FR", m:"exact", s:"ok", v:260, c:[0.90,3.05], t3:24, t1:-33, co:"Moyenne", n:"N°2"},
+  {k:"barbershop gatineau", g:"GA1", l:"FR", m:"phrase", s:"ok", v:260, c:[0.90,3.05], t3:24, t1:-33, co:"Moyenne", n:"Couvre « barber shop in gatineau »"},
+  {k:"barbier near me", g:"GA1", l:"FR", m:"phrase", s:"ok", v:170, t3:0, t1:0, co:"Moyenne", n:"Les francophones tapent « near me » aussi"},
+  {k:"barbier hull", g:"GA1", l:"FR", m:"exact", s:"ok", v:140, c:[1.12,2.97], t3:-18, t1:0, co:"Faible", n:"Secteur du salon"},
+  {k:"barbier hull", g:"GA1", l:"FR", m:"phrase", s:"ok", v:140, c:[1.12,2.97], t3:-18, t1:0, co:"Faible", n:""},
+  {k:"coiffeur saint joseph", g:"GA1", l:"FR", m:"phrase", s:"ok", v:20, t3:300, t1:33, co:"Faible", n:"La rue du salon, en forte hausse"},
+  {k:"barbier près de moi", g:"GA1", l:"FR", m:"phrase", s:"prop", n:"Pas de donnée, peu coûteux"},
+  {k:"barbier ouvert dimanche", g:"GA1", l:"FR", m:"phrase", s:"prop", n:"Avantage : ouvert le dimanche"},
+  {k:"meilleur barbier gatineau", g:"GA1", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"barbier boulevard saint-joseph", g:"GA1", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"barbier saint joseph", g:"GA1", l:"FR", m:"phrase", s:"prop", n:"Variante de « coiffeur saint joseph »"},
+  {k:"salon de barbier gatineau", g:"GA1", l:"FR", m:"phrase", s:"prop", n:""},
+  // GA2 — Coupe homme
+  {k:"coupe cheveux homme", g:"GA2", l:"FR", m:"phrase", s:"ok", v:90, t3:80, t1:-18, co:"Faible", n:"Sans ville : le ciblage géo fait le travail"},
+  {k:"coiffeur homme gatineau", g:"GA2", l:"FR", m:"phrase", s:"ok", v:50, c:[0.66,1.28], t3:40, t1:75, co:"Moyenne", n:"En hausse, enchère basse"},
+  {k:"coupe de cheveux homme", g:"GA2", l:"FR", m:"phrase", s:"ok", n:"Variante avec « de »"},
+  {k:"coiffeur homme sans rdv", g:"GA2", l:"FR", m:"phrase", s:"ok", v:10, t3:0, t1:0, n:"Sans rendez-vous accepté, forte intention"},
+  {k:"barbier sans rendez-vous", g:"GA2", l:"FR", m:"phrase", s:"ok", n:""},
+  {k:"barbier sans rdv", g:"GA2", l:"FR", m:"phrase", s:"ok", n:""},
+  {k:"barbier sans rendez-vous gatineau", g:"GA2", l:"FR", m:"phrase", s:"ok", n:""},
+  {k:"fade", g:"GA2", l:"FR", m:"exact", s:"test", v:110, t3:0, t1:-21, co:"Faible", n:"Intention mixte (inspiration ou coupe), surveiller"},
+  {k:"coupe cheveux", g:"GA2", l:"FR", m:"exact", s:"test", v:30, t3:50, t1:50, co:"Faible", n:"Hommes et femmes, en hausse"},
+  {k:"coupe homme gatineau", g:"GA2", l:"FR", m:"phrase", s:"prop", n:"Pas de donnée"},
+  {k:"coupe de cheveux homme gatineau", g:"GA2", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"salon de coiffure homme gatineau", g:"GA2", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"dégradé gatineau", g:"GA2", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"fade gatineau", g:"GA2", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"coupe fade", g:"GA2", l:"FR", m:"phrase", s:"prop", n:"Plus clair que « fade » seul"},
+  {k:"fade near me", g:"GA2", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"coiffeur homme hull", g:"GA2", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"coupe homme près de moi", g:"GA2", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"barbier pas cher", g:"GA2", l:"FR", m:"phrase", s:"prop", n:"Coupe à 25 $, volume quasi nul"},
+  // GA3 — Barbe & rasage
+  {k:"rasage traditionnel", g:"GA3", l:"FR", m:"phrase", s:"ok", v:10, t3:Infinity, t1:Infinity, co:"Faible", n:"Demande nouvelle"},
+  {k:"rasage à l'ancienne", g:"GA3", l:"FR", m:"phrase", s:"ok", v:10, t3:0, t1:-100, n:"Nom officiel du service dans Squire"},
+  {k:"rasage lame", g:"GA3", l:"FR", m:"phrase", s:"ok", v:10, t3:0, t1:-100, n:""},
+  {k:"rasage barbier", g:"GA3", l:"FR", m:"phrase", s:"ok", v:10, t3:0, t1:Infinity, co:"Élevée", n:"Des concurrents enchérissent"},
+  {k:"barbier rasage", g:"GA3", l:"FR", m:"phrase", s:"ok", v:10, t3:0, t1:Infinity, co:"Élevée", n:""},
+  {k:"épilation visage homme", g:"GA3", l:"FR", m:"phrase", s:"ok", v:10, t3:0, t1:0, n:"Service à 10 $, à pousser surtout dans les extensions"},
+  {k:"épilation sourcils homme", g:"GA3", l:"FR", m:"phrase", s:"ok", v:10, t3:0, t1:-100, n:""},
+  {k:"rasage serviette chaude", g:"GA3", l:"FR", m:"phrase", s:"wait", v:10, t3:0, t1:0, n:"Si le rasage inclut une serviette chaude"},
+  {k:"rasage tête", g:"GA3", l:"FR", m:"phrase", s:"wait", v:10, t3:0, t1:0, co:"Élevée", n:"Si le salon rase la tête"},
+  {k:"rasage crâne", g:"GA3", l:"FR", m:"phrase", s:"wait", v:10, t3:-100, t1:0, n:"Idem"},
+  {k:"taillage de barbe gatineau", g:"GA3", l:"FR", m:"phrase", s:"ok", n:"Nom officiel du service dans Squire"},
+  {k:"taillage de barbe", g:"GA3", l:"FR", m:"phrase", s:"ok", n:"Sans ville : le ciblage géo fait le travail"},
+  {k:"taille de barbe gatineau", g:"GA3", l:"FR", m:"phrase", s:"prop", n:"Variante plus française, par précaution"},
+  {k:"barbe gatineau", g:"GA3", l:"FR", m:"phrase", s:"prop", n:"Requêtes larges, à surveiller"},
+  {k:"coupe et barbe gatineau", g:"GA3", l:"FR", m:"phrase", s:"prop", n:"Service à 36 $"},
+  {k:"épilation faciale homme", g:"GA3", l:"FR", m:"phrase", s:"ok", n:"Nom officiel du service dans Squire"},
+  {k:"épilation faciale", g:"GA3", l:"FR", m:"phrase", s:"ok", n:"Idem, sans « homme »"},
+  // GA4 — Coupe enfant
+  {k:"coupe enfant gatineau", g:"GA4", l:"FR", m:"phrase", s:"prop", n:"Pas de donnée"},
+  {k:"coiffeur enfant gatineau", g:"GA4", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"barbier enfant gatineau", g:"GA4", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"coupe garçon gatineau", g:"GA4", l:"FR", m:"phrase", s:"prop", n:""},
+  // GA5 — VIP / soins
+  {k:"soin barbe gatineau", g:"GA5", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"forfait barbier gatineau", g:"GA5", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"soin visage homme gatineau", g:"GA5", l:"FR", m:"phrase", s:"prop", n:"Vérifier que le VIP inclut un soin visage"},
+  // GA6 — Anglais
+  {k:"barber gatineau", g:"GA6", l:"EN", m:"exact", s:"ok", v:170, c:[0.86,1.75], t3:0, t1:-34, co:"Faible", n:"Mot-clé principal en anglais"},
+  {k:"barber gatineau", g:"GA6", l:"EN", m:"phrase", s:"ok", v:170, c:[0.86,1.75], t3:0, t1:-34, co:"Faible", n:"Couvre « barber in gatineau »"},
+  {k:"barber aylmer", g:"GA6", l:"EN", m:"phrase", s:"ok", v:10, t3:0, t1:-50, co:"Moyenne", n:"Couvre « barber aylmer quebec »"},
+  {k:"best barber gatineau", g:"GA6", l:"EN", m:"phrase", s:"ok", v:10, t3:0, t1:-50, co:"Moyenne", n:""},
+  {k:"barber shop near me", g:"GA6", l:"EN", m:"phrase", s:"ok", v:10, n:"Couvre mens / male / best men's barber shop near me"},
+  {k:"cheap barber", g:"GA6", l:"EN", m:"phrase", s:"ok", v:10, n:"Regroupe 7 variantes à ~10 recherches"},
+  {k:"cheap haircut", g:"GA6", l:"EN", m:"phrase", s:"ok", v:10, n:"Regroupe 5 variantes à ~10 recherches"},
+  {k:"affordable barber", g:"GA6", l:"EN", m:"phrase", s:"ok", v:10, n:""},
+  {k:"affordable haircut", g:"GA6", l:"EN", m:"phrase", s:"ok", v:10, n:""},
+  {k:"haircut near me", g:"GA6", l:"EN", m:"phrase", s:"ok", n:"Forte intention ; l'annonce « barbier homme » filtre"},
+  {k:"walk in barber", g:"GA6", l:"EN", m:"phrase", s:"ok", n:"Sans rendez-vous accepté"},
+  {k:"walk in haircut", g:"GA6", l:"EN", m:"phrase", s:"ok", n:""},
+  {k:"walk in barber gatineau", g:"GA6", l:"EN", m:"phrase", s:"ok", n:""},
+  {k:"hair cutter near me", g:"GA6", l:"EN", m:"phrase", s:"test", v:110, c:[0.69,2.98], t3:27, t1:27, co:"Moyenne", n:"Intention plutôt neutre, en hausse"},
+  {k:"hair cut", g:"GA6", l:"EN", m:"exact", s:"test", v:90, t3:0, t1:-36, co:"Faible", n:"Terme seul, intention floue"},
+  {k:"inexpensive haircut", g:"GA6", l:"EN", m:"phrase", s:"prop", v:10, n:"Tendance nouvelle"},
+  {k:"inexpensive barber", g:"GA6", l:"EN", m:"phrase", s:"prop", v:10, n:""},
+  {k:"discount haircut", g:"GA6", l:"EN", m:"phrase", s:"prop", v:10, n:""},
+  {k:"budget haircut", g:"GA6", l:"EN", m:"phrase", s:"prop", v:10, n:""},
+  {k:"low cost haircut", g:"GA6", l:"EN", m:"phrase", s:"prop", v:10, n:"Vérifier qu'il couvre « low price haircut »"},
+  {k:"mens hair salon", g:"GA6", l:"EN", m:"phrase", s:"prop", n:"Part masculine de « hair salon near me »"},
+  {k:"hair salon for men", g:"GA6", l:"EN", m:"phrase", s:"prop", n:""},
+  {k:"barber hull", g:"GA6", l:"EN", m:"phrase", s:"prop", n:""},
+  {k:"barber open sunday", g:"GA6", l:"EN", m:"phrase", s:"prop", n:"Avantage : ouvert le dimanche"},
+  {k:"haircut gatineau", g:"GA6", l:"EN", m:"phrase", s:"prop", n:""},
+  {k:"men's haircut gatineau", g:"GA6", l:"EN", m:"phrase", s:"prop", n:"Pas de donnée"},
+  {k:"beard trim gatineau", g:"GA6", l:"EN", m:"phrase", s:"prop", n:""},
+  {k:"hot towel shave gatineau", g:"GA6", l:"EN", m:"phrase", s:"prop", n:"Si serviette chaude confirmée"},
+  {k:"kids haircut gatineau", g:"GA6", l:"EN", m:"phrase", s:"prop", n:""},
+  {k:"barber near me", g:"GA6", l:"EN", m:"phrase", s:"prop", n:"Pas de donnée"},
+  // GA7 — Marque
+  {k:"barbier royal", g:"GA7", l:"FR", m:"exact", s:"prop", n:"Protège la marque, enchère très basse"},
+  {k:"barbier royalmk", g:"GA7", l:"FR", m:"exact", s:"prop", n:""},
+  {k:"royal mk", g:"GA7", l:"FR", m:"phrase", s:"prop", n:""},
+  {k:"barbier royal gatineau", g:"GA7", l:"FR", m:"phrase", s:"prop", n:""},
+];
+
+// Recherches analysées mais non utilisées
+const OUT = [
+  {k:"hair salon near me", v:880, c:[0.62,1.21], later:true, why:"Surtout des femmes. Remplacé par « mens hair salon » et « hair salon for men ». « hair salons close to me » est le même groupe de 880."},
+  {k:"hair salon", v:480, later:true, why:"Même raison, en baisse (-34 % sur 3 mois)."},
+  {k:"salon de coiffure near me", v:170, c:[0.77,1.68], later:true, why:"À tester seulement avec une annonce très claire « barbier pour hommes »."},
+  {k:"coiffeur near me", v:90, later:true, why:"Idem."},
+  {k:"coiffeur", v:210, c:[0.40,2.98], why:"Trop générique : coiffure femme et homme confondues."},
+  {k:"coiffure near me", v:210, c:[0.89,3.40], why:"Surtout clientèle femme."},
+  {k:"salon coiffure near me", v:40, why:"Volume faible et en chute (-60 %)."},
+  {k:"coiffeur pas cher", v:10, why:"Plus aucune recherche sur 3 mois. Remplacé par « barbier pas cher »."},
+  {k:"haircut deals near me", v:10, why:"Le salon n'a pas de promo."},
+  {k:"bar barber shop near me, barber shop in area…", v:10, why:"Bruit, sans intention claire."},
+];
+
+const NEG = [
+  {t:"Services non offerts (femme)", l:"FR", w:["femme","femmes","coiffeuse","coloration","teinture","balayage","mèches","lissage","permanente","rallonges","extensions","mise en plis","chignon","mariée","maquillage","ongles","manucure","esthétique"]},
+  {t:"Women / services not offered", l:"EN", w:["women","womens","women's","woman","ladies","lady","highlights","balayage","hair color","hair dye","perm","extensions","blowout","braids","nails","salon spa"]},
+  {t:"Emploi / formation", l:"FR", w:["emploi","emplois","job","recrutement","embauche","salaire","dep","cours","formation","école","académie","stage","indeed","jobboom"]},
+  {t:"Jobs / training", l:"EN", w:["jobs","job","hiring","career","salary","school","course","training","license","apprenticeship"]},
+  {t:"Matériel / produits", l:"FR", w:["tondeuse","ciseaux","rasoir électrique","huile","baume","shampoing","produit","acheter","amazon","walmart","chaise de barbier"]},
+  {t:"Equipment / DIY", l:"EN", w:["clippers","trimmer","electric razor","buy","kit","how to","diy","at home","tutorial","ideas","styles","pictures"]},
+  {t:"Tutos / inspiration", l:"FR", w:["tuto","tutoriel","comment","soi-même","maison","vidéo","youtube","idée","idées","photo","photos","image","images","style 2026","tendance","tendances","inspiration","modèle","modèles","nom"]},
+  {t:"Misc", l:"EN", w:["free","deals","coupon","groupon","mobile barber","house call"]},
+  {t:"Hors zone", l:"FR/EN", w:["ottawa","kanata","orléans","orleans","nepean","barrhaven","vanier","rockland","montréal","montreal","ville de québec","quebec city","laval","sherbrooke","trois-rivières","toronto"]},
+  {t:"Gratuit / divers / cadeaux", l:"FR/EN", w:["gratuit","kijiji","à vendre","location chaise","carte-cadeau","carte cadeau","gift card","certificat cadeau"]},
+];
+
+const TODO = [
+  {d:true, t:"Ville : Gatineau, secteur Hull. Ottawa exclu (négatifs + ciblage géographique)."},
+  {d:true, t:"Clientèle : hommes et enfants. Services et prix repris de l'ancien site."},
+  {d:true, t:"Annonces en anglais : oui, dans une campagne séparée."},
+  {d:true, t:"Sans rendez-vous : oui. Cartes-cadeaux : non."},
+  {d:false, t:"Rasage traditionnel : serviette chaude ? rasage de la tête ? (3 mots-clés en attente)"},
+  {d:false, t:"URL du nouveau site, pour les liens des annonces."},
+  {d:false, t:"Passer en revue les mots-clés « Proposé » sans donnée : garder ou retirer."},
+  {d:false, t:"Valider la liste finale des négatifs."},
+];
+
+const GROUPS = {GA1:"Barbier (générique local)", GA2:"Coupe homme", GA3:"Barbe & rasage", GA4:"Coupe enfant", GA5:"Forfait VIP / soins", GA6:"Anglais (campagne séparée)", GA7:"Marque"};
+const STATUS = {ok:"Validé", test:"Test", prop:"Proposé", wait:"À confirmer"};
+const ST_ORDER = {ok:0, test:1, wait:2, prop:3, no:4};
+const COMP = {"Faible":1, "Moyenne":2, "Élevée":3};
+
+const fmt = (n) => n.toLocaleString("fr-CA");
+const money = (x) => x.toLocaleString("fr-CA", {minimumFractionDigits:2, maximumFractionDigits:2}) + " $";
+const esc = (s) => String(s).replace(/[&<>"]/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+const trend = (x) => {
+  if (x === undefined) return '<span class="muted">—</span>';
+  if (x === Infinity) return '<span class="up">nouveau</span>';
+  if (x === 0) return "0 %";
+  return `<span class="${x > 0 ? "up" : "down"}">${x > 0 ? "+" : "−"}${Math.abs(x)} %</span>`;
+};
+const mtLabel = (kw) => kw.m === "exact" ? `[${kw.k}]` : `"${kw.k}"`;
+
+// Chiffres clés : volumes comptés une fois par mot-clé (exact et expression partagent le même volume)
+function uniqVol(list) {
+  const seen = new Map();
+  list.forEach((x) => { if (x.v) seen.set(x.k, x.v); });
+  return [...seen.values()].reduce((a, b) => a + b, 0);
+}
+(function kpis() {
+  const kept = KW.filter((x) => x.s === "ok");
+  const test = KW.filter((x) => x.s === "test");
+  const top5 = 720 + 260 + 170 + 170 + 140;
+  const vKept = uniqVol(kept);
+  const el = document.getElementById("kpis");
+  el.innerHTML = [
+    [fmt(vKept), "recherches/mois sur les mots-clés validés"],
+    [Math.round(top5 / vKept * 100) + " %", "de ce volume dans 5 mots-clés"],
+    [String(kept.length), `mots-clés validés · ${test.length} en test`],
+    ["0,62–3,05 $", "enchère haut de page (CAD)"],
+  ].map(([v, l]) => `<div class="kpi"><span class="v num">${v}</span><span class="l">${l}</span></div>`).join("");
+})();
+
+// Graphique
+(function chart() {
+  const rows = new Map();
+  KW.forEach((x) => { if (x.v >= 20 && !rows.has(x.k)) rows.set(x.k, {k:x.k, v:x.v, s:x.s === "ok" ? "ok" : x.s === "test" ? "test" : "no"}); });
+  OUT.forEach((x) => { if (x.v >= 20) rows.set(x.k, {k:x.k, v:x.v, s:"no"}); });
+  const data = [...rows.values()].sort((a, b) => b.v - a.v);
+  const max = 1000;
+  const el = document.getElementById("chart");
+  el.innerHTML = data.map((d) => `
+    <div class="bar-row">
+      <span class="k" title="${esc(d.k)}">${esc(d.k)}</span>
+      <div class="bar-track"><div class="bar ${d.s}" style="width:${d.v / max * 100}%"></div></div>
+      <span class="n num">${fmt(d.v)}</span>
+    </div>`).join("") +
+    `<div class="legend"><span><i style="background:var(--bar-ok)"></i>Validé</span><span><i style="background:var(--bar-test)"></i>Test enchère basse</span><span><i style="background:var(--bar-no)"></i>Écarté ou phase 2</span><span>Graduation : 250 recherches</span></div>`;
+})();
+
+// Table filtrable
+const state = {group:"all", status:"all", lang:"all", q:"", sort:null, dir:1};
+function chips(id, key, opts) {
+  const el = document.getElementById(id);
+  el.innerHTML = opts.map(([v, l]) => `<button type="button" class="chip" data-v="${v}" aria-pressed="${state[key] === v}">${l}</button>`).join("");
+  el.addEventListener("click", (e) => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    state[key] = b.dataset.v;
+    el.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", c.dataset.v === state[key]));
+    render();
+  });
+}
+chips("f-group", "group", [["all","Tous"], ...Object.keys(GROUPS).map((g) => [g, `${g} · ${GROUPS[g].split(" (")[0]}`])]);
+chips("f-status", "status", [["all","Tous"], ...Object.entries(STATUS)]);
+chips("f-lang", "lang", [["all","FR + EN"], ["FR","Français"], ["EN","Anglais"]]);
+document.getElementById("q").addEventListener("input", (e) => { state.q = e.target.value.trim().toLowerCase(); render(); });
+document.querySelectorAll("th[data-sort]").forEach((th) => th.addEventListener("click", () => {
+  const k = th.dataset.sort;
+  state.dir = state.sort === k ? -state.dir : (k === "vol" || k === "cpc" ? -1 : 1);
+  state.sort = k;
+  render();
+}));
+
+function filtered() {
+  return KW.filter((x) =>
+    (state.group === "all" || x.g === state.group) &&
+    (state.status === "all" || x.s === state.status) &&
+    (state.lang === "all" || x.l === state.lang) &&
+    (!state.q || x.k.includes(state.q) || (x.n || "").toLowerCase().includes(state.q)));
+}
+function sortVal(x, k) {
+  switch (k) {
+    case "kw": return x.k;
+    case "mt": return x.m;
+    case "st": return ST_ORDER[x.s];
+    case "vol": return x.v ?? -1;
+    case "cpc": return x.c ? x.c[1] : -1;
+    case "comp": return COMP[x.co] ?? 0;
+  }
+}
+function row(x) {
+  return `<tr>
+    <td class="kw">${esc(x.k)}${state.lang === "all" && x.l === "EN" && state.group !== "GA6" ? '<span class="lang">EN</span>' : ""}</td>
+    <td><span class="mt">${x.m === "exact" ? "[exact]" : '"expression"'}</span></td>
+    <td><span class="pill ${x.s}">${STATUS[x.s]}</span></td>
+    <td class="r">${x.v ? fmt(x.v) : '<span class="muted">—</span>'}</td>
+    <td class="r">${x.c ? `${money(x.c[0])} – ${money(x.c[1])}` : '<span class="muted">—</span>'}</td>
+    <td class="r">${trend(x.t3)}</td>
+    <td class="r">${trend(x.t1)}</td>
+    <td>${x.co || '<span class="muted">—</span>'}</td>
+    <td class="note">${esc(x.n || "")}</td>
+  </tr>`;
+}
+function render() {
+  const list = filtered();
+  const tb = document.getElementById("tb");
+  document.querySelectorAll("th[data-sort] .arr").forEach((a) => {
+    a.textContent = a.parentElement.dataset.sort === state.sort ? (state.dir > 0 ? "↑" : "↓") : "";
+  });
+  document.getElementById("count").textContent = `${list.length} sur ${KW.length} mots-clés affichés`;
+  if (!list.length) { tb.innerHTML = `<tr><td colspan="9" class="empty">Aucun mot-clé ne correspond à ces filtres.</td></tr>`; return; }
+  if (state.sort) {
+    const s = [...list].sort((a, b) => {
+      const va = sortVal(a, state.sort), vb = sortVal(b, state.sort);
+      return (typeof va === "string" ? va.localeCompare(vb, "fr") : va - vb) * state.dir;
+    });
+    tb.innerHTML = s.map(row).join("");
+    return;
+  }
+  let html = "";
+  Object.keys(GROUPS).forEach((g) => {
+    const items = list.filter((x) => x.g === g).sort((a, b) => ST_ORDER[a.s] - ST_ORDER[b.s] || (b.v || 0) - (a.v || 0));
+    if (!items.length) return;
+    const ok = items.filter((x) => x.s === "ok").length;
+    html += `<tr class="grp"><td colspan="9">${g} — ${GROUPS[g]}<span>${items.length} mots-clés · ${ok} validés · ${fmt(uniqVol(items.filter((x) => x.s === "ok")))} rech./mois validées</span></td></tr>`;
+    html += items.map(row).join("");
+  });
+  tb.innerHTML = html;
+}
+render();
+
+// Écartés
+document.getElementById("rej-no").innerHTML = OUT.filter((x) => !x.later).map(rejRow).join("");
+document.getElementById("rej-later").innerHTML = OUT.filter((x) => x.later).map(rejRow).join("");
+function rejRow(x) {
+  return `<div class="rej-row"><b>${esc(x.k)}</b><span class="num" style="text-align:right">${fmt(x.v)}</span><span class="why">${esc(x.why)}${x.c ? ` Enchère ${money(x.c[0])} – ${money(x.c[1])}.` : ""}</span></div>`;
+}
+
+// Négatifs
+document.getElementById("negs").innerHTML = NEG.map((n, i) => `
+  <div class="panel">
+    <div class="panel-head"><h3>${esc(n.t)} <span class="lang">${n.l}</span></h3><button type="button" class="btn" data-neg="${i}">Copier</button></div>
+    <div class="tags">${n.w.map((w) => `<span class="tag">${esc(w)}</span>`).join("")}</div>
+  </div>`).join("");
+document.getElementById("negs").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-neg]"); if (!b) return;
+  const n = NEG[+b.dataset.neg];
+  copy(n.w.join("\n"), `${n.w.length} négatifs copiés`);
+});
+
+// Copie des mots-clés affichés (sans les écartés)
+document.getElementById("copy-kw").addEventListener("click", () => {
+  const list = filtered();
+  if (!list.length) { toast("Aucun mot-clé à copier avec ces filtres"); return; }
+  copy(list.map(mtLabel).join("\n"), `${list.length} mots-clés copiés`);
+});
+
+function copy(text, msg) {
+  const done = () => toast(msg);
+  try {
+    navigator.clipboard.writeText(text).then(done, () => fallback(text, msg));
+  } catch (e) { fallback(text, msg); }
+}
+function fallback(text, msg) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (e) {}
+  ta.remove();
+  toast(ok ? msg : "La copie a été bloquée par le navigateur : sélectionnez le texte à la main");
+}
+let tt;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(tt); tt = setTimeout(() => { t.hidden = true; }, 2200);
+}
+
+// Décisions
+document.getElementById("todo").innerHTML = TODO.map((x) =>
+  `<li class="${x.d ? "done" : "open"}"><span class="box">${x.d ? "✓" : ""}</span><span class="t">${esc(x.t)}</span></li>`).join("");
+</script>

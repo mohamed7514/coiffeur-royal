@@ -1,0 +1,17 @@
+# Dépendances et sorties de compilation (le site a son propre .gitignore)
+node_modules/
+.next/
+out/
+.vercel/
+
+# Captures d'écran de relecture
+.shots/
+**/.shots/
+
+# Réglages locaux de l'outillage
+.claude/settings.local.json
+
+# Système
+.DS_Store
+Thumbs.db
+desktop.ini

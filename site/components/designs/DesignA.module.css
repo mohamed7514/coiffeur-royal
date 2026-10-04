@@ -1,0 +1,547 @@
+/* ═══════════════════════════════════════════════════════════════════
+   A — « Lame »
+   Noir pur, acier froid, un seul rouge profond réservé à l'action.
+   Didone à très fort contraste : à grande taille, les déliés deviennent
+   fins comme une lame. Mise en page centrée et symétrique, comme une
+   page de titre. La photo est présentée petite et précise, en planche,
+   là où tout le monde la met en grand.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.root {
+  --bg: #000000;
+  --ink: #f5f2ed;
+  --steel: #9a9a9a;
+  --faint: #5c5c5c;
+  --line: #262626;
+  --red: #c2121b;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-bottom: 5rem;
+}
+
+.root :is(h1, h2, h3) {
+  margin: 0;
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.shell {
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.center {
+  text-align: center;
+}
+
+/* ── En-tête ─────────────────────────────────────────────────────── */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.mark {
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+}
+
+.mark em {
+  font-style: italic;
+  color: var(--steel);
+}
+
+.headRight {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  font-size: 0.9rem;
+}
+
+.navLink {
+  color: var(--steel);
+  text-decoration: none;
+  transition: color 160ms;
+}
+
+.navLink:hover {
+  color: var(--ink);
+}
+
+.lang {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+
+.langOn {
+  color: var(--ink);
+  border-bottom: 1px solid var(--red);
+  padding-bottom: 1px;
+  text-decoration: none;
+}
+
+.langOff {
+  color: var(--faint);
+  text-decoration: none;
+  transition: color 160ms;
+}
+
+.langOff:hover {
+  color: var(--steel);
+}
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+
+.hero {
+  padding-block: 5.5rem 4rem;
+}
+
+.openLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.86rem;
+  color: var(--steel);
+  min-height: 1.2rem;
+}
+
+.openDot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--faint);
+}
+
+.openDotOn {
+  background: var(--ink);
+}
+
+.title {
+  font-size: clamp(3.4rem, 13vw, 8.5rem);
+  margin-top: 1.4rem;
+}
+
+.titleItal {
+  display: block;
+  font-style: italic;
+  font-size: 0.76em;
+  color: var(--steel);
+}
+
+.hairline {
+  width: 1px;
+  height: 3.5rem;
+  background: var(--line);
+  margin: 2.2rem auto;
+}
+
+.lead {
+  max-width: 33rem;
+  margin-inline: auto;
+  color: var(--steel);
+  font-size: 1.06rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-top: 2.4rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 2.1rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background-color 180ms, color 180ms, border-color 180ms;
+}
+
+.btnRed {
+  background: var(--red);
+  color: #fff;
+}
+
+.btnRed:hover {
+  background: #d8171f;
+}
+
+.btnLine {
+  border-color: var(--line);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.btnLine:hover {
+  border-color: var(--steel);
+}
+
+.score {
+  margin-top: 2.6rem;
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-size: 1.15rem;
+  color: var(--steel);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.score b {
+  color: var(--ink);
+  font-weight: 400;
+  font-size: 1.6rem;
+}
+
+.score:hover {
+  color: var(--ink);
+}
+
+/* ── La planche photo ────────────────────────────────────────────── */
+
+.plate {
+  max-width: 30rem;
+  margin: 4.5rem auto 0;
+}
+
+.plateFrame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.plateFrame img {
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.15) brightness(0.88);
+}
+
+.caption {
+  margin-top: 0.9rem;
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--faint);
+  text-align: center;
+}
+
+/* ── Sections ────────────────────────────────────────────────────── */
+
+.section {
+  padding-block: 5rem;
+  border-top: 1px solid var(--line);
+}
+
+.sectionTitle {
+  font-size: clamp(2rem, 5.5vw, 3.2rem);
+}
+
+.sectionNote {
+  margin-top: 0.9rem;
+  color: var(--faint);
+  font-size: 0.9rem;
+}
+
+/* ── La carte des services, à la façon d'un menu ─────────────────── */
+
+.menu {
+  max-width: 42rem;
+  margin: 3rem auto 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding-block: 0.75rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.itemName {
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-size: 1.3rem;
+  transition: color 160ms;
+}
+
+/* Les points de conduite : le geste d'une carte imprimée, et ici ils
+   disent quelque chose — on lit un tarif, pas une liste de liens. */
+.dots {
+  flex: 1;
+  border-bottom: 1px dotted var(--line);
+  transform: translateY(-0.32em);
+}
+
+.itemMin {
+  font-size: 0.8rem;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.itemPrice {
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 3.6rem;
+  text-align: right;
+  transition: color 160ms;
+}
+
+.item:hover .itemName,
+.item:hover .itemPrice {
+  color: var(--red);
+}
+
+/* ── Forfait ─────────────────────────────────────────────────────── */
+
+.vip {
+  max-width: 42rem;
+  margin: 3.5rem auto 0;
+  border: 1px solid var(--line);
+  padding: 2.6rem 2rem;
+  text-align: center;
+}
+
+.vipLabel {
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-style: italic;
+  color: var(--steel);
+  font-size: 0.95rem;
+}
+
+.vipPrice {
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-size: clamp(3rem, 9vw, 4.6rem);
+  line-height: 1;
+  margin-top: 0.6rem;
+}
+
+.vipWas {
+  color: var(--faint);
+  font-size: 0.9rem;
+  margin-top: 0.7rem;
+}
+
+.vipList {
+  list-style: none;
+  padding: 0;
+  margin: 1.6rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.4rem;
+  color: var(--steel);
+  font-size: 0.9rem;
+}
+
+/* ── Galerie ─────────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  margin-top: 3rem;
+}
+
+@media (min-width: 52rem) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.cell {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #0a0a0a;
+  margin: 0;
+}
+
+.cell img {
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.12) brightness(0.9);
+  transition: filter 500ms;
+}
+
+.cell:hover img {
+  filter: grayscale(0) contrast(1.05) brightness(0.98);
+}
+
+/* ── Nous trouver ────────────────────────────────────────────────── */
+
+.two {
+  display: grid;
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+@media (min-width: 46rem) {
+  .two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4rem;
+  }
+}
+
+.label {
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-style: italic;
+  color: var(--faint);
+  font-size: 0.9rem;
+}
+
+.addr {
+  font-family: var(--font-bodoni), Georgia, serif;
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  margin-top: 0.5rem;
+}
+
+.hours {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.8rem;
+  font-size: 0.92rem;
+}
+
+.hours th,
+.hours td {
+  padding-block: 0.55rem;
+  border-bottom: 1px solid var(--line);
+  font-weight: 400;
+}
+
+.hours th {
+  text-align: left;
+  color: var(--steel);
+}
+
+.hours td {
+  text-align: right;
+  color: var(--steel);
+  font-variant-numeric: tabular-nums;
+}
+
+.today th,
+.today td {
+  color: var(--ink);
+}
+
+.tel {
+  font-size: 1.15rem;
+  color: var(--ink);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.tel:hover {
+  color: var(--red);
+}
+
+/* ── Appel flottant ──────────────────────────────────────────────── */
+
+.float {
+  position: fixed;
+  right: 1.6rem;
+  bottom: 1.6rem;
+  z-index: 40;
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+@media (min-width: 48rem) {
+  .float {
+    display: flex;
+  }
+}
+
+.floatText {
+  background: var(--ink);
+  color: #000;
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.floatRing {
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  background: #000;
+  transition: background-color 180ms, color 180ms;
+}
+
+.float:hover .floatRing {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+/* ── Barre mobile ────────────────────────────────────────────────── */
+
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+  background: #000;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (min-width: 48rem) {
+  .bar {
+    display: none;
+  }
+}
+
+.bar a {
+  padding-block: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.barBook {
+  background: var(--red);
+  color: #fff !important;
+}
+
+.foot {
+  border-top: 1px solid var(--line);
+  padding-block: 2.5rem;
+  color: var(--faint);
+  font-size: 0.85rem;
+}

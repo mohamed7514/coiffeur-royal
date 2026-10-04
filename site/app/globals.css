@@ -1,0 +1,366 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════
+   Barbier RoyalMK — système de design
+   Repris de la direction D, elle-même relevée dans la feuille de style
+   de crispmtl.com : fond beige, encre noire, grotesque large et lourde
+   pour les titres, étiquette serif au-dessus de chaque section, boutons
+   noirs carrés, beaucoup d'air, et la grille de colonnes laissée
+   visible en filets.
+   Le rouge des coffres à outils du salon ne sert plus qu'à deux choses :
+   dire que c'est ouvert, et les étoiles des avis.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@theme {
+  --color-paper: #f5f4f1;
+  --color-ink: #0a090c;
+  --color-mute: #6f6e69;
+  --color-rule: #e0dfda;
+  --color-signal: #d8402c;
+
+  --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
+  --font-body: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-label: var(--font-instrument), Georgia, serif;
+
+  --breakpoint-xs: 26rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  * {
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* l'en-tête fixe ne doit pas masquer une ancre */
+    scroll-padding-top: 5.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    /* la barre d'action mobile ne doit pas recouvrir le pied de page */
+    padding-bottom: 3.5rem;
+  }
+
+  @media (min-width: 48rem) {
+    body {
+      padding-bottom: 0;
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+}
+
+@layer components {
+  /* ── Rythme de page ─────────────────────────────────────────────── */
+
+  /* Pleine largeur, comme chez CRISP : la page n'est pas une colonne
+     centrée, c'est un plan. */
+  .shell {
+    width: 100%;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 48rem) {
+    .shell {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* L'air entre les sections : 196 px chez eux, ramené à l'échelle de
+     l'écran. C'est ce qui fait le plus pour la tenue de la page. */
+  .wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(5rem, 10vw, 11rem);
+    padding-block: clamp(5rem, 10vw, 11rem) 0;
+  }
+
+  /* La grille du gabarit laissée visible : six colonnes sur grand
+     écran, deux sur mobile. Décorative, donc hors du flux et sans
+     interception du survol. */
+  .lines {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    padding-inline: 1rem;
+    pointer-events: none;
+  }
+
+  @media (min-width: 48rem) {
+    .lines {
+      padding-inline: 2rem;
+    }
+  }
+
+  .lines span {
+    width: 50%;
+    border-right: 1px solid var(--color-rule);
+  }
+
+  .lines span:last-child {
+    border-right: 0;
+  }
+
+  @media (min-width: 48rem) {
+    .lines span {
+      width: 16.666%;
+    }
+  }
+
+  .section {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Typographie ────────────────────────────────────────────────── */
+
+  /* Large et lourd plutôt que condensé. Archivo porte un axe de
+     largeur : réglé à 125 %, il tient le rôle du Helvetica Neue Bold
+     Extended de CRISP, qui n'existe pas en licence libre. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: 125%;
+    text-transform: uppercase;
+    letter-spacing: -0.015em;
+    line-height: 0.96;
+    text-wrap: balance;
+  }
+
+  /* L'étiquette serif au-dessus de chaque titre : le seul contrepoint
+     à la grotesque sur toute la page. */
+  .mini {
+    font-family: var(--font-label);
+    font-size: 0.95rem;
+    color: var(--color-mute);
+  }
+
+  .h1 {
+    font-size: clamp(2.3rem, 6.6vw, 4.75rem);
+  }
+
+  .h2 {
+    font-size: clamp(2rem, 5.6vw, 4.5rem);
+  }
+
+  .h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1;
+  }
+
+  /* Pas de monospace sur ce site : les chiffres sont dans la même
+     grotesque, en chasse tabulaire pour que les colonnes s'alignent. */
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* ── Boutons ────────────────────────────────────────────────────── */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border: 1px solid var(--color-ink);
+    padding: 1rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 300ms ease, color 300ms ease;
+  }
+
+  .btn:hover {
+    background: transparent;
+    color: var(--color-ink);
+  }
+
+  /* Sur une photo, le bouton s'inverse : clair sur sombre. */
+  .btn-light {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border-color: var(--color-paper);
+  }
+
+  .btn-light:hover {
+    background: transparent;
+    color: var(--color-paper);
+  }
+
+  /* Lien souligné d'un filet : le téléphone, à côté d'un bouton, ne
+     doit pas se disputer l'attention avec lui. */
+  .underlined {
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+    transition: opacity 300ms ease;
+  }
+
+  .underlined:hover {
+    opacity: 0.6;
+  }
+
+  /* ── Lignes de tarif ────────────────────────────────────────────── */
+
+  .row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.05rem;
+    border-bottom: 1px solid var(--color-rule);
+    transition: padding-left 300ms ease;
+  }
+
+  .row:hover,
+  .row:focus-visible {
+    padding-left: 0.6rem;
+  }
+
+  .row-price {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: 125%;
+    font-size: 1.15rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* L'en-tête d'une colonne de tarifs : filet plein, pas le filet
+     clair qui sépare les lignes. */
+  .col-head {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-ink);
+  }
+
+  /* ── État d'ouverture ───────────────────────────────────────────── */
+
+  /* Le point n'est pas décoratif : il suit l'heure réelle du salon.
+     Rouge quand c'est ouvert, gris sinon — et il ne clignote pas. */
+  .dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    flex: none;
+    background: currentColor;
+    opacity: 0.45;
+  }
+
+  .dot-open {
+    background: var(--color-signal);
+    opacity: 1;
+  }
+
+  /* ── Séquence d'ouverture ───────────────────────────────────────────
+     Un seul moment orchestré sur toute la page, dans le hero. Rien ne
+     s'anime au défilement : des blocs qui apparaissent un par un, c'est
+     la signature des pages générées. */
+
+  .rise {
+    animation: rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(1.1rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ── Barre d'action mobile ──────────────────────────────────────── */
+
+  .actionbar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 60;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--color-ink);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .actionbar a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+  }
+
+  @media (min-width: 48rem) {
+    .actionbar {
+      display: none;
+    }
+  }
+}

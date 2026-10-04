@@ -1,0 +1,613 @@
+/* ═══════════════════════════════════════════════════════════════════
+   B — « Affiche »
+   Noir pur, blanc franc, un rouge vif. Condensé très lourd poussé jusqu'à
+   déborder du cadre : le titre est recadré par l'écran, comme une affiche
+   placardée. Aucun angle arrondi, aucune ombre. Des blocs inversés en
+   blanc viennent couper le noir, et les lignes de tarif s'inversent au
+   survol — le contraste fait tout le travail.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.root {
+  --bg: #000000;
+  --ink: #ffffff;
+  --dim: #8f8f8f;
+  --faint: #595959;
+  --line: #2b2b2b;
+  --red: #ff2d16;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  line-height: 1.5;
+  overflow-x: clip;
+  padding-bottom: 4.5rem;
+}
+
+.poster {
+  font-family: var(--font-anton), "Arial Narrow", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 0.82;
+  margin: 0;
+}
+
+.mono {
+  font-family: var(--font-mono-azeret), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.shell {
+  width: 100%;
+  max-width: 88rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 48rem) {
+  .shell {
+    padding-inline: 2rem;
+  }
+}
+
+/* ── En-tête ─────────────────────────────────────────────────────── */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.1rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+.mark {
+  font-family: var(--font-anton), sans-serif;
+  text-transform: uppercase;
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+}
+
+.mark span {
+  color: var(--red);
+}
+
+.headRight {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.navLink {
+  color: var(--dim);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: color 140ms;
+}
+
+.navLink:hover {
+  color: var(--ink);
+}
+
+.lang {
+  display: flex;
+  border: 2px solid var(--ink);
+}
+
+.lang a {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.langOn {
+  background: var(--ink);
+  color: #000 !important;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red);
+  color: #fff;
+  padding: 0.7rem 1.3rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: background-color 140ms;
+}
+
+.cta:hover {
+  background: #ff4a36;
+}
+
+.ctaLine {
+  background: transparent;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+}
+
+.ctaLine:hover {
+  background: var(--ink);
+  color: #000;
+}
+
+/* ── Hero : le titre recadré par l'écran ─────────────────────────── */
+
+.hero {
+  padding-block: 3rem 0;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--dim);
+  min-height: 1.2rem;
+}
+
+.statusDot {
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--faint);
+}
+
+.statusOn {
+  background: var(--red);
+}
+
+/* Volontairement plus large que la colonne : le mot sort du cadre. */
+.title {
+  font-size: clamp(4.2rem, 19vw, 15rem);
+  margin-top: 0.8rem;
+  white-space: nowrap;
+}
+
+.titleOut {
+  margin-left: -0.04em;
+}
+
+.titleRed {
+  color: var(--red);
+}
+
+.heroGrid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+@media (min-width: 52rem) {
+  .heroGrid {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: end;
+    gap: 3rem;
+  }
+}
+
+.lead {
+  font-size: 1.15rem;
+  max-width: 30rem;
+  color: var(--dim);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.8rem;
+}
+
+/* Le prix traité comme un élément graphique, pas comme une donnée. */
+.priceBlock {
+  background: var(--red);
+  color: #fff;
+  padding: 1.4rem 1.6rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.priceBlock b {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: clamp(3rem, 10vw, 5rem);
+  line-height: 0.85;
+}
+
+.priceBlock span {
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: right;
+  max-width: 8rem;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin-top: 1.1rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.scoreRow b {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: 2.6rem;
+  line-height: 1;
+}
+
+.scoreRow span {
+  font-size: 0.85rem;
+  color: var(--dim);
+}
+
+/* ── Bande photo pleine largeur ──────────────────────────────────── */
+
+.band {
+  position: relative;
+  height: clamp(16rem, 42vw, 30rem);
+  border-block: 2px solid var(--ink);
+  overflow: hidden;
+}
+
+.band img {
+  object-fit: cover;
+  filter: contrast(1.12) saturate(0.9) brightness(0.85);
+}
+
+/* ── Sections ────────────────────────────────────────────────────── */
+
+.section {
+  padding-block: 4.5rem;
+}
+
+.secHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.secTitle {
+  font-size: clamp(2.6rem, 9vw, 5.5rem);
+}
+
+.secNote {
+  color: var(--faint);
+  font-size: 0.85rem;
+  max-width: 22rem;
+}
+
+/* ── Lignes de tarif qui s'inversent ─────────────────────────────── */
+
+.rows {
+  margin-top: 2.5rem;
+  border-top: 2px solid var(--ink);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.4rem 1.5rem;
+  padding: 1.1rem 1rem;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background-color 120ms, color 120ms;
+}
+
+.row:hover,
+.row:focus-visible {
+  background: var(--ink);
+  color: #000;
+}
+
+.rowName {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(1.4rem, 4.5vw, 2.3rem);
+  line-height: 1;
+}
+
+.rowMeta {
+  font-size: 0.78rem;
+  color: var(--faint);
+  grid-column: 1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.row:hover .rowMeta {
+  color: #555;
+}
+
+.rowPrice {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 5vw, 2.6rem);
+  grid-row: 1 / 3;
+  grid-column: 2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Bloc inversé : le forfait ───────────────────────────────────── */
+
+.invert {
+  background: var(--ink);
+  color: #000;
+  margin-top: 3.5rem;
+  padding: 2.5rem 1.5rem;
+}
+
+@media (min-width: 48rem) {
+  .invert {
+    padding: 3rem 2.5rem;
+  }
+}
+
+.invertGrid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 52rem) {
+  .invertGrid {
+    grid-template-columns: 1.3fr 1fr;
+    align-items: center;
+    gap: 3rem;
+  }
+}
+
+.invertTitle {
+  font-size: clamp(2.2rem, 7vw, 4rem);
+}
+
+.invertList {
+  list-style: none;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.6rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.invertPrice {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  font-size: clamp(4rem, 14vw, 8rem);
+  line-height: 0.85;
+}
+
+.invertWas {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.ctaBlack {
+  background: #000;
+  color: #fff;
+  margin-top: 1.4rem;
+}
+
+.ctaBlack:hover {
+  background: var(--red);
+}
+
+/* ── Galerie ─────────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  background: var(--ink);
+  margin-top: 2.5rem;
+  border: 2px solid var(--ink);
+}
+
+@media (min-width: 52rem) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.cell {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #000;
+  margin: 0;
+}
+
+.cell img {
+  object-fit: cover;
+  filter: contrast(1.1) saturate(0.85) brightness(0.92);
+  transition: transform 500ms;
+}
+
+.cell:hover img {
+  transform: scale(1.05);
+}
+
+/* ── Nous trouver ────────────────────────────────────────────────── */
+
+.two {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 46rem) {
+  .two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4rem;
+  }
+}
+
+.label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.addr {
+  font-family: var(--font-anton), sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(1.7rem, 5vw, 2.6rem);
+  line-height: 0.95;
+  margin-top: 0.5rem;
+}
+
+.hours {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.7rem;
+  font-size: 0.9rem;
+}
+
+.hours th,
+.hours td {
+  padding-block: 0.5rem;
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+}
+
+.hours th {
+  text-align: left;
+  color: var(--faint);
+}
+
+.hours td {
+  text-align: right;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.today th,
+.today td {
+  color: var(--ink);
+}
+
+.tel {
+  font-family: var(--font-anton), sans-serif;
+  font-size: 1.6rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.tel:hover {
+  color: var(--red);
+}
+
+/* ── Appel flottant ──────────────────────────────────────────────── */
+
+.float {
+  position: fixed;
+  right: 1.4rem;
+  bottom: 1.4rem;
+  z-index: 40;
+  display: none;
+  align-items: stretch;
+  text-decoration: none;
+}
+
+@media (min-width: 48rem) {
+  .float {
+    display: flex;
+  }
+}
+
+.floatText {
+  background: var(--ink);
+  color: #000;
+  padding: 0.7rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: grid;
+  place-items: center;
+}
+
+.floatIcon {
+  background: var(--red);
+  color: #fff;
+  width: 3.4rem;
+  display: grid;
+  place-items: center;
+  transition: background-color 140ms;
+}
+
+.float:hover .floatIcon {
+  background: #ff4a36;
+}
+
+/* ── Barre mobile ────────────────────────────────────────────────── */
+
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 2px solid var(--ink);
+  background: #000;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (min-width: 48rem) {
+  .bar {
+    display: none;
+  }
+}
+
+.bar a {
+  padding-block: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.barBook {
+  background: var(--red);
+  color: #fff !important;
+}
+
+.foot {
+  border-top: 2px solid var(--ink);
+  padding-block: 2rem;
+  color: var(--faint);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}

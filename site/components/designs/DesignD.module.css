@@ -1,0 +1,899 @@
+/* ═══════════════════════════════════════════════════════════════════
+   D — « Crisp »
+   Refaite d'après crispmtl.com, relevé dans sa feuille de style :
+   fond beige #f5f4f1, encre #0a090c, titres en Helvetica Neue Bold
+   Extended (92 px / 72 px / 32 px), étiquettes en serif 14 px, boutons
+   noirs carrés en majuscules, 196 px d'air entre les sections, et une
+   grille de six filets verticaux qui traverse toute la page.
+   Pas d'Helvetica Neue BdEx sous licence libre : Archivo porte un axe de
+   largeur, réglé à 125 % il donne la même grotesque large et lourde.
+   Le seul écart assumé : la page est claire là où A, B et C sont noires,
+   et le rouge du salon ne sert plus qu'au point d'état d'ouverture.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.root {
+  --paper: #f5f4f1;
+  --ink: #0a090c;
+  --mute: #6f6e69;
+  --rule: #e0dfda;
+  --red: #d8402c;
+
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  overflow-x: clip;
+  padding-bottom: 4rem;
+}
+
+/* Large et lourd : l'inverse exact du condensé que tout le secteur
+   utilise, et ce que fait CRISP avec son Bold Extended. */
+.wide {
+  font-family: var(--font-archivo), "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 125%;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 0.96;
+  margin: 0;
+}
+
+/* L'étiquette en serif au-dessus de chaque titre : le seul contrepoint
+   à la grotesque, repris tel quel de CRISP. */
+.mini {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  color: var(--mute);
+}
+
+.h1 {
+  font-size: clamp(2.3rem, 6.6vw, 4.75rem);
+}
+
+.h2 {
+  font-size: clamp(2rem, 5.6vw, 4.5rem);
+}
+
+.h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1;
+}
+
+/* ── Rythme de page ──────────────────────────────────────────────── */
+
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6rem, 11vw, 12.25rem); /* 196 px chez CRISP */
+  padding: clamp(6rem, 10vw, 11rem) 1rem 0;
+}
+
+@media (min-width: 48rem) {
+  .wrapper {
+    padding-inline: 2rem;
+  }
+}
+
+/* Les six filets verticaux : la grille du gabarit laissée visible.
+   Deux colonnes seulement sur mobile, comme chez CRISP. */
+.lines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  padding-inline: 1rem;
+  pointer-events: none;
+}
+
+@media (min-width: 48rem) {
+  .lines {
+    padding-inline: 2rem;
+  }
+}
+
+.lines span {
+  width: 50%;
+  border-right: 1px solid var(--rule);
+}
+
+.lines span:last-child {
+  border-right: 0;
+}
+
+@media (min-width: 48rem) {
+  .lines span {
+    width: 16.666%;
+  }
+}
+
+.section {
+  position: relative;
+  z-index: 1;
+}
+
+.secHead {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ── Bouton ──────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 1rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+.btn:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+/* Sur la photo du hero, le bouton s'inverse : clair sur sombre. */
+.btnLight {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--paper);
+}
+
+.btnLight:hover {
+  background: transparent;
+  color: var(--paper);
+}
+
+/* ── En-tête ─────────────────────────────────────────────────────── */
+
+.head {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1rem;
+  color: var(--paper);
+  transition: background-color 300ms ease, color 300ms ease,
+    border-color 300ms ease;
+  border-bottom: 1px solid transparent;
+}
+
+@media (min-width: 48rem) {
+  .head {
+    padding-inline: 2rem;
+  }
+}
+
+/* Passé le hero, la page est claire : l'en-tête bascule en noir sur
+   beige, sinon il disparaîtrait. */
+.headSolid {
+  background: var(--paper);
+  color: var(--ink);
+  border-bottom-color: var(--rule);
+}
+
+.headLinks {
+  display: none;
+  gap: 1.6rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 52rem) {
+  .headLinks {
+    display: flex;
+  }
+}
+
+.headLinks a {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.75;
+  transition: opacity 300ms ease;
+}
+
+.headLinks a:hover {
+  opacity: 1;
+}
+
+.mark {
+  grid-column: 2;
+  justify-self: center;
+  font-weight: 800;
+  font-stretch: 125%;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: 1.05rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.headRight {
+  grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.lang {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.lang a {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.45;
+}
+
+.langOn {
+  opacity: 1 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 4px;
+}
+
+.headBook {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 300ms ease;
+}
+
+.headBook:hover {
+  opacity: 0.65;
+}
+
+/* ── Hero ────────────────────────────────────────────────────────────
+   Plein cadre, voile noir à 50 % et titre centré en bas : la structure
+   exacte de CRISP. La photo du salon fait 618 × 800 px — le voile et le
+   grain tiennent la montée en taille, mais une photo d'au moins
+   2000 px de large reste à fournir. */
+
+.hero {
+  position: relative;
+  min-height: 34rem;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 2rem 1rem 3.5rem;
+  overflow: hidden;
+  background: #111;
+  color: var(--paper);
+  text-align: center;
+}
+
+@media (min-width: 48rem) {
+  .hero {
+    padding-inline: 2rem;
+  }
+}
+
+.heroImg {
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.heroVeil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgb(0 0 0 / 0.78) 0%, rgb(0 0 0 / 0.15) 60%),
+    rgb(0 0 0 / 0.5);
+}
+
+/* Grain fin : il casse le lissage de l'agrandissement. */
+.heroGrain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+.heroIn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  width: 100%;
+}
+
+.heroTitle span {
+  display: block;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 1.2rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.statusDot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* Le rouge du salon ne sert qu'à deux choses sur toute la page :
+   dire que c'est ouvert, et les étoiles des avis. */
+.statusOn {
+  background: var(--red);
+  opacity: 1;
+}
+
+/* Le seul moment orchestré : le hero monte au chargement, puis plus
+   rien ne bouge au défilement. */
+.rise {
+  animation: rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.1rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+}
+
+/* ── Histoire ─────────────────────────────────────────────────────── */
+
+.story {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 60rem) {
+  .story {
+    flex-direction: row;
+    gap: 2rem;
+    height: 66vh;
+    min-height: 32rem;
+  }
+}
+
+.storyImg {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+  overflow: hidden;
+}
+
+@media (min-width: 60rem) {
+  .storyImg {
+    width: 33.33%;
+    height: 100%;
+  }
+}
+
+.storyImg img {
+  object-fit: cover;
+}
+
+.storyRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2.5rem;
+}
+
+@media (min-width: 60rem) {
+  .storyRight {
+    width: 65%;
+  }
+}
+
+.storyText {
+  max-width: 44ch;
+  color: var(--mute);
+  font-size: 1.05rem;
+}
+
+.storyFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.anchors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.anchors a {
+  color: var(--mute);
+  text-decoration: none;
+  transition: color 300ms ease;
+}
+
+.anchors a:hover {
+  color: var(--ink);
+}
+
+.score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.score b {
+  font-family: var(--font-archivo), sans-serif;
+  font-weight: 800;
+  font-stretch: 125%;
+  font-size: 2.6rem;
+  line-height: 0.9;
+}
+
+.scoreTxt {
+  font-size: 0.85rem;
+  color: var(--mute);
+  line-height: 1.3;
+}
+
+/* ── Tarifs ──────────────────────────────────────────────────────── */
+
+.price {
+  display: grid;
+  gap: 3rem;
+  margin-top: 3.5rem;
+}
+
+@media (min-width: 60rem) {
+  .price {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 4rem;
+  }
+}
+
+.colHead {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+.colNote {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--mute);
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-block: 1.05rem;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  transition: padding-left 300ms ease;
+}
+
+.row:hover,
+.row:focus-visible {
+  padding-left: 0.6rem;
+}
+
+.rowName {
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.rowPrice {
+  font-family: var(--font-archivo), sans-serif;
+  font-weight: 800;
+  font-stretch: 125%;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.vipBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.vipList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vipList li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.05rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 1.02rem;
+}
+
+.vipList span {
+  font-size: 0.85rem;
+  color: var(--mute);
+}
+
+.vipTotal {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1.8rem;
+}
+
+.vipPrice {
+  font-family: var(--font-archivo), sans-serif;
+  font-weight: 800;
+  font-stretch: 125%;
+  font-size: clamp(3rem, 8vw, 4.5rem);
+  line-height: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+
+.vipWas {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--mute);
+}
+
+.btnWrap {
+  margin-top: 2rem;
+}
+
+/* ── Travaux ─────────────────────────────────────────────────────── */
+
+.shots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 3.5rem;
+}
+
+@media (min-width: 60rem) {
+  .shots {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.shot {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  margin: 0;
+  background: #e8e7e2;
+}
+
+.shot img {
+  object-fit: cover;
+  transition: transform 600ms ease;
+}
+
+.shot:hover img {
+  transform: scale(1.04);
+}
+
+/* ── Avis ────────────────────────────────────────────────────────── */
+
+.quotes {
+  display: grid;
+  gap: 2rem;
+  margin-top: 3.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--ink);
+}
+
+@media (min-width: 60rem) {
+  .quotes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem;
+  }
+}
+
+.quote {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.quote blockquote {
+  margin: 1rem 0 0;
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+/* Les trois signatures s'alignent en bas, quelle que soit la longueur
+   de l'avis : sinon elles flottent à trois hauteurs différentes. */
+.quote figcaption {
+  margin-top: auto;
+  padding-top: 1.1rem;
+  font-family: var(--font-instrument), Georgia, serif;
+  font-size: 0.95rem;
+  color: var(--mute);
+}
+
+.quote figcaption span {
+  font-family: var(--font-archivo), sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.stars {
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: var(--red);
+}
+
+/* ── Nous trouver ────────────────────────────────────────────────── */
+
+.place {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 3.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--ink);
+}
+
+@media (min-width: 60rem) {
+  .place {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4rem;
+  }
+}
+
+.label {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-size: 0.95rem;
+  color: var(--mute);
+  margin-bottom: 0.9rem;
+}
+
+.addr {
+  font-size: 1.15rem;
+  line-height: 1.45;
+}
+
+.addr span {
+  color: var(--mute);
+}
+
+.hours {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  font-size: 1.02rem;
+  color: var(--mute);
+}
+
+.hourRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.today {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.placeActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.tel {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 1rem;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Appel final ─────────────────────────────────────────────────── */
+
+.shout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  text-align: center;
+}
+
+/* ── Pied ────────────────────────────────────────────────────────── */
+
+.foot {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(6rem, 11vw, 12.25rem);
+  padding: 2.5rem 1rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+@media (min-width: 48rem) {
+  .foot {
+    padding-inline: 2rem;
+  }
+}
+
+.footWrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  font-size: 0.9rem;
+  color: var(--mute);
+}
+
+.footWrap a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footWrap a:hover {
+  color: var(--ink);
+}
+
+.footMark {
+  font-weight: 800;
+  font-stretch: 125%;
+  text-transform: uppercase;
+  font-size: 1.4rem;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.footCopy {
+  margin-top: 2.5rem;
+  padding-block: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.75rem;
+  color: var(--mute);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+/* ── Appel flottant / barre mobile ───────────────────────────────── */
+
+.float {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 55;
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.85rem 1.2rem;
+  text-decoration: none;
+  font-size: 0.82rem;
+  line-height: 1.3;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.5rem);
+  transition: opacity 300ms ease, transform 300ms ease, visibility 300ms;
+}
+
+@media (min-width: 48rem) {
+  .float {
+    display: flex;
+  }
+}
+
+.floatOn {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.floatOn:hover {
+  opacity: 0.85;
+}
+
+.floatText b {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.floatText span {
+  display: block;
+  opacity: 0.6;
+}
+
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--ink);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (min-width: 48rem) {
+  .bar {
+    display: none;
+  }
+}
+
+.bar a {
+  padding-block: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--paper);
+}
+
+.barBook {
+  background: var(--paper);
+  color: var(--ink) !important;
+}
+
+.root :focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
