@@ -36,7 +36,10 @@ export async function generateMetadata({
       url: `/services/${s.slug}`,
       title: `${s.name} à Gatineau — ${price(s.price, "fr")}`,
       description: serviceCopy[s.id].fr.tagline,
-      images: [{ url: "/salon.jpg", width: 618, height: 800 }],
+      // L'image de partage commune, au format 1200 × 630. Déclarée ici
+      // parce qu'une page qui définit son propre bloc `openGraph` ne
+      // reprend pas celle du fichier app/opengraph-image.png.
+      images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
     },
   };
 }
