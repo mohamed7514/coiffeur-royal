@@ -1,7 +1,11 @@
 # Site — Barbier RoyalMK
 
-Next.js 15 · React 19 · Tailwind v4 · TypeScript · GSAP (ScrollTrigger, pour le
+Next.js 16 · React 19 · Tailwind v4 · TypeScript · GSAP (ScrollTrigger, pour le
 seul hero)
+
+**Garder Next à jour n'est pas optionnel** : Vercel refuse de compiler une
+version portant une faille connue, avec le message « Vulnerable version of
+Next.js detected ». `npm audit` doit rester à zéro.
 Plan de référence : [../plan-site-web.md](../plan-site-web.md)
 
 ```bash
