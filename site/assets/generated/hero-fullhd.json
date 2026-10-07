@@ -1,0 +1,12 @@
+{
+    "source":  "Starting-from-the-exact-pose-and-framing.mp4",
+    "width":  1080,
+    "height":  1920,
+    "frameCount":  72,
+    "fps":  14.3,
+    "format":  "webp",
+    "quality":  90,
+    "totalBytes":  10790346,
+    "method":  "Native video frame extraction, no upscaling",
+    "command":  "ffmpeg -i Starting-from-the-exact-pose-and-framing.mp4 -vf fps=14.3 -frames:v 72 -c:v libwebp -q:v 90 -compression_level 6 -preset picture site/public/frames/frame_%04d.webp"
+}

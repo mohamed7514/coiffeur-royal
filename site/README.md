@@ -209,28 +209,30 @@ Dans Next.js, tout ce qui est dans `public/` est servi tel quel à la racine :
 ne passent **pas** par `next/image` — elles sont chargées en `new Image()` et
 dessinées dans un Canvas, donc elles doivent être prêtes à l'emploi.
 
-La commande qui les fabrique, à relancer si la vidéo change :
+La commande à lancer depuis la racine du dépôt pour les réextraire :
 
 ```bash
-ffmpeg -i "ma-video.mp4" \
-  -vf "fps=14.3,scale=540:-2" \
-  -c:v libwebp -q:v 52 -compression_level 6 -preset picture \
+ffmpeg -i "Starting-from-the-exact-pose-and-framing.mp4" \
+  -vf "fps=14.3" -frames:v 72 \
+  -c:v libwebp -q:v 90 -compression_level 6 -preset picture \
   site/public/frames/frame_%04d.webp
 ```
 
-`fps=14.3` sur une vidéo de 5 s donne 72 frames ; `scale=540:-2` fixe la largeur
-et laisse ffmpeg calculer une hauteur paire. `-q:v 52` tient la moyenne à 21 Ko
-par image, soit **1,7 Mo pour la séquence entière** — c'est le vrai coût de ce
-hero, et il se paie avant le premier affichage.
+La vidéo est en **1080 × 1920**. Les 72 images conservent cette résolution
+native, avec une qualité WebP de 90 (anciennement 540 × 960, qualité 52).
+La séquence complète pèse environ **10,8 Mo**. Le cadrage et les instants de
+la rotation sont conservés ; aucun agrandissement artificiel n'est appliqué.
 
-Le nombre d'images est le réglage qui décide de la fluidité : à 48 images,
-il y avait 34 px de défilement entre deux images et le fondu se voyait comme un
-dédoublement ; à 72, il en reste 23. Monter encore alourdirait la mémoire des
-images décodées, qui est le vrai plafond de ce procédé.
+Le hero charge en priorité l'image courante et ses voisines, avec trois
+chargements simultanés et un cache de dix images. Il affiche la première
+image décodée sans attendre la séquence entière. Les images éloignées sont
+libérées du cache du composant ; le navigateur peut réutiliser son cache
+HTTP au retour en arrière. Cela évite de retenir près de 600 Mo d'images
+Full HD décodées dans le composant.
 
-540 px n'est pas un compromis au rabais : sur grand écran l'image est posée en
-panneau vertical d'environ 500 px de large, donc elle est affichée à sa taille
-réelle. Monter la largeur n'ajouterait de la netteté que sur mobile.
+Le Canvas utilise jusqu'à 2× la densité d'écran, avec un redimensionnement
+de haute qualité. Le mode mouvement réduit charge seulement la première
+image. Le scroll reste natif et la progression du texte suit celle du visuel.
 
 `public/travaux/` — quatre coupes faites par le barbier, confirmées par le
 client le 01/10/2026. Les lumières d'origine diffèrent beaucoup d'une photo à

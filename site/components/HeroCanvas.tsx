@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { business } from "@/lib/business";
 import { content, type AnyCopy, type Locale } from "@/lib/content";
-import { OpenNow } from "./OpenNow";
+import styles from "./HeroCanvas.module.css";
 
 /**
  * Hero en séquence d'images, pilotée au défilement.
@@ -23,12 +23,11 @@ import { OpenNow } from "./OpenNow";
  *    recadrée en 16:9 perd 60 % de sa hauteur, et un centrage naïf
  *    coupe le dessus du crâne — c'est-à-dire la coupe.
  *
- * 2. Le poids. 72 frames ≈ 1,7 Mo, chargées avant l'affichage. C'est
- *    beaucoup pour une page qui reçoit du trafic payant : le compteur
- *    de chargement est là pour que l'attente soit lisible, et le
- *    `priority` du reste de la page doit en tenir compte.
+ * 2. La qualité. Les frames sont en 1080 × 1920, WebP qualité 90.
+ *    Seules les images proches de la position courante sont décodées,
+ *    pour garder les détails sans retenir toute la séquence en mémoire.
  *
- * 3. L'épinglage. Pendant `PIN_LENGTH`, la page ne bouge plus : le
+ * 3. L'épinglage. Pendant la rotation, la page ne bouge plus : le
  *    visiteur défile et c'est l'image qui répond. Plus c'est long, plus
  *    la liste des prix est loin.
  */
@@ -39,9 +38,9 @@ const FRAME_SRC = (i: number) =>
 
 /** Durée de l'épinglage, en hauteurs d'écran. Plus c'est long, plus la
  *  liste des prix est loin — et plus il y a de défilement entre deux
- *  images, donc moins le mouvement est fin. 180 % tient la séquence
+ *  images, donc moins le mouvement est fin. 500 % sur ordinateur tient la séquence
  *  entière sans que la page paraisse bloquée. */
-const PIN_LENGTH = "+=180%";
+const PIN_DESKTOP = "+=500%";
 
 /** Point focal de l'image, en fractions de sa largeur et de sa hauteur.
  *  La tête du client est au tiers haut : c'est ce point-là qui doit
@@ -68,12 +67,12 @@ type Overlay = {
 const overlaysFor = (c: AnyCopy): Overlay[] => [
   {
     from: 0,
-    to: 0.34,
+    to: 0.42,
     title: `${c.hero.h1a} ${c.hero.h1b}`,
     sub: c.hero.lead1,
   },
   {
-    from: 0.44,
+    from: 0.42,
     to: 1,
     title: c.hero.craft,
     sub: c.hero.craftSub,
@@ -81,7 +80,7 @@ const overlaysFor = (c: AnyCopy): Overlay[] => [
 ];
 
 /** Largeur de la rampe d'apparition et de disparition d'un texte. */
-const FADE = 0.09;
+const FADE = 0.08;
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 export function HeroCanvas({ locale }: { locale: Locale }) {
@@ -97,6 +96,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
    *  frame coûterait le lissage. */
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const frameRef = useRef(0);
+  const requestFramesRef = useRef<(frame: number) => void>(() => {});
   const lastDrawn = useRef(-1);
 
   const [progress, setProgress] = useState(0);
@@ -106,56 +106,91 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     let alive = true;
-    let loaded = 0;
-
     const images: HTMLImageElement[] = [];
     imagesRef.current = images;
+    const pending = new Map<number, HTMLImageElement>();
+    const failed = new Set<number>();
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let wanted: number[] = [];
+    let lastCenter = -1;
+    let lastReduced = false;
+    let firstFrameReady = false;
 
-    for (let i = 0; i < FRAME_COUNT; i++) {
-      const img = new Image();
-      img.decoding = "async";
+    // Dix images au plus dans le cache, trois décodages simultanés.
+    // Garder les 72 images Full HD décodées coûterait près de 600 Mo.
+    const pump = () => {
+      if (!alive) return;
+      for (const index of wanted) {
+        if (pending.size >= 3) break;
+        if (images[index] || pending.has(index) || failed.has(index)) continue;
+        const img = new Image();
+        img.decoding = "async";
+        img.fetchPriority = index === wanted[0] ? "high" : "low";
+        pending.set(index, img);
+        let counted = false;
+        const done = async () => {
+          if (counted || !alive) return;
+          counted = true;
+          try { await img.decode(); } catch { /* échec traité ci-dessous */ }
+          if (!alive || pending.get(index) !== img) return;
+          pending.delete(index);
+          if (img.naturalWidth && wanted.includes(index)) {
+            images[index] = img;
+            if (!firstFrameReady && (index === Math.floor(frameRef.current) || index === Math.ceil(frameRef.current))) {
+              firstFrameReady = true;
+              setProgress(1);
+              setReady(true);
+            }
+            const current = Math.floor(frameRef.current);
+            if (index === current || index === current + 1) draw(true);
+          } else if (!img.naturalWidth) {
+            failed.add(index);
+          }
+          pump();
+        };
+        img.onload = done;
+        img.onerror = done;
+        img.src = FRAME_SRC(index);
+        if (img.complete) void done();
+      }
+    };
 
-      let counted = false;
-      const done = async () => {
-        if (counted || !alive) return;
-        counted = true;
-        // Télécharger ne suffit pas : sans `decode()`, le WebP n'est
-        // décompressé qu'au premier `drawImage`, en plein défilement, et
-        // chaque image neuve coûte alors une saccade.
-        try {
-          await img.decode();
-        } catch {
-          /* image manquante ou déjà décodée : le compteur avance quand même */
+    const request = (frame: number) => {
+      const reduced = motionQuery.matches;
+      const center = reduced ? 0 : Math.floor(Math.max(0, Math.min(frame, FRAME_COUNT - 1)));
+      if (center === lastCenter && reduced === lastReduced) return;
+      lastCenter = center;
+      lastReduced = reduced;
+      wanted = reduced ? [0] : [center, center + 1, center - 1, center + 2,
+        center - 2, center + 3, center - 3, center + 4, center - 4, center + 5]
+        .filter((index) => index >= 0 && index < FRAME_COUNT);
+      // Libérer les images éloignées ; les fichiers restent dans le cache HTTP.
+      for (let index = 0; index < images.length; index++) {
+        if (images[index] && !wanted.includes(index)) delete images[index];
+      }
+      for (const [index, img] of pending) {
+        if (!wanted.includes(index)) {
+          img.onload = img.onerror = null;
+          pending.delete(index);
+          img.src = "";
         }
-        if (!alive) return;
-        loaded++;
-        setProgress(loaded / FRAME_COUNT);
-        // La première image arrivée s'affiche tout de suite : le fond
-        // noir d'attente ne dure que le temps d'un fichier.
-        if (i === Math.round(frameRef.current)) draw(true);
-        if (loaded === FRAME_COUNT) {
-          setReady(true);
-          ScrollTrigger.refresh();
-        }
-      };
-
-      // Les gestionnaires d'abord, `src` ensuite : dans l'autre ordre,
-      // une image servie par le cache a fini de charger avant qu'on
-      // l'écoute, l'événement passe, et le compteur reste bloqué —
-      // Canvas noir au rechargement. `complete` rattrape le cas où
-      // l'événement est déjà passé malgré tout.
-      img.onload = done;
-      img.onerror = done;
-      img.src = FRAME_SRC(i);
-      if (img.complete) void done();
-
-      images.push(img);
-    }
+      }
+      pump();
+    };
+    requestFramesRef.current = request;
+    request(frameRef.current);
 
     return () => {
       alive = false;
-      for (const img of images) img.onload = img.onerror = null;
+      requestFramesRef.current = () => {};
+      for (const img of pending.values()) {
+        img.onload = img.onerror = null;
+        img.src = "";
+      }
+      pending.clear();
+      imagesRef.current = [];
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -292,6 +327,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     // entre deux frames est assez faible pour que le fondu passe pour du
     // flou de mouvement plutôt que pour un dédoublement.
     const f = Math.min(Math.max(frameRef.current, 0), FRAME_COUNT - 1);
+    requestFramesRef.current(f);
 
     // Le lissage du `scrub` continue d'appeler le rendu bien après que
     // l'image a cessé de changer visiblement. Un vingtième de frame vaut
@@ -299,7 +335,6 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     // redessiner, et chaque redessin évité est un écran entier de moins
     // à rastériser.
     if (!forced && Math.abs(f - lastDrawn.current) < 0.05) return;
-    lastDrawn.current = f;
 
     const i0 = Math.floor(f);
     const i1 = Math.min(i0 + 1, FRAME_COUNT - 1);
@@ -315,14 +350,12 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     const img = imagesRef.current[i0];
     const next = imagesRef.current[i1];
     if (!img?.naturalWidth) return;
+    lastDrawn.current = f;
 
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
-    // 1,5× suffit ici. À 2×, un écran 1440 demande un Canvas de 2880 ×
-    // 1800, soit 5,2 millions de pixels redessinés à chaque image — pour
-    // une source de 540 px de large, déjà agrandie. Le gain de netteté
-    // est nul, le coût double.
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    // La source Full HD conserve les détails sur les écrans Retina.
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
       canvas.width = Math.round(w * dpr);
@@ -330,6 +363,8 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     }
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
     const blend = mix > 0.01 && next?.naturalWidth && next !== img ? mix : 0;
 
@@ -398,8 +433,8 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
       const rampOut = o.to >= 1 ? 1 : (o.to - p) / FADE;
       const alpha = clamp01(Math.min(rampIn, rampOut, 1));
       el.style.opacity = String(alpha);
-      el.style.transform = `translate3d(0, ${(1 - alpha) * 18}px, 0)`;
-      el.style.pointerEvents = alpha > 0.5 ? "auto" : "none";
+      el.style.transform = `translate3d(0, ${(1 - alpha) * 10}px, 0)`;
+      if (i > 0) el.setAttribute("aria-hidden", String(alpha === 0));
     });
   }
 
@@ -409,130 +444,85 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     const root = rootRef.current;
     if (!root) return;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // Mouvement réduit : une image fixe, les deux textes lisibles, et
-    // surtout pas d'épinglage — c'est lui qui désoriente le plus.
-    if (reduced) {
-      frameRef.current = 0;
-      draw(true);
-      OVERLAYS.forEach((_, i) => {
-        const el = overlayRefs.current[i];
-        if (el) el.style.opacity = i === 0 ? "1" : "0";
-      });
-      const onResize = () => draw(true);
-      window.addEventListener("resize", onResize);
-      return () => window.removeEventListener("resize", onResize);
-    }
-
     gsap.registerPlugin(ScrollTrigger);
-
-    // Sur mobile, l'apparition et la disparition de la barre d'adresse
-    // change la hauteur d'écran et déclencherait un recalcul complet —
-    // donc un saut en plein milieu de l'épinglage.
     ScrollTrigger.config({ ignoreMobileResize: true });
-
-    // Le défilement doux du navigateur anime déjà chaque cran de molette
-    // sur quelques centaines de millisecondes. Le `scrub` de GSAP lisse
-    // ensuite cette position déjà lissée : deux amortis en série, et
-    // l'image ne suit plus le geste. Il est désactivé le temps que ce
-    // hero vive, et rendu à la page ensuite — les ancres du menu en ont
-    // besoin, pas lui.
-    const docEl = document.documentElement;
-    const previousBehavior = docEl.style.scrollBehavior;
-    docEl.style.scrollBehavior = "auto";
-
-    const state = { frame: 0 };
-
-    /**
-     * Arrêt sur image nette.
-     *
-     * Le défilement s'arrête rarement pile sur une image : il reste une
-     * fraction, donc deux poses mélangées, et l'œil lit ça comme un flou.
-     * Dès que le `scrub` a fini de rattraper, la séquence glisse vers
-     * l'image la plus proche. La page ne bouge pas — c'est l'image qui se
-     * cale, d'un quart d'image au maximum, et le prochain geste reprend
-     * la main.
-     */
-    let settleTween: gsap.core.Tween | null = null;
-
-    const settle = () => {
-      settleTween?.kill();
-      const target = Math.round(frameRef.current);
-      if (Math.abs(target - frameRef.current) < 0.01) return;
-      const at = { f: frameRef.current };
-      settleTween = gsap.to(at, {
-        f: target,
-        duration: 0.22,
-        ease: "power2.out",
-        onUpdate: () => {
-          frameRef.current = at.f;
+    const media = gsap.matchMedia();
+    media.add(
+      {
+        desktop: "(min-width: 768px)",
+        mobile: "(max-width: 767px)",
+        reduced: "(prefers-reduced-motion: reduce)",
+      },
+      (context) => {
+        const { desktop, reduced } = context.conditions!;
+        const onResize = () => draw(true);
+        window.addEventListener("resize", onResize);
+        if (reduced) {
+          frameRef.current = 0;
+          paintUi(0);
           draw(true);
-        },
-      });
-    };
+          return () => window.removeEventListener("resize", onResize);
+        }
 
-    // Le défilement est la seule commande : rien ne bouge tout seul.
-    // Pas de `snap` non plus — l'index reste décimal, et c'est le fondu
-    // entre images voisines qui fait la continuité.
-    const tween = gsap.to(state, {
-      frame: FRAME_COUNT - 1,
-      ease: "none",
-      // Le rendu est piloté par le tween, pas par le ScrollTrigger.
-      //
-      // Le `scrub` continue d'animer `state.frame` après le dernier
-      // événement de défilement, le temps de rattraper la position. Si on
-      // ne redessine que depuis `scrollTrigger.onUpdate`, qui ne se
-      // déclenche qu'au défilement, l'image reste figée là où elle était
-      // au dernier événement : sur un geste rapide, la jauge annonçait
-      // 50 % et l'image en était encore à la première frame.
-      onUpdate: () => {
-        frameRef.current = state.frame;
-        draw();
-      },
-      scrollTrigger: {
-        trigger: root,
-        start: "top top",
-        end: PIN_LENGTH,
-        pin: true,
-        anticipatePin: 1,
-        // Presque collé au geste : juste assez d'amorti pour absorber la
-        // quantification de la molette, pas assez pour qu'on sente un
-        // retard.
-        scrub: 0.15,
-        // Pas de `fastScrollEnd` ici : sur un geste rapide, il arrête le
-        // scrub au lieu de le laisser rattraper, et la séquence reste
-        // bloquée sur l'image de départ pendant que la jauge, elle,
-        // continue d'avancer. Mesuré : jauge à 15 %, image encore à la
-        // frame 0. Le calage sur `onScrubComplete` fait le travail sans
-        // cet effet de bord.
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          // Ici, seulement ce qui dépend de la position de défilement :
-          // la jauge et les textes. Le geste reprend la main sur le
-          // calage en cours.
+        const docEl = document.documentElement;
+        const previousBehavior = docEl.style.scrollBehavior;
+        docEl.style.scrollBehavior = "auto";
+        const state = { progress: 0 };
+        let settleTween: gsap.core.Tween | null = null;
+
+        const render = () => {
+          const p = clamp01(state.progress);
+          // Court arrêt au profil et à la nuque, avant la sortie du hero.
+          frameRef.current = clamp01((p - 0.06) / 0.84) * (FRAME_COUNT - 1);
+          draw();
+          // L'image, les textes et la jauge suivent le même amorti.
+          paintUi(p);
+        };
+        const settle = () => {
           settleTween?.kill();
-          paintUi(self.progress);
-        },
-        // Déclenché quand le `scrub` a fini de rejoindre la position du
-        // défilement : c'est le moment exact où l'on s'est arrêté.
-        onScrubComplete: settle,
+          const target = Math.round(frameRef.current);
+          if (Math.abs(target - frameRef.current) < 0.01) return;
+          const at = { frame: frameRef.current };
+          settleTween = gsap.to(at, {
+            frame: target,
+            duration: 0.18,
+            ease: "power2.out",
+            onUpdate: () => {
+              frameRef.current = at.frame;
+              draw(true);
+            },
+          });
+        };
+        const tween = gsap.to(state, {
+          progress: 1,
+          ease: "none",
+          onUpdate: render,
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            end: desktop ? PIN_DESKTOP : "+=400%",
+            pin: true,
+            anticipatePin: 1,
+            scrub: 0.5,
+            // Garder le rattrapage sur un geste rapide, sans fastScrollEnd.
+            invalidateOnRefresh: true,
+            onUpdate: () => settleTween?.kill(),
+            onScrubComplete: settle,
+          },
+        });
+        render();
+        draw(true);
+        return () => {
+          settleTween?.kill();
+          tween.scrollTrigger?.kill();
+          tween.kill();
+          window.removeEventListener("resize", onResize);
+          docEl.style.scrollBehavior = previousBehavior;
+        };
       },
-    });
+    );
+    return () => media.revert();
 
-    paintUi(0);
-    draw(true);
-
-    const onResize = () => draw(true);
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      settleTween?.kill();
-      tween.scrollTrigger?.kill();
-      tween.kill();
-      window.removeEventListener("resize", onResize);
-      docEl.style.scrollBehavior = previousBehavior;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -541,7 +531,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
   return (
     <section
       ref={rootRef}
-      className="relative h-[100svh] w-full overflow-hidden bg-[#0a090c] text-paper"
+      className={styles.hero}
       aria-label={c.hero.sequenceAlt}
     >
       {/* La première image décide du LCP : elle part en même temps que le
@@ -550,21 +540,12 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
 
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden />
 
-      {/* Voile : il assoit le texte et unifie les 72 frames, dont les
-          fonds varient légèrement d'une image à l'autre. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to top, rgb(0 0 0 / 0.78) 0%, rgb(0 0 0 / 0.2) 55%), linear-gradient(to right, rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.05) 60%)",
-        }}
-      />
+      <div aria-hidden className={styles.veil} />
 
       {/* Chargement : un compteur, pas un spinner. Le visiteur voit ce
           qu'il attend et combien il en reste. */}
       <div
-        className={`pointer-events-none absolute inset-0 flex items-end justify-between px-4 pb-10 transition-opacity duration-500 md:px-8 ${
+        className={`${styles.loading} transition-opacity duration-500 ${
           ready ? "opacity-0" : "opacity-100"
         }`}
       >
@@ -579,36 +560,31 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
         </span>
       </div>
 
-      {/* Les textes, superposés au même endroit : ils se relaient au lieu
-          de s'empiler. */}
-      {/* La marge à droite réserve la colonne de la jauge : sans elle, le
-          titre passe dessous sur petit écran. */}
-      <div className="pointer-events-none absolute inset-0 flex items-center px-4 pr-14 md:px-8 md:pr-20">
-        <div className="relative w-full max-w-[34rem]">
-          {OVERLAYS.map((o, i) => (
-            <div
-              key={o.title}
-              ref={(el) => {
-                overlayRefs.current[i] = el;
-              }}
-              className={`${i === 0 ? "relative" : "absolute inset-0"} opacity-0`}
-            >
-              {/* Un seul h1 par page : les textes suivants sont des h2,
-                  sinon la hiérarchie du document part en morceaux. */}
-              {i === 0 ? (
-                <>
-                  {/* L'état réel du salon, au-dessus du titre : c'est la
-                      première chose qu'un visiteur venu d'une annonce
-                      veut savoir. */}
-                  <OpenNow locale={locale} className="mb-5 text-paper/80" />
-                  <h1 className="display text-[clamp(2.2rem,6vw,4.25rem)]">{o.title}</h1>
-                </>
-              ) : (
-                <h2 className="display text-[clamp(2.2rem,6vw,4.25rem)]">{o.title}</h2>
-              )}
-              <p className="mt-5 max-w-[32ch] text-[1.02rem] text-paper/75">{o.sub}</p>
-            </div>
-          ))}
+      {/* La grille garde le bord inférieur des deux textes aligné. */}
+      <div className={styles.content}>
+        <div className={styles.copy}>
+          <div className={styles.overlays}>
+            {OVERLAYS.map((o, i) => (
+              <div
+                key={o.title}
+                ref={(el) => { overlayRefs.current[i] = el; }}
+                className={styles.overlay}
+                style={{ opacity: i === 0 ? 1 : 0 }}
+                aria-hidden={i > 0 ? true : undefined}
+              >
+                {i === 0 ? (
+                  <h1 className={`display ${styles.title}`}>{o.title}</h1>
+                ) : (
+                  <h2 className={`display ${styles.title}`}>{o.title}</h2>
+                )}
+                <p className={styles.subtitle}>{o.sub}</p>
+              </div>
+            ))}
+          </div>
+          <a href={business.booking} target="_blank" rel="noopener" className={`group ${styles.book}`}>
+            {c.hero.chair}
+            <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+          </a>
         </div>
       </div>
 
@@ -617,7 +593,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
           et l'invitation à défiler écrite dans le sens du rail.
           Le défilement est vertical, la jauge aussi — et sur le bord, elle
           ne dispute plus la place au titre ni au bouton. */}
-      <div className="pointer-events-none absolute right-4 top-1/2 z-10 flex -translate-y-1/2 flex-col items-center gap-4 md:right-8 md:gap-5">
+      <div className={styles.gauge}>
         <span
           ref={stepRef}
           className="text-[0.72rem] font-bold tracking-[0.14em] text-paper [text-shadow:0_1px_6px_rgb(0_0_0/0.6)]"
@@ -641,30 +617,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
         </span>
       </div>
 
-      {/* CTA flottant, en verre dépoli. */}
-      <a
-        href={business.booking}
-        target="_blank"
-        rel="noopener"
-        className="group absolute bottom-12 left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-3 whitespace-nowrap border border-white/25 bg-white/10 px-5 py-3.5 text-[0.78rem] font-bold uppercase tracking-[0.06em] text-paper backdrop-blur-md transition-all duration-300 hover:border-white/50 hover:bg-white/20 md:bottom-16 md:px-7 md:py-4 md:text-[0.85rem]"
-      >
-        {c.hero.chair}
-        <span
-          aria-hidden
-          className="inline-block transition-transform duration-300 group-hover:translate-x-1"
-        >
-          →
-        </span>
-      </a>
-
-      {/* Fondu vers le beige : la section suivante commence déjà ici. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
-        style={{
-          background: "linear-gradient(to top, var(--color-paper), rgb(245 244 241 / 0))",
-        }}
-      />
+      <div aria-hidden className={styles.exitFade} />
     </section>
   );
 }

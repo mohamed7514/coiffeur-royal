@@ -38,7 +38,7 @@ export const business = {
 
   /** 0 = dimanche. Heures en minutes depuis minuit, fuseau America/Toronto. */
   hours: [
-    { day: 0, open: 11 * 60, close: 19 * 60 },
+    { day: 0, open: 10 * 60, close: 16 * 60 },
     { day: 1, open: 9 * 60, close: 19 * 60 },
     { day: 2, open: 9 * 60, close: 19 * 60 },
     { day: 3, open: 9 * 60, close: 19 * 60 },

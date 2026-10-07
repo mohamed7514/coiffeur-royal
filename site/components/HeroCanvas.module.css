@@ -1,0 +1,37 @@
+.hero { position: relative; width: 100%; height: 100svh; overflow: hidden; background: #0a090c; color: var(--color-paper); }
+.veil { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgb(0 0 0 / 0.94), rgb(0 0 0 / 0.78) 30%, rgb(0 0 0 / 0.15) 58%, transparent 70%), linear-gradient(to bottom, rgb(0 0 0 / 0.65), rgb(0 0 0 / 0.25) 18%, transparent 32%); }
+.content { position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; padding: 6rem 4.5rem calc(5rem + env(safe-area-inset-bottom, 0px)) 1.25rem; pointer-events: none; }
+.copy { width: 100%; max-width: 34rem; }
+.overlays { display: grid; align-items: end; }
+.overlay { grid-area: 1 / 1; pointer-events: none; }
+.title { font-size: clamp(1.625rem, 7.8vw, 2.6rem); line-height: 1.06; text-wrap: balance; }
+.subtitle { margin-top: 1rem; max-width: 35ch; font-size: 0.9rem; line-height: 1.5; color: rgb(245 244 241 / 0.82); }
+.book { display: inline-flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; border: 1px solid rgb(255 255 255 / 0.3); padding: 0.9rem 1.1rem; background: rgb(255 255 255 / 0.09); backdrop-filter: blur(12px); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; pointer-events: auto; transition: background 200ms, border-color 200ms; }
+.book:hover { background: rgb(255 255 255 / 0.18); border-color: rgb(255 255 255 / 0.65); }
+.loading { position: absolute; top: 8rem; left: 1.25rem; width: min(10rem, 40vw); display: flex; align-items: center; pointer-events: none; }
+.gauge { position: absolute; right: 0.875rem; top: 45%; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 1rem; transform: translateY(-50%); pointer-events: none; }
+.exitFade { position: absolute; inset-inline: 0; bottom: 0; height: 2rem; pointer-events: none; background: linear-gradient(to top, var(--color-paper), transparent); }
+@media (min-width: 48rem) {
+  .content { padding: 7rem 5rem clamp(3rem, 7svh, 5rem) 2rem; }
+  .title { font-size: clamp(2.25rem, 4.2vw, 4rem); }
+  .subtitle { margin-top: 1.25rem; font-size: 1rem; }
+  .book { padding: 1rem 1.5rem; font-size: 0.8rem; margin-top: 1.75rem; }
+  .loading { left: 2rem; top: 8.5rem; }
+  .gauge { right: 2rem; top: 50%; gap: 1.25rem; }
+  .exitFade { height: 2.5rem; }
+}
+/* Même seuil de cadrage que le Canvas : réserver le panneau net en paysage. */
+@media (min-aspect-ratio: 95/100) {
+  .copy { max-width: min(42vw, 34rem); }
+  .veil { background: linear-gradient(to top, rgb(0 0 0 / 0.8), rgb(0 0 0 / 0.3) 22%, transparent 60%), linear-gradient(to right, rgb(0 0 0 / 0.55), transparent 48%), linear-gradient(to bottom, rgb(0 0 0 / 0.55), transparent 25%); }
+}
+@media (max-height: 32rem) {
+  .content { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)); }
+  .title { font-size: clamp(1.4rem, 3.5vw, 2rem); }
+  .subtitle { margin-top: 0.5rem; font-size: 0.8rem; }
+  .book { margin-top: 0.75rem; padding-block: 0.65rem; }
+  .loading { top: 6rem; }
+  .gauge { gap: 0.6rem; }
+}
+@media (max-height: 32rem) and (min-width: 48rem) { .content { padding-bottom: 1.75rem; } }
+@media (prefers-reduced-motion: reduce) { .gauge { display: none; } }
