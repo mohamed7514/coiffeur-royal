@@ -1,3 +1,4 @@
+import { ServicePhoto } from "./ServicePhoto";
 import { allServices, business, nameFor, servicePath } from "@/lib/business";
 import { serviceCopy } from "@/lib/services-content";
 import { content, duration, price, type Locale } from "@/lib/content";
@@ -44,22 +45,23 @@ export function ServicesIndex({ locale }: { locale: Locale }) {
               </a>
             </div>
 
-            {/* Huit services : une ligne par service, comme sur l'accueil.
-                La grille en cases les mettait tous au même rang ; la liste
-                garde le prix lisible d'un seul coup d'œil. */}
-            <div className="mt-14 grid gap-12 lg:grid-cols-2 lg:gap-x-16">
+            {/* Chaque photo accompagne les informations du service dans un même lien. */}
+            <div className="mt-14 grid gap-x-16 lg:grid-cols-2">
               {allServices.map((s) => (
-                <a key={s.id} href={servicePath(s, locale)} className="row items-start">
-                  <span>
-                    <span className="block font-semibold">{nameFor(s, locale)}</span>
-                    <span className="mt-1 block max-w-[38ch] text-sm text-mute">
-                      {serviceCopy[s.id][locale].tagline}
+                <a key={s.id} href={servicePath(s, locale)} className="service-index-link">
+                  <ServicePhoto id={s.id} locale={locale} sizes="(min-width: 768px) 160px, 96px" />
+                  <span className="flex items-start justify-between gap-3">
+                    <span>
+                      <span className="block font-semibold">{nameFor(s, locale)}</span>
+                      <span className="mt-1 block max-w-[38ch] text-sm text-mute">
+                        {serviceCopy[s.id][locale].tagline}
+                      </span>
+                      <span className="mt-1.5 block text-[0.8rem] uppercase tracking-[0.04em] text-mute">
+                        {duration(s.minutes, locale)}
+                      </span>
                     </span>
-                    <span className="mt-1.5 block text-[0.8rem] uppercase tracking-[0.04em] text-mute">
-                      {duration(s.minutes, locale)}
-                    </span>
+                    <span className="row-price whitespace-nowrap">{price(s.price, locale)}</span>
                   </span>
-                  <span className="row-price">{price(s.price, locale)}</span>
                 </a>
               ))}
             </div>

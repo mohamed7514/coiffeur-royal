@@ -99,7 +99,7 @@ export function DesignB() {
 
       <div className={s.band}>
         <Image
-          src="/salon.jpg"
+          src="/salon-hd.webp"
           alt="La salle du Barbier RoyalMK, mur de brique et trois fauteuils."
           fill
           priority

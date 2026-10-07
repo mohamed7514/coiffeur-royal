@@ -3,7 +3,6 @@ import { Nav } from "./Nav";
 import { HeroCanvas } from "./HeroCanvas";
 import { Story } from "./Story";
 import { Services } from "./Services";
-import { Work } from "./Work";
 import { Reviews } from "./Reviews";
 import { Visit, Shout, Footer, ActionBar } from "./Visit";
 import { CallBadge } from "./CallBadge";
@@ -30,7 +29,6 @@ export function Page({ locale }: { locale: Locale }) {
           <Lines />
           <Story locale={locale} />
           <Services locale={locale} />
-          <Work locale={locale} />
           <Reviews locale={locale} />
           <Visit locale={locale} />
           <Shout locale={locale} />

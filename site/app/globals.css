@@ -294,6 +294,258 @@
     border-bottom: 1px solid var(--color-ink);
   }
 
+  /* Photos de services : proportions natives 600 × 500, angles vifs. */
+  .service-photo {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 6 / 5;
+    overflow: hidden;
+    background: var(--color-rule);
+  }
+  .service-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .service-thumb {
+    width: 4rem;
+    flex: none;
+  }
+  .service-row {
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .service-row .row-price {
+    flex: none;
+    white-space: nowrap;
+  }
+  .service-index-link {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    align-items: start;
+    gap: 1rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--color-rule);
+    transition: background-color 300ms ease;
+  }
+  .service-index-link .row-price {
+    flex: none;
+  }
+
+  .service-index-link:hover,
+  .service-index-link:focus-visible {
+    background-color: var(--color-rule);
+  }
+  @media (min-width: 48rem) {
+    .service-thumb { width: 5rem; }
+    .service-index-link {
+      grid-template-columns: 10rem minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  /* Accueil : grandes photographies, composition asymétrique et légendes. */
+  .home-services-heading {
+    display: grid;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--color-ink);
+  }
+  .home-services-heading h2 {
+    max-width: 13ch;
+    margin-top: 1rem;
+  }
+  .home-services-intro {
+    max-width: 34ch;
+    align-self: end;
+    color: var(--color-mute);
+  }
+  .home-services-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--color-ink);
+    color: var(--color-ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .home-service-arrow {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+  }
+  .home-services-featured,
+  .home-services-grid {
+    display: grid;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+  .home-service-card {
+    display: block;
+    align-self: start;
+  }
+  .home-service-kicker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.85rem;
+  }
+  .home-service-discover {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .home-service-card .service-photo img {
+    transition: transform 650ms cubic-bezier(0.2, 0.65, 0.3, 1);
+  }
+  .home-service-card:hover .service-photo img {
+    transform: scale(1.025);
+  }
+  .home-service-caption {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+  .home-service-caption h3 {
+    max-width: 17ch;
+    font-size: clamp(1.35rem, 2.2vw, 2.2rem);
+    line-height: 1.05;
+    text-wrap: initial;
+  }
+  .home-service-price {
+    flex: none;
+    font-size: clamp(1.35rem, 2.2vw, 2.2rem);
+    white-space: nowrap;
+  }
+  .home-service-description {
+    max-width: 40ch;
+    margin-top: 0.65rem;
+    color: var(--color-mute);
+    font-size: 0.85rem;
+  }
+  .home-vip {
+    display: grid;
+    margin-top: clamp(4rem, 7vw, 7rem);
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .home-vip-copy {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.5rem, 4vw, 4rem);
+  }
+  .home-vip-kicker {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .home-vip .mini {
+    color: var(--color-paper);
+    opacity: 0.65;
+  }
+  .home-vip h3 {
+    margin-top: 2rem;
+    max-width: 10ch;
+    font-size: clamp(2.5rem, 4.8vw, 5rem);
+  }
+  .home-vip-lead {
+    max-width: 35ch;
+    margin-top: 1.5rem;
+    opacity: 0.7;
+  }
+  .home-vip-includes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 1.5rem;
+    list-style: none;
+    padding: 1.5rem 0;
+    margin: 1.5rem 0 0;
+    border-top: 1px solid rgb(245 244 241 / 25%);
+    font-size: 0.85rem;
+  }
+  .home-vip-bottom {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: auto;
+    padding-top: 2rem;
+  }
+  .home-vip-price {
+    font-size: clamp(3.5rem, 6vw, 6rem);
+  }
+  .home-vip-savings {
+    margin-top: 0.7rem;
+    font-size: 0.8rem;
+    opacity: 0.65;
+  }
+  .home-vip-detail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    align-self: start;
+    margin-top: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgb(245 244 241 / 40%);
+    font-size: 0.85rem;
+  }
+  .home-vip-image {
+    display: block;
+  }
+  .home-services-note {
+    margin-top: 1.5rem;
+    color: var(--color-mute);
+    font-size: 0.8rem;
+  }
+  @media (min-width: 48rem) {
+    .home-services-heading {
+      grid-template-columns: 1.5fr 1fr;
+      gap: 4rem;
+      padding-bottom: 3rem;
+    }
+    .home-services-intro { justify-self: end; }
+    .home-services-featured {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+    .home-services-featured > :last-child { margin-top: 5rem; }
+    .home-services-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 3.5rem 2rem;
+      margin-top: 5rem;
+    }
+    .home-services-grid > * { grid-column: span 2; }
+    .home-services-grid > :nth-last-child(-n+2) { grid-column: span 3; }
+    .home-service-card--featured h3,
+    .home-service-card--featured .home-service-price {
+      font-size: clamp(1.5rem, 3.2vw, 3rem);
+    }
+  }
+  @media (max-width: 23rem) {
+    .home-vip h3 { font-size: 2rem; }
+  }
+  @media (min-width: 48rem) and (max-width: 63.99rem) {
+    .home-services-grid .home-service-caption { flex-wrap: wrap; }
+    .home-services-grid .home-service-caption h3 { flex-basis: 100%; }
+  }
+  @media (min-width: 64rem) {
+    .home-vip { grid-template-columns: 1fr 1fr; }
+    .home-vip-image .service-photo { height: 100%; }
+  }
+
   /* ── État d'ouverture ───────────────────────────────────────────── */
 
   /* Le point n'est pas décoratif : il suit l'heure réelle du salon.

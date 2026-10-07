@@ -26,7 +26,7 @@ export function JsonLd({ locale }: { locale: Locale }) {
     name: business.name,
     url,
     telephone: business.phone,
-    image: "https://barbierroyalmk.ca/salon.jpg",
+    image: "https://barbierroyalmk.ca/salon-hd.webp",
     priceRange: "$$",
     currenciesAccepted: "CAD",
     address: {

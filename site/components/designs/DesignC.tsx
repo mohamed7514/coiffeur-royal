@@ -33,7 +33,7 @@ export function DesignC() {
       <section className={s.hero}>
         <div className={s.heroImg}>
           <Image
-            src="/salon.jpg"
+            src="/salon-hd.webp"
             alt="La salle du Barbier RoyalMK, mur de brique et trois fauteuils."
             fill
             priority

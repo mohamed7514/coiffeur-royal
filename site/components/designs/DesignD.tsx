@@ -90,7 +90,7 @@ export function DesignD() {
           action : la structure de CRISP, au mot près. */}
       <section className={s.hero}>
         <Image
-          src="/salon.jpg"
+          src="/salon-hd.webp"
           alt="La salle du Barbier RoyalMK : mur de brique rouge, fauteuils de barbier et miroirs encadrés de noir."
           fill
           priority

@@ -1,3 +1,5 @@
+import { ServicePhoto } from "./ServicePhoto";
+import { serviceImages } from "@/lib/service-images";
 import {
   allServices,
   business,
@@ -18,6 +20,7 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
   const c = content[locale];
   const copy = serviceCopy[service.id][locale];
   const name = nameFor(service, locale);
+  const photo = serviceImages[service.id];
   /** Quatre suggestions : une rangée pleine sur grand écran, deux sur
    *  tablette. Les sept autres laisseraient une case vide en fin de grille. */
   const others = allServices.filter((s) => s.id !== service.id).slice(0, 4);
@@ -77,40 +80,46 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
 
               {/* Prix et durée tenus ensemble : les deux questions qu'on se
                   pose avant de réserver quoi que ce soit. */}
-              <aside className="self-start border-t border-ink pt-6">
-                <div className="flex flex-wrap gap-12">
-                  <div>
-                    <div className="mini">{c.svc.price}</div>
-                    <div className="display num mt-2 text-[clamp(2.4rem,6vw,3.4rem)] leading-[0.85]">
-                      {price(service.price, locale)}
+              <div className="self-start">
+                <figure className="m-0 mb-8 max-w-[600px]">
+                  <ServicePhoto id={service.id} locale={locale} sizes="(min-width: 1024px) 40vw, (min-width: 640px) 600px, calc(100vw - 32px)" preload />
+                  {photo.caption && <figcaption className="mt-3 text-sm text-mute">{photo.caption[locale]}</figcaption>}
+                </figure>
+                <aside className="border-t border-ink pt-6">
+                  <div className="flex flex-wrap gap-12">
+                    <div>
+                      <div className="mini">{c.svc.price}</div>
+                      <div className="display num mt-2 text-[clamp(2.4rem,6vw,3.4rem)] leading-[0.85]">
+                        {price(service.price, locale)}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="mini">{c.svc.duration}</div>
+                      <div className="display num mt-2 text-[clamp(2.4rem,6vw,3.4rem)] leading-[0.85]">
+                        {duration(service.minutes, locale)}
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <div className="mini">{c.svc.duration}</div>
-                    <div className="display num mt-2 text-[clamp(2.4rem,6vw,3.4rem)] leading-[0.85]">
-                      {duration(service.minutes, locale)}
-                    </div>
+
+                  {saved > 0 && (
+                    <p className="mt-6 text-[0.85rem] text-mute">
+                      <s className="num">{price(service.partsTotal ?? 0, locale)}</s>{" "}
+                      {c.svc.savings(saved)}
+                    </p>
+                  )}
+
+                  <div className="mt-8 border-t border-rule pt-5">
+                    <div className="mini">{c.visit.addressLabel}</div>
+                    <p className="mt-2 leading-snug">
+                      {business.address.street}
+                      <br />
+                      <span className="text-mute">
+                        {business.address.city}, {business.address.sector}
+                      </span>
+                    </p>
                   </div>
-                </div>
-
-                {saved > 0 && (
-                  <p className="mt-6 text-[0.85rem] text-mute">
-                    <s className="num">{price(service.partsTotal ?? 0, locale)}</s>{" "}
-                    {c.svc.savings(saved)}
-                  </p>
-                )}
-
-                <div className="mt-8 border-t border-rule pt-5">
-                  <div className="mini">{c.visit.addressLabel}</div>
-                  <p className="mt-2 leading-snug">
-                    {business.address.street}
-                    <br />
-                    <span className="text-mute">
-                      {business.address.city}, {business.address.sector}
-                    </span>
-                  </p>
-                </div>
-              </aside>
+                </aside>
+              </div>
             </div>
           </div>
 
@@ -145,8 +154,11 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
 
             <div className="mt-8 grid gap-x-16 lg:grid-cols-2">
               {others.map((s) => (
-                <a key={s.id} href={servicePath(s, locale)} className="row">
-                  <span className="font-semibold">{nameFor(s, locale)}</span>
+                <a key={s.id} href={servicePath(s, locale)} className="row service-row">
+                  <span className="flex items-center gap-3 md:gap-5">
+                    <ServicePhoto id={s.id} locale={locale} sizes="(min-width: 768px) 80px, 64px" className="service-thumb" />
+                    <span className="font-semibold">{nameFor(s, locale)}</span>
+                  </span>
                   <span className="row-price">{price(s.price, locale)}</span>
                 </a>
               ))}

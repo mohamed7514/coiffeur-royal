@@ -16,7 +16,7 @@ export function Hero({ locale }: { locale: Locale }) {
   return (
     <section className="relative flex h-[100svh] min-h-[34rem] flex-col items-center justify-end overflow-hidden bg-[#111] px-4 pb-14 pt-8 text-center text-paper md:px-8">
       <Image
-        src="/salon.jpg"
+        src="/salon-hd.webp"
         alt={c.hero.photoAlt}
         fill
         priority

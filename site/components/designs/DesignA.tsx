@@ -89,7 +89,7 @@ export function DesignA() {
         <figure className={s.plate}>
           <div className={s.plateFrame}>
             <Image
-              src="/salon.jpg"
+              src="/salon-hd.webp"
               alt="La salle du Barbier RoyalMK, mur de brique et trois fauteuils."
               fill
               priority

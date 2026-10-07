@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { business } from "@/lib/business";
-import { gallery } from "@/lib/gallery";
+import salon from "@/public/salon-hd.webp";
 import { content, type Locale } from "@/lib/content";
 
 /**
  * Le salon en une phrase, une photo et la note Google.
  *
  * La photo ne tient qu'un tiers de la largeur : à cette taille, les
- * fichiers de 510 px sont nets, là où un plein écran les étirerait.
+ * détails du lieu restent lisibles sans étirer la photo en plein écran.
  * Les ancres sous le texte remplacent un menu que la page n'a pas.
  */
 export function Story({ locale }: { locale: Locale }) {
@@ -17,20 +17,18 @@ export function Story({ locale }: { locale: Locale }) {
     locale === "fr"
       ? business.rating.score.toFixed(1).replace(".", ",")
       : business.rating.score.toFixed(1);
-  const shot = gallery[2];
 
   return (
     <section className="section shell flex flex-col gap-8 lg:h-[66vh] lg:min-h-[32rem] lg:flex-row">
       <div className="relative h-[50vh] w-full overflow-hidden lg:h-full lg:w-1/3">
-        {shot && (
           <Image
-            src={shot.src}
-            alt={locale === "fr" ? shot.alt : shot.altEn}
+            src={salon}
+            alt={c.hero.photoAlt}
             fill
+            quality={90}
             sizes="(max-width: 64rem) 100vw, 33vw"
             className="object-cover"
           />
-        )}
       </div>
 
       <div className="flex flex-col justify-between gap-10 lg:w-[65%]">
