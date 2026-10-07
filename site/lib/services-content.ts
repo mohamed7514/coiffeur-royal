@@ -59,7 +59,7 @@ export const serviceCopy: Record<ServiceId, Pair> = {
   enfant: {
     fr: {
       tagline: "Même travail, au rythme de l’enfant",
-      lead: "La même coupe que pour un adulte, menée au rythme de l'enfant. Le barbier prend le temps qu'il faut, explique ce qu'il fait, et s'arrête si ça devient trop. Trente minutes réservées, même si la coupe en prend quinze.",
+      lead: "La même coupe que pour un adulte, menée au rythme de l'enfant. Le barbier prend le temps qu'il faut, explique ce qu'il fait, et s'arrête si ça devient trop. Trente minutes pour prendre le temps, même si la coupe en prend quinze.",
       includes: [
         "Coupe adaptée à l'âge et à la texture des cheveux",
         "Finition des contours et de la nuque",
@@ -96,7 +96,7 @@ export const serviceCopy: Record<ServiceId, Pair> = {
     },
     en: {
       tagline: "Both in one visit, $8 less",
-      lead: "Haircut and beard in the same sitting, worked as one. That is the difference between a decent cut and a head that holds together: the beard line is decided against the cut, not on its own. Booked separately, the two come to $44.",
+      lead: "Haircut and beard in the same sitting, worked as one. That is the difference between a decent cut and a head that holds together: the beard line is decided against the cut, not on its own. Taken separately, the two come to $44.",
       includes: [
         "Full haircut, lines and neckline finished",
         "Beard shaped and evened out",
@@ -142,7 +142,7 @@ export const serviceCopy: Record<ServiceId, Pair> = {
       includes: [
         "Rasage complet du visage au rasoir",
         "Travail des contours",
-        "Trente minutes réservées",
+        "Trente minutes pour prendre le temps",
       ],
       forWho:
         "Pour un visage net, ou avant une occasion. Si vous n'avez jamais essayé le rasoir en salon, dites-le au barbier en arrivant.",
@@ -169,7 +169,7 @@ export const serviceCopy: Record<ServiceId, Pair> = {
       lead: "Waxing of the facial areas, alongside a haircut or on its own. Ten dollars, and it handles what no trimmer reaches cleanly.",
       includes: ["Facial areas of your choice", "Can be added to a haircut or a beard trim"],
       forWho:
-        "Usually added to a haircut rather than booked on its own. Mention it when you arrive and your barber will work it in.",
+        "Usually added to a haircut rather than taken on its own. Mention it when you arrive and your barber will work it in.",
     },
   },
 
@@ -192,7 +192,7 @@ export const serviceCopy: Record<ServiceId, Pair> = {
   vip: {
     fr: {
       tagline: "Coupe, barbe, shampooing et soins en une heure",
-      lead: "Tout en une visite : la coupe, la barbe, le shampooing et les soins complets. Une heure réservée, sans se presser. Pris séparément, l'ensemble revient à 65 $.",
+      lead: "Tout en une visite : la coupe, la barbe, le shampooing et les soins complets. Une heure de soins, sans se presser. Pris séparément, l'ensemble revient à 65 $.",
       includes: [
         "Coupe complète, contours et nuque finis",
         "Barbe mise en forme, lignes retracées",
@@ -204,7 +204,7 @@ export const serviceCopy: Record<ServiceId, Pair> = {
     },
     en: {
       tagline: "Haircut, beard, shampoo and care in an hour",
-      lead: "Everything in one visit: the haircut, the beard, the shampoo and full care. A full hour set aside, nothing rushed. Booked separately, the same adds up to $65.",
+      lead: "Everything in one visit: the haircut, the beard, the shampoo and full care. A full hour set aside, nothing rushed. Taken separately, the same adds up to $65.",
       includes: [
         "Full haircut, lines and neckline finished",
         "Beard shaped, lines redrawn",

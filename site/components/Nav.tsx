@@ -44,7 +44,7 @@ export function Nav({ locale, overHero = false }: { locale: Locale; overHero?: b
   return (
     <header
       // Marque centrée seulement là où les liens existent : plus bas,
-      // la grille à trois colonnes pousse « Réserver » hors de l'écran.
+      // la grille à trois colonnes pousse « Appeler » hors de l'écran.
       className={`fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-3 px-4 py-[1.1rem] transition-colors duration-300 md:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4 ${
         solid
           ? "border-b border-rule bg-paper text-ink"
@@ -76,12 +76,10 @@ export function Nav({ locale, overHero = false }: { locale: Locale; overHero?: b
       <div className="flex items-center justify-end gap-3 md:gap-4 lg:col-start-3">
         <LangToggle locale={locale} />
         <a
-          href={business.booking}
-          target="_blank"
-          rel="noopener"
+          href={`tel:${business.phone}`}
           className="text-[0.82rem] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-65"
         >
-          {c.nav.book}
+          {c.nav.call}
         </a>
       </div>
     </header>

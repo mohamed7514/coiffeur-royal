@@ -66,11 +66,8 @@ export function Shout({ locale }: { locale: Locale }) {
     <section className="section shell flex flex-col items-center gap-7 text-center">
       <span className="mini">{c.shout.label}</span>
       <h2 className="display h2">{c.shout.title}</h2>
-      <a href={business.booking} target="_blank" rel="noopener" className="btn">
-        {c.nav.book}
-      </a>
-      <a href={`tel:${business.phone}`} className="underlined num">
-        {business.phoneDisplay}
+      <a href={`tel:${business.phone}`} className="btn">
+        {c.nav.call}
       </a>
     </section>
   );
@@ -105,12 +102,10 @@ export function Footer({ locale }: { locale: Locale }) {
             Google
           </a>
           <a
-            href={business.booking}
-            target="_blank"
-            rel="noopener"
+            href={`tel:${business.phone}`}
             className="transition-colors hover:text-ink"
           >
-            {c.footer.bookNote}
+            {c.nav.call}
           </a>
           <a
             href={locale === "fr" ? "/services" : "/en/services"}
@@ -125,7 +120,7 @@ export function Footer({ locale }: { locale: Locale }) {
         <span>
           © {new Date().getFullYear()} {business.name}. {c.footer.rights}
         </span>
-        <span>{c.footer.bookNote}</span>
+        <span>{c.footer.walkInNote}</span>
       </div>
     </footer>
   );
@@ -133,17 +128,13 @@ export function Footer({ locale }: { locale: Locale }) {
 
 export function ActionBar({ locale }: { locale: Locale }) {
   const c = content[locale];
+  const directions = `https://www.google.com/maps/dir/?api=1&destination=${business.geo.lat},${business.geo.lng}`;
 
   return (
     <div className="actionbar">
       <a href={`tel:${business.phone}`}>{c.nav.call}</a>
-      <a
-        href={business.booking}
-        target="_blank"
-        rel="noopener"
-        className="!bg-paper !text-ink"
-      >
-        {c.nav.book}
+      <a href={directions} target="_blank" rel="noopener" className="!bg-paper !text-ink">
+        {c.visit.directions}
       </a>
     </div>
   );

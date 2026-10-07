@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Barbier à Gatineau, ouvert 7 jours sur 7 | Barbier RoyalMK",
   description:
-    "Barbier pour hommes et enfants au 331 boul. Saint-Joseph, secteur Hull. Coupe 25 $, sans rendez-vous, ouvert tous les jours. Réservation en ligne.",
+    "Barbier pour hommes et enfants au 331 boul. Saint-Joseph, secteur Hull. Coupe 25 $, sans rendez-vous, ouvert tous les jours.",
   alternates: {
     canonical: "/",
     languages: { "fr-CA": "/", "en-CA": "/en" },

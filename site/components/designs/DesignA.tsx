@@ -74,8 +74,8 @@ export function DesignA() {
         </p>
 
         <div className={s.actions}>
-          <a href={business.booking} target="_blank" rel="noopener" className={`${s.btn} ${s.btnRed}`}>
-            Réserver en ligne
+          <a href={`tel:${business.phone}`} className={`${s.btn} ${s.btnRed}`}>
+            Appeler le salon
           </a>
           <a href={`tel:${business.phone}`} className={`${s.btn} ${s.btnLine}`}>
             {business.phoneDisplay}
@@ -132,12 +132,10 @@ export function DesignA() {
           </ul>
           <div className={s.actions}>
             <a
-              href={business.booking}
-              target="_blank"
-              rel="noopener"
+              href={`tel:${business.phone}`}
               className={`${s.btn} ${s.btnRed}`}
             >
-              Réserver le forfait
+              Appeler le salon
             </a>
           </div>
         </div>
@@ -204,7 +202,7 @@ export function DesignA() {
       </section>
 
       <footer className={`${s.shell} ${s.foot}`}>
-        © 2026 {business.name}. Réservations gérées par Squire.
+        © 2026 {business.name}. Sans rendez-vous, sept jours sur sept.
       </footer>
 
       <a href={`tel:${business.phone}`} className={s.float}>
@@ -218,8 +216,8 @@ export function DesignA() {
 
       <div className={s.bar}>
         <a href={`tel:${business.phone}`}>Appeler</a>
-        <a href={business.booking} target="_blank" rel="noopener" className={s.barBook}>
-          Réserver
+        <a href={business.maps} target="_blank" rel="noopener" className={s.barBook}>
+          Itinéraire
         </a>
       </div>
     </div>

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Barber in Gatineau, open 7 days a week | Barbier RoyalMK",
   description:
-    "Men’s and kids’ barber at 331 boul. Saint-Joseph, Hull. $25 haircuts, walk-ins welcome, open every day. Book online.",
+    "Men’s and kids’ barber at 331 boul. Saint-Joseph, Hull. $25 haircuts, walk-ins welcome, open every day.",
   alternates: {
     canonical: "/en",
     languages: { "en-CA": "/en", "fr-CA": "/" },

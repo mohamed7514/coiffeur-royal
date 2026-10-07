@@ -26,7 +26,7 @@ node scripts/shot.mjs http://localhost:3000 ./.shots
 
 | Fichier | Rôle |
 |---|---|
-| `lib/business.ts` | **Source unique** : adresse, téléphone, heures, services, prix, adresses de page, lien Squire, fiche Google |
+| `lib/business.ts` | **Source unique** : adresse, téléphone, heures, services, prix, adresses de page, fiche Google |
 | `lib/content.ts` | Tous les textes d'interface, français et anglais |
 | `lib/services-content.ts` | Textes longs des pages de service, français et anglais |
 | `lib/hours.ts` | Calcul « ouvert / fermé » à l'heure de Gatineau |
@@ -76,19 +76,16 @@ parle de ce que la personne a cherché. Voir la section 3 de
 
 Un changement de prix, d'heure ou de téléphone se fait **uniquement** dans
 `lib/business.ts`. Le nom, l'adresse et le téléphone doivent rester identiques
-au caractère près entre le site, la fiche Google et Squire.
+au caractère près entre le site et la fiche Google.
 
 ---
 
 ## Décisions inscrites dans le code
 
-**Tous les boutons mènent à la page du salon dans Squire**, jamais à celle d'un
-barbier : un lien vers un seul barbier meurt dès qu'il est complet ou absent.
-
-**Les noms de services sont ceux de Squire, mot pour mot.** Squire ne permet pas
-de présélectionner un service par l'URL, donc le visiteur doit retrouver ce nom
-exact dans la liste après son clic. Au survol d'une ligne de tarif, la durée
-cède la place à « Réserver » pour qu'il garde le mot en tête.
+**Réservation en ligne retirée temporairement.** Les actions principales
+permettent d’appeler le salon ; la barre mobile propose Appeler et Itinéraire.
+Les versions FR/EN présentent l’accueil sans rendez-vous, sept jours sur sept.
+Les données structurées ne contiennent plus de ReserveAction.
 
 **La note 4,9 s'affiche mais n'est pas balisée en `aggregateRating`.** Google
 interdit de marquer ses propres avis sur son propre site. Les étoiles des
@@ -175,11 +172,8 @@ Après la première mise en ligne :
       traduction sont stockés séparément, et l'affichage annonce la traduction.
 - [ ] **Photo de hero d'au moins 2000 px de large** — `public/salon.jpg` fait
       618 × 800 px pour un plein écran. Dernière étape avant la mise en ligne.
-- [ ] **Prix du Forfait VIP dans Squire** — 55 $ s'affiche sur le site ; vérifier
-      qu'il s'affiche aussi sur la page de réservation.
 - [ ] **Relecture de l'anglais** par une personne bilingue.
-- [ ] **Suivi des conversions** — GA4, événements `clic_reservation`,
-      `clic_telephone`, `clic_itineraire`, `clic_service`, puis import dans
+- [ ] **Suivi des conversions** — GA4, événements `clic_telephone`, `clic_itineraire`, `clic_service`, puis import dans
       Google Ads. Voir la section 9 du plan.
 - [ ] **Bandeau de consentement** — la Loi 25 s'applique au Québec.
 - [ ] **Domaine** `barbierroyalmk.ca` et redirections depuis l'ancien site.

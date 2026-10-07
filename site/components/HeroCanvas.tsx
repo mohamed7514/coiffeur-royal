@@ -6,6 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { business } from "@/lib/business";
 import { content, type AnyCopy, type Locale } from "@/lib/content";
 import styles from "./HeroCanvas.module.css";
+import callEffects from "./CallEffects.module.css";
+import { PhoneIcon } from "./PhoneIcon";
 
 /**
  * Hero en séquence d'images, pilotée au défilement.
@@ -581,9 +583,9 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
               </div>
             ))}
           </div>
-          <a href={business.booking} target="_blank" rel="noopener" className={`group ${styles.book}`}>
-            {c.hero.chair}
-            <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+          <a href={"tel:" + business.phone} className={styles.book + " " + callEffects.call + " " + callEffects.halo + " " + callEffects.ring}>
+            <span className={callEffects.callLabel}><PhoneIcon />{c.hero.call}</span>
+            <span aria-hidden className={callEffects.arrow}>{"\u2192"}</span>
           </a>
         </div>
       </div>

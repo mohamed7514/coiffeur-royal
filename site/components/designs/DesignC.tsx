@@ -79,8 +79,8 @@ export function DesignC() {
               Saint-Joseph.
             </p>
             <div className={s.actions}>
-              <a href={business.booking} target="_blank" rel="noopener" className={s.btn}>
-                Réserver en ligne
+              <a href={`tel:${business.phone}`} className={s.btn}>
+                Appeler le salon
               </a>
               <a href={`tel:${business.phone}`} className={`${s.btn} ${s.btnLine} ${s.mono}`}>
                 {business.phoneDisplay}
@@ -161,8 +161,8 @@ export function DesignC() {
               au lieu de {price(vip.partsTotal ?? 0, "fr")} à la pièce — une heure réservée
             </p>
             <div className={s.actions}>
-              <a href={business.booking} target="_blank" rel="noopener" className={s.btn}>
-                Réserver le forfait
+              <a href={`tel:${business.phone}`} className={s.btn}>
+                Appeler le salon
               </a>
             </div>
           </div>
@@ -202,8 +202,8 @@ export function DesignC() {
               <a href={directions} target="_blank" rel="noopener" className={`${s.btn} ${s.btnLine}`}>
                 Itinéraire
               </a>
-              <a href={business.booking} target="_blank" rel="noopener" className={s.btn}>
-                Réserver
+              <a href={`tel:${business.phone}`} className={s.btn}>
+                Appeler
               </a>
             </div>
             <div style={{ marginTop: "2rem" }}>
@@ -235,7 +235,7 @@ export function DesignC() {
       </section>
 
       <footer className={`${s.shell} ${s.foot}`}>
-        © 2026 {business.name} · Réservations gérées par Squire
+        © 2026 {business.name} · Sans rendez-vous, sept jours sur sept
       </footer>
 
       <a href={`tel:${business.phone}`} className={s.float}>
@@ -254,8 +254,8 @@ export function DesignC() {
 
       <div className={s.bar}>
         <a href={`tel:${business.phone}`}>Appeler</a>
-        <a href={business.booking} target="_blank" rel="noopener" className={s.barBook}>
-          Réserver
+        <a href={business.maps} target="_blank" rel="noopener" className={s.barBook}>
+          Itinéraire
         </a>
       </div>
     </div>

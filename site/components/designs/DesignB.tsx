@@ -41,8 +41,8 @@ export function DesignB() {
               </a>
               <a href="#">EN</a>
             </span>
-            <a href={business.booking} target="_blank" rel="noopener" className={s.cta}>
-              Réserver
+            <a href={`tel:${business.phone}`} className={s.cta}>
+              Appeler
             </a>
           </div>
         </header>
@@ -73,8 +73,8 @@ export function DesignB() {
               Ouvert sept jours sur sept, sans rendez-vous. Boulevard Saint-Joseph, secteur Hull.
             </p>
             <div className={s.actions}>
-              <a href={business.booking} target="_blank" rel="noopener" className={s.cta}>
-                Réserver en ligne
+              <a href={`tel:${business.phone}`} className={s.cta}>
+                Appeler le salon
               </a>
               <a href={`tel:${business.phone}`} className={`${s.cta} ${s.ctaLine} ${s.mono}`}>
                 {business.phoneDisplay}
@@ -139,12 +139,10 @@ export function DesignB() {
                 au lieu de {price(vip.partsTotal ?? 0, "fr")} à la pièce
               </p>
               <a
-                href={business.booking}
-                target="_blank"
-                rel="noopener"
+                href={`tel:${business.phone}`}
                 className={`${s.cta} ${s.ctaBlack}`}
               >
-                Réserver le forfait
+                Appeler le salon
               </a>
             </div>
           </div>
@@ -183,8 +181,8 @@ export function DesignB() {
               <a href={directions} target="_blank" rel="noopener" className={`${s.cta} ${s.ctaLine}`}>
                 Itinéraire
               </a>
-              <a href={business.booking} target="_blank" rel="noopener" className={s.cta}>
-                Réserver
+              <a href={`tel:${business.phone}`} className={s.cta}>
+                Appeler
               </a>
             </div>
             <div style={{ marginTop: "2rem" }}>
@@ -216,7 +214,7 @@ export function DesignB() {
 
       <div className={s.shell}>
         <footer className={s.foot}>
-          © 2026 {business.name} — Réservations gérées par Squire
+          © 2026 {business.name} — Sans rendez-vous, sept jours sur sept
         </footer>
       </div>
 
@@ -231,8 +229,8 @@ export function DesignB() {
 
       <div className={s.bar}>
         <a href={`tel:${business.phone}`}>Appeler</a>
-        <a href={business.booking} target="_blank" rel="noopener" className={s.barBook}>
-          Réserver
+        <a href={business.maps} target="_blank" rel="noopener" className={s.barBook}>
+          Itinéraire
         </a>
       </div>
     </div>

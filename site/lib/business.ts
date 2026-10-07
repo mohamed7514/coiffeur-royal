@@ -5,7 +5,7 @@
  *
  * Toute modification se fait ICI, jamais dans un composant : le nom,
  * l'adresse et le téléphone doivent rester identiques au caractère près
- * entre le site, la fiche Google et Squire (signal local).
+ * entre le site et la fiche Google (signal local).
  */
 
 export const business = {
@@ -24,10 +24,6 @@ export const business = {
   },
 
   geo: { lat: 45.4412233, lng: -75.7332243 },
-
-  /** Page du salon, jamais celle d'un barbier : un lien vers un seul
-   *  barbier meurt dès qu'il est complet ou absent. */
-  booking: "https://getsquire.com/booking/book/royalmk-gatineau",
 
   /** Lien court et stable de la fiche Google (CID), pas l'URL Maps longue. */
   maps: "https://maps.google.com/?cid=9676733797717479798",
@@ -73,11 +69,7 @@ export type Service = {
   includesEn?: string[];
 };
 
-/**
- * Noms repris mot pour mot de Squire. Ne pas « améliorer » :
- * Squire ne permet pas de présélectionner un service par l'URL, donc le
- * visiteur doit retrouver ces mots exacts dans la liste après son clic.
- */
+/** Noms, prix et durées du catalogue du salon. */
 export const services: Service[] = [
   {
     id: "coupe",

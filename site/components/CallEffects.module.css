@@ -1,0 +1,27 @@
+.call { position: relative; isolation: isolate; min-height: 3.5rem; }
+.callLabel { display: inline-flex; align-items: center; gap: .7rem; position: relative; z-index: 1; }
+.phone { width: 1.05rem; height: 1.05rem; flex: none; transform-origin: 50% 50%; }
+.arrow { position: relative; z-index: 1; transition: transform 250ms; }
+.call:hover .arrow { transform: translateX(.2rem); }
+.halo::before { content: ''; position: absolute; inset: -1px; border: 1px solid rgb(255 255 255 / .35); pointer-events: none; animation: breathe 4.8s ease-in-out infinite; }
+.sweep { overflow: hidden; }
+.sweep::before { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 20%, rgb(255 255 255 / .04) 35%, rgb(255 255 255 / .28) 50%, rgb(255 255 255 / .04) 65%, transparent 80%); transform: translateX(-140%); pointer-events: none; animation: shine 6s ease-in-out infinite; }
+.ring .phone { animation: ring 1.65s ease-in-out .3s 1; }
+[data-paused='true'] .call::before, [data-paused='true'] .phone { animation-play-state: paused; }
+@keyframes breathe {
+  0%, 60%, 100% { opacity: 0; transform: scale(1); box-shadow: 0 0 0 0 rgb(255 255 255 / 0); }
+  25% { opacity: .65; transform: scale(1.045, 1.13); box-shadow: 0 0 18px 1px rgb(255 255 255 / .12); }
+}
+@keyframes shine {
+  0%, 7% { transform: translateX(-140%); }
+  30%, 100% { transform: translateX(140%); }
+}
+@keyframes ring {
+  0%, 40%, 55%, 95%, 100% { transform: rotate(0); }
+  8%, 24%, 63%, 79% { transform: rotate(-14deg); }
+  16%, 32%, 71%, 87% { transform: rotate(14deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .call::before { animation: none !important; opacity: 0; }
+  .phone { animation: none !important; }
+}

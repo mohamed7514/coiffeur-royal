@@ -40,8 +40,8 @@ export function ServicesIndex({ locale }: { locale: Locale }) {
             <p className="mt-8 max-w-[44ch] text-[1.05rem] text-mute">{c.svc.allLead}</p>
 
             <div className="mt-8">
-              <a href={business.booking} target="_blank" rel="noopener" className="btn">
-                {c.nav.book}
+              <a href={`tel:${business.phone}`} className="btn">
+                {c.nav.call}
               </a>
             </div>
 

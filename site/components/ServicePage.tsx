@@ -67,15 +67,15 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
                 <p className="mt-8 max-w-[44ch] text-[1.05rem] text-mute">{copy.lead}</p>
 
                 <div className="mt-8 flex flex-wrap items-center gap-5">
-                  <a href={business.booking} target="_blank" rel="noopener" className="btn">
-                    {c.svc.book}
+                  <a href={`tel:${business.phone}`} className="btn">
+                    {c.hero.call}
                   </a>
-                  <a href={`tel:${business.phone}`} className="underlined num">
-                    {business.phoneDisplay}
+                  <a href="#visiter" className="underlined">
+                    {c.visit.title}
                   </a>
                 </div>
 
-                <p className="mt-5 max-w-[46ch] text-[0.85rem] text-mute">{c.svc.bookNote}</p>
+                <p className="mt-5 max-w-[46ch] text-[0.85rem] text-mute">{c.svc.walkInNote}</p>
               </div>
 
               {/* Prix et durée tenus ensemble : les deux questions qu'on se

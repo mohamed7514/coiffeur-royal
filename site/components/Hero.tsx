@@ -56,13 +56,11 @@ export function Hero({ locale }: { locale: Locale }) {
         </h1>
 
         <a
-          href={business.booking}
-          target="_blank"
-          rel="noopener"
+          href={`tel:${business.phone}`}
           className="btn btn-light rise"
           style={{ ["--d" as string]: "320ms" }}
         >
-          {c.nav.book}
+          {c.nav.call}
         </a>
       </div>
     </section>

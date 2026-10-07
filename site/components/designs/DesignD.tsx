@@ -79,8 +79,8 @@ export function DesignD() {
             </a>
             <a href="#">EN</a>
           </span>
-          <a href={business.booking} target="_blank" rel="noopener" className={s.headBook}>
-            Réserver
+          <a href={`tel:${business.phone}`} className={s.headBook}>
+            Appeler
           </a>
         </div>
       </header>
@@ -121,13 +121,11 @@ export function DesignD() {
           </h1>
 
           <a
-            href={business.booking}
-            target="_blank"
-            rel="noopener"
+            href={`tel:${business.phone}`}
             className={`${s.btn} ${s.btnLight} ${s.rise}`}
             style={{ ["--d" as string]: "320ms" }}
           >
-            Réserver
+            Appeler
           </a>
         </div>
       </section>
@@ -164,8 +162,7 @@ export function DesignD() {
             <p className={s.storyText}>
               Barbier RoyalMK est ouvert sept jours sur sept sur le boulevard Saint-Joseph,
               dans le secteur Hull. Coupe, barbe, rasage à l’ancienne : on prend les clients
-              sans rendez-vous, et la réservation en ligne reste possible pour choisir son
-              créneau.
+              sans rendez-vous, sept jours sur sept.
             </p>
 
             <div className={s.storyFoot}>
@@ -237,8 +234,8 @@ export function DesignD() {
               </div>
 
               <div className={s.btnWrap}>
-                <a href={business.booking} target="_blank" rel="noopener" className={s.btn}>
-                  Réserver le forfait
+                <a href={`tel:${business.phone}`} className={s.btn}>
+                  Appeler le salon
                 </a>
               </div>
             </div>
@@ -358,8 +355,8 @@ export function DesignD() {
         <section className={`${s.section} ${s.shout}`}>
           <span className={s.mini}>Une coupe fraîche</span>
           <h2 className={`${s.wide} ${s.h2}`}>Passez nous voir.</h2>
-          <a href={business.booking} target="_blank" rel="noopener" className={s.btn}>
-            Réserver
+          <a href={`tel:${business.phone}`} className={s.btn}>
+            Appeler
           </a>
           <a href={`tel:${business.phone}`} className={s.tel}>
             {business.phoneDisplay}
@@ -395,8 +392,8 @@ export function DesignD() {
               </a>
             </p>
             <p>
-              <a href={business.booking} target="_blank" rel="noopener">
-                Réserver sur Squire
+              <a href={`tel:${business.phone}`}>
+                Appeler le salon
               </a>
             </p>
           </div>
@@ -406,7 +403,7 @@ export function DesignD() {
           <span>
             © {new Date().getFullYear()} {business.name}
           </span>
-          <span>Réservations gérées par Squire</span>
+          <span>Sans rendez-vous, sept jours sur sept</span>
         </div>
       </footer>
 
@@ -434,8 +431,8 @@ export function DesignD() {
 
       <div className={s.bar}>
         <a href={`tel:${business.phone}`}>Appeler</a>
-        <a href={business.booking} target="_blank" rel="noopener" className={s.barBook}>
-          Réserver
+        <a href={business.maps} target="_blank" rel="noopener" className={s.barBook}>
+          Itinéraire
         </a>
       </div>
     </div>

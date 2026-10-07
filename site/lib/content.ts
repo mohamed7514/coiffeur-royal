@@ -14,7 +14,6 @@ export const content = {
       services: "Services",
       gallery: "Travaux",
       visit: "Nous trouver",
-      book: "Réserver",
       call: "Appeler",
     },
 
@@ -22,7 +21,6 @@ export const content = {
       h1a: "Barbier à Gatineau,",
       h1b: "sept jours sur sept",
       lead: "Ouvert sept jours sur sept, sans rendez-vous. Coupe à 25 $, sur le boulevard Saint-Joseph.",
-      book: "Réserver en ligne",
       call: "Appeler le salon",
       photoAlt:
         "La salle du Barbier RoyalMK : mur de brique rouge, trois fauteuils de barbier et miroirs encadrés de noir.",
@@ -30,7 +28,6 @@ export const content = {
       /* Hero en séquence d'images. Le premier texte est le h1 de la page
          et porte le mot-clé local ; le second est la récompense du
          défilement, quand la nuque apparaît. */
-      chair: "Réserver un fauteuil",
       scroll: "Défilez",
       next: "Les services ↓",
       lead1: "Sans rendez-vous, sur le boulevard Saint-Joseph, dans le secteur Hull.",
@@ -47,7 +44,7 @@ export const content = {
     story: {
       label: "Le salon",
       title: "Sans rendez-vous. Coupe à 25 $.",
-      body: "Barbier RoyalMK est ouvert sept jours sur sept sur le boulevard Saint-Joseph, dans le secteur Hull. Coupe, barbe, rasage à l’ancienne : on prend les clients sans rendez-vous, et la réservation en ligne reste possible pour choisir son créneau.",
+      body: "Barbier RoyalMK est ouvert sept jours sur sept sur le boulevard Saint-Joseph, dans le secteur Hull. Coupe, barbe, rasage à l’ancienne : on prend les clients sans rendez-vous, sept jours sur sept.",
     },
 
     shout: {
@@ -81,9 +78,8 @@ export const content = {
       forWho: "Bon à savoir",
       price: "Prix",
       duration: "Durée",
-      book: "Réserver ce service",
-      bookNote:
-        "La réservation se fait sur Squire. Choisissez-y le même nom de service pour retrouver le bon créneau.",
+      walkInNote:
+        "Passez au salon sans rendez-vous, sept jours sur sept.",
       others: "Les autres services",
       backAll: "Voir tous les services",
       savings: (n: number) => `Économie de ${n} $ sur les mêmes services pris à la pièce.`,
@@ -96,7 +92,6 @@ export const content = {
       body: "Coupe, barbe, shampooing et soins complets en une seule visite.",
       savings: (saved: number) => `Soit ${saved} $ de moins qu'à la pièce.`,
       insteadOf: (n: number) => `au lieu de ${n} $ à la pièce`,
-      book: "Réserver le forfait",
     },
 
     gallery: {
@@ -142,7 +137,7 @@ export const content = {
 
     footer: {
       rights: "Tous droits réservés.",
-      bookNote: "Réservations gérées par Squire.",
+      walkInNote: "Sans rendez-vous, sept jours sur sept.",
     },
   },
 
@@ -153,7 +148,6 @@ export const content = {
       services: "Prices",
       gallery: "Our work",
       visit: "Find us",
-      book: "Book",
       call: "Call",
     },
 
@@ -161,12 +155,9 @@ export const content = {
       h1a: "Barber in Gatineau,",
       h1b: "seven days a week",
       lead: "Open seven days a week, walk-ins welcome. Haircuts $25, on Boulevard Saint-Joseph.",
-      book: "Book online",
       call: "Call the shop",
       photoAlt:
         "Inside Barbier RoyalMK: red brick wall, three barber chairs and black-framed mirrors.",
-
-      chair: "Book a chair",
       scroll: "Scroll",
       next: "Services ↓",
       lead1: "Walk-ins welcome, on Boulevard Saint-Joseph, in Hull.",
@@ -179,7 +170,7 @@ export const content = {
     story: {
       label: "The shop",
       title: "Walk in. Haircuts $25.",
-      body: "Barbier RoyalMK is open seven days a week on Boulevard Saint-Joseph, in Hull. Haircuts, beards, traditional shaves: walk-ins are taken as they come, and online booking is there if you’d rather pick your slot.",
+      body: "Barbier RoyalMK is open seven days a week on Boulevard Saint-Joseph, in Hull. Haircuts, beards, traditional shaves: walk-ins are welcome seven days a week.",
     },
 
     shout: {
@@ -213,12 +204,11 @@ export const content = {
       forWho: "Worth knowing",
       price: "Price",
       duration: "Length",
-      book: "Book this service",
-      bookNote:
-        "Booking runs on Squire. Pick the same service name there to land on the right slot.",
+      walkInNote:
+        "Walk in, seven days a week.",
       others: "Other services",
       backAll: "See every service",
-      savings: (n: number) => `Saves $${n} against booking the same services separately.`,
+      savings: (n: number) => `Saves $${n} against taking the same services separately.`,
     },
 
     vip: {
@@ -226,9 +216,8 @@ export const content = {
       title: "Everything, in an hour",
       included: "included",
       body: "Haircut, beard, shampoo and full care in a single visit.",
-      savings: (saved: number) => `That’s $${saved} less than booking separately.`,
-      insteadOf: (n: number) => `instead of $${n} booked separately`,
-      book: "Book the package",
+      savings: (saved: number) => `That’s $${saved} less than taking them separately.`,
+      insteadOf: (n: number) => `instead of $${n} taken separately`,
     },
 
     gallery: {
@@ -270,7 +259,7 @@ export const content = {
 
     footer: {
       rights: "All rights reserved.",
-      bookNote: "Booking handled by Squire.",
+      walkInNote: "Walk-ins welcome, seven days a week.",
     },
   },
 } as const;

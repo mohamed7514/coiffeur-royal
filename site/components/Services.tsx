@@ -120,8 +120,8 @@ export function Services({ locale }: { locale: Locale }) {
               <div className="display num home-vip-price">{price(vip.price, locale)}</div>
               <p className="home-vip-savings">{c.vip.insteadOf(vip.partsTotal ?? 0)}</p>
             </div>
-            <a href={business.booking} target="_blank" rel="noopener" className="btn btn-light">
-              {c.vip.book}
+            <a href={`tel:${business.phone}`} className="btn btn-light">
+              {c.hero.call}
             </a>
           </div>
           <a href={servicePath(vip, locale)} className="home-vip-detail">

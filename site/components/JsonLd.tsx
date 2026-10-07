@@ -48,14 +48,6 @@ export function JsonLd({ locale }: { locale: Locale }) {
       closes: hhmm(h.close),
     })),
     sameAs: [business.maps],
-    potentialAction: {
-      "@type": "ReserveAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: business.booking,
-        inLanguage: locale === "fr" ? "fr-CA" : "en-CA",
-      },
-    },
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: locale === "fr" ? "Services" : "Services",
@@ -114,7 +106,7 @@ export function ServiceJsonLd({ service, locale }: { service: Service; locale: L
         price: service.price,
         priceCurrency: "CAD",
         availability: "https://schema.org/InStock",
-        url: business.booking,
+        url,
       },
     },
     {
