@@ -163,7 +163,8 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
       if (center === lastCenter && reduced === lastReduced) return;
       lastCenter = center;
       lastReduced = reduced;
-      wanted = reduced ? [0] : [center, center + 1, center - 1, center + 2,
+      // Keep the initial network budget for the poster; warm the sequence on scroll.
+      wanted = reduced || frame <= 0 ? [0] : [center, center + 1, center - 1, center + 2,
         center - 2, center + 3, center - 3, center + 4, center - 4, center + 5]
         .filter((index) => index >= 0 && index < FRAME_COUNT);
       // Libérer les images éloignées ; les fichiers restent dans le cache HTTP.
@@ -378,6 +379,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
         drawFull(ctx, next, w, h);
         ctx.globalAlpha = 1;
       }
+      canvas.style.opacity = "1";
       return;
     }
 
@@ -391,6 +393,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
       ctx.globalAlpha = 1;
     }
     drawEdges(ctx, img, w, h);
+    canvas.style.opacity = "1";
   }
 
   const barRef = useRef<HTMLDivElement>(null);
@@ -540,7 +543,14 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
           document, sans attendre que le JavaScript s'exécute. */}
       <link rel="preload" href={FRAME_SRC(0)} as="image" fetchPriority="high" />
 
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden />
+      {/* Server-rendered poster stays visible until a frame is actually drawn. */}
+      <div className={styles.poster} aria-hidden="true">
+        <img src={FRAME_SRC(0)} alt="" width={1080} height={1920}
+          fetchPriority="high" loading="eager" className={styles.posterBackdrop} />
+        <img src={FRAME_SRC(0)} alt="" width={1080} height={1920}
+          fetchPriority="high" loading="eager" className={styles.posterImage} />
+      </div>
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" style={{ opacity: 0 }} aria-hidden />
 
       <div aria-hidden className={styles.veil} />
 

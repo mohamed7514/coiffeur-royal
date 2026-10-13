@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { fontsC } from "@/lib/fonts";
+import { fontsC } from "@/lib/design-fonts-c";
 import { DesignC } from "@/components/designs/DesignC";
 import { Switcher } from "@/components/designs/Switcher";
 
