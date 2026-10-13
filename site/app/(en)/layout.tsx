@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { GoogleAdsTag } from "@/components/GoogleAdsTag";
+import { PhoneCallTracking } from "@/components/PhoneCallTracking";
 import { GoogleTagManager, GoogleTagManagerNoScript } from "@/components/GoogleTagManager";
 import "../globals.css";
 import { fontVars } from "@/lib/fonts";
@@ -36,7 +36,7 @@ export default function EnLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-CA" className={fontVars}>
       <head><GoogleTagManager /></head>
-      <body><GoogleTagManagerNoScript /><GoogleAdsTag />{children}</body>
+      <body><GoogleTagManagerNoScript /><PhoneCallTracking />{children}</body>
     </html>
   );
 }
