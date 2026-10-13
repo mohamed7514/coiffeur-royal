@@ -1,7 +1,8 @@
 import { ServicePhoto } from "./ServicePhoto";
-import { business, services, vip, nameFor, servicePath, type Service } from "@/lib/business";
+import { services, vip, nameFor, servicePath, type Service } from "@/lib/business";
 import { serviceCopy } from "@/lib/services-content";
 import { content, price, type Locale } from "@/lib/content";
+import { BookingLink } from "./BookingLink";
 
 const showcaseCopy = {
   fr: {
@@ -120,9 +121,7 @@ export function Services({ locale }: { locale: Locale }) {
               <div className="display num home-vip-price">{price(vip.price, locale)}</div>
               <p className="home-vip-savings">{c.vip.insteadOf(vip.partsTotal ?? 0)}</p>
             </div>
-            <a href={`tel:${business.phone}`} className="btn btn-light">
-              {c.hero.call}
-            </a>
+            <BookingLink locale={locale} placement="vip" className="btn btn-light" />
           </div>
           <a href={servicePath(vip, locale)} className="home-vip-detail">
             {copy.vipDetail} <Arrow diagonal />

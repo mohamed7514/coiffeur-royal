@@ -3,6 +3,7 @@ import { content, type Locale } from "@/lib/content";
 import { Hours } from "./Hours";
 import { Map } from "./Map";
 import { OpenNow } from "./OpenNow";
+import { BookingLink } from "./BookingLink";
 
 /**
  * L'adresse, les heures, puis la carte. La carte n'est pas une iframe
@@ -66,9 +67,11 @@ export function Shout({ locale }: { locale: Locale }) {
     <section className="section shell flex flex-col items-center gap-7 text-center">
       <span className="mini">{c.shout.label}</span>
       <h2 className="display h2">{c.shout.title}</h2>
-      <a href={`tel:${business.phone}`} className="btn">
-        {c.nav.call}
-      </a>
+      <p className="max-w-[40ch] text-mute">{c.booking.note}</p>
+      <div className="flex flex-wrap items-center justify-center gap-5">
+        <BookingLink locale={locale} placement="shout" className="btn" />
+        <a href={`tel:${business.phone}`} className="underlined">{c.nav.call}</a>
+      </div>
     </section>
   );
 }
@@ -98,6 +101,9 @@ export function Footer({ locale }: { locale: Locale }) {
         </div>
 
         <div className="flex flex-col gap-2">
+          <BookingLink locale={locale} placement="footer" className="transition-colors hover:text-ink">
+            {c.nav.book}
+          </BookingLink>
           <a href={business.maps} target="_blank" rel="noopener" className="transition-colors hover:text-ink">
             Google
           </a>
@@ -132,8 +138,11 @@ export function ActionBar({ locale }: { locale: Locale }) {
 
   return (
     <div className="actionbar">
+      <BookingLink locale={locale} placement="mobile-bar" className="!bg-paper !text-ink">
+        {c.nav.book}
+      </BookingLink>
       <a href={`tel:${business.phone}`}>{c.nav.call}</a>
-      <a href={directions} target="_blank" rel="noopener" className="!bg-paper !text-ink">
+      <a href={directions} target="_blank" rel="noopener">
         {c.visit.directions}
       </a>
     </div>

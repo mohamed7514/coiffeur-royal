@@ -15,6 +15,7 @@ import { Visit, Shout, Footer, ActionBar } from "./Visit";
 import { CallBadge } from "./CallBadge";
 import { ServiceJsonLd } from "./JsonLd";
 import { Lines } from "./Lines";
+import { BookingLink } from "./BookingLink";
 
 export function ServicePage({ service, locale }: { service: Service; locale: Locale }) {
   const c = content[locale];
@@ -67,7 +68,8 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
                 <p className="mt-8 max-w-[44ch] text-[1.05rem] text-mute">{copy.lead}</p>
 
                 <div className="mt-8 flex flex-wrap items-center gap-5">
-                  <a href={`tel:${business.phone}`} className="btn">
+                  <BookingLink locale={locale} placement={"service-" + service.id} className="btn" />
+                  <a href={`tel:${business.phone}`} className="underlined">
                     {c.hero.call}
                   </a>
                   <a href="#visiter" className="underlined">

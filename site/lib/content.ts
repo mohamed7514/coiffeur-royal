@@ -15,6 +15,13 @@ export const content = {
       gallery: "Travaux",
       visit: "Nous trouver",
       call: "Appeler",
+      book: "Réserver",
+    },
+
+    booking: {
+      label: "Réserver en ligne",
+      note: "Réservez avec Khadija Ayad ou passez sans rendez-vous.",
+      newTab: "sur Squire, dans un nouvel onglet",
     },
 
     hero: {
@@ -30,7 +37,7 @@ export const content = {
          défilement, quand la nuque apparaît. */
       scroll: "Défilez",
       next: "Les services ↓",
-      lead1: "Sans rendez-vous, sur le boulevard Saint-Joseph, dans le secteur Hull.",
+      lead1: "Réservez en ligne ou passez sans rendez-vous, dans le secteur Hull.",
       craft: "Dégradé chirurgical",
       // Espace fine insécable avant le $ : une espace normale laisserait
       // le signe passer seul à la ligne suivante.
@@ -79,7 +86,7 @@ export const content = {
       price: "Prix",
       duration: "Durée",
       walkInNote:
-        "Passez au salon sans rendez-vous, sept jours sur sept.",
+        "Réservez avec Khadija Ayad ou passez sans rendez-vous, sept jours sur sept.",
       others: "Les autres services",
       backAll: "Voir tous les services",
       savings: (n: number) => `Économie de ${n} $ sur les mêmes services pris à la pièce.`,
@@ -137,7 +144,7 @@ export const content = {
 
     footer: {
       rights: "Tous droits réservés.",
-      walkInNote: "Sans rendez-vous, sept jours sur sept.",
+      walkInNote: "Réservation en ligne et sans rendez-vous, sept jours sur sept.",
     },
   },
 
@@ -149,6 +156,13 @@ export const content = {
       gallery: "Our work",
       visit: "Find us",
       call: "Call",
+      book: "Book",
+    },
+
+    booking: {
+      label: "Book online",
+      note: "Book with Khadija Ayad or walk in.",
+      newTab: "on Squire, in a new tab",
     },
 
     hero: {
@@ -160,7 +174,7 @@ export const content = {
         "Inside Barbier RoyalMK: red brick wall, three barber chairs and black-framed mirrors.",
       scroll: "Scroll",
       next: "Services ↓",
-      lead1: "Walk-ins welcome, on Boulevard Saint-Joseph, in Hull.",
+      lead1: "Book online or walk in, on Boulevard Saint-Joseph, in Hull.",
       craft: "Surgical skin fade",
       craftSub: "Temple to nape, no break in the line. $25, walk in.",
       sequenceAlt:
@@ -205,7 +219,7 @@ export const content = {
       price: "Price",
       duration: "Length",
       walkInNote:
-        "Walk in, seven days a week.",
+        "Book with Khadija Ayad or walk in, seven days a week.",
       others: "Other services",
       backAll: "See every service",
       savings: (n: number) => `Saves $${n} against taking the same services separately.`,
@@ -259,7 +273,7 @@ export const content = {
 
     footer: {
       rights: "All rights reserved.",
-      walkInNote: "Walk-ins welcome, seven days a week.",
+      walkInNote: "Online booking and walk-ins, seven days a week.",
     },
   },
 } as const;

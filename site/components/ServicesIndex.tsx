@@ -7,6 +7,7 @@ import { OpenNow } from "./OpenNow";
 import { Visit, Shout, Footer, ActionBar } from "./Visit";
 import { CallBadge } from "./CallBadge";
 import { Lines } from "./Lines";
+import { BookingLink } from "./BookingLink";
 
 export function ServicesIndex({ locale }: { locale: Locale }) {
   const c = content[locale];
@@ -39,8 +40,9 @@ export function ServicesIndex({ locale }: { locale: Locale }) {
 
             <p className="mt-8 max-w-[44ch] text-[1.05rem] text-mute">{c.svc.allLead}</p>
 
-            <div className="mt-8">
-              <a href={`tel:${business.phone}`} className="btn">
+            <div className="mt-8 flex flex-wrap items-center gap-5">
+              <BookingLink locale={locale} placement="services-index" className="btn" />
+              <a href={`tel:${business.phone}`} className="underlined">
                 {c.nav.call}
               </a>
             </div>

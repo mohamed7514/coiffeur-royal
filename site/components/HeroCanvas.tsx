@@ -8,6 +8,7 @@ import { content, type AnyCopy, type Locale } from "@/lib/content";
 import styles from "./HeroCanvas.module.css";
 import callEffects from "./CallEffects.module.css";
 import { PhoneIcon } from "./PhoneIcon";
+import { BookingLink } from "./BookingLink";
 
 /**
  * Hero en séquence d'images, pilotée au défilement.
@@ -593,10 +594,15 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
               </div>
             ))}
           </div>
-          <a href={"tel:" + business.phone} className={styles.book + " " + callEffects.call + " " + callEffects.halo + " " + callEffects.ring}>
-            <span className={callEffects.callLabel}><PhoneIcon />{c.hero.call}</span>
-            <span aria-hidden className={callEffects.arrow}>{"\u2192"}</span>
-          </a>
+          <div className={styles.actions}>
+            <BookingLink locale={locale} placement="hero" className={styles.book + " " + styles.booking}>
+              {c.booking.label}<span aria-hidden>↗</span>
+            </BookingLink>
+            <a href={"tel:" + business.phone} className={styles.book + " " + callEffects.call + " " + callEffects.halo + " " + callEffects.ring}>
+              <span className={callEffects.callLabel}><PhoneIcon />{c.nav.call}</span>
+              <span aria-hidden className={callEffects.arrow}>{"\u2192"}</span>
+            </a>
+          </div>
         </div>
       </div>
 

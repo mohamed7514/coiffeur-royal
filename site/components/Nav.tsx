@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { business } from "@/lib/business";
 import { content, type Locale } from "@/lib/content";
 import { LangToggle } from "./LangToggle";
+import { BookingLink } from "./BookingLink";
 
 /**
  * Liens à gauche, marque au centre, langue et réservation à droite.
@@ -77,10 +78,13 @@ export function Nav({ locale, overHero = false }: { locale: Locale; overHero?: b
         <LangToggle locale={locale} />
         <a
           href={`tel:${business.phone}`}
-          className="text-[0.82rem] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-65"
+          className="hidden text-[0.82rem] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-65 sm:inline-flex"
         >
           {c.nav.call}
         </a>
+        <BookingLink locale={locale} placement="nav" className="border border-current px-3 py-2 text-[0.75rem] font-bold uppercase tracking-[0.04em] transition-opacity hover:opacity-65">
+          {c.nav.book}
+        </BookingLink>
       </div>
     </header>
   );

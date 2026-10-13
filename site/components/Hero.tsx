@@ -2,6 +2,7 @@ import Image from "next/image";
 import { business } from "@/lib/business";
 import { content, type Locale } from "@/lib/content";
 import { OpenNow } from "./OpenNow";
+import { BookingLink } from "./BookingLink";
 
 /**
  * Photo plein cadre, voile noir, titre centré en bas, une seule action.
@@ -55,6 +56,7 @@ export function Hero({ locale }: { locale: Locale }) {
           <span className="block">{c.hero.h1b}</span>
         </h1>
 
+        <BookingLink locale={locale} placement="static-hero" className="btn btn-light rise" style={{ ["--d" as string]: "320ms" }} />
         <a
           href={`tel:${business.phone}`}
           className="btn btn-light rise"

@@ -12,6 +12,9 @@ export const business = {
   name: "Barbier RoyalMK",
   tagline: "Adoptez le style que vous méritez",
 
+  /** Public booking page; never reuse a visitor-specific cart. */
+  booking: "https://getsquire.com/booking/book/royalmk-gatineau/barber/khadija-ayad/services",
+
   phone: "+18193180861",
   phoneDisplay: "(819) 318-0861",
 
