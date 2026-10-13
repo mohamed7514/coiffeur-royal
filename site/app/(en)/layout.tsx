@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { GoogleAdsTag } from "@/components/GoogleAdsTag";
 import "../globals.css";
 import { fontVars } from "@/lib/fonts";
 import { business } from "@/lib/business";
@@ -33,7 +34,7 @@ export const viewport: Viewport = {
 export default function EnLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-CA" className={fontVars}>
-      <body>{children}</body>
+      <body><GoogleAdsTag />{children}</body>
     </html>
   );
 }
