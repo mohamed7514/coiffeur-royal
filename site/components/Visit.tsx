@@ -68,7 +68,7 @@ export function Shout({ locale }: { locale: Locale }) {
       <span className="mini">{c.shout.label}</span>
       <h2 className="display h2">{c.shout.title}</h2>
       <p className="max-w-[40ch] text-mute">{c.booking.note}</p>
-      <div className="flex flex-wrap items-center justify-center gap-5">
+      <div className="flex flex-wrap items-center justify-center gap-5" data-primary-actions>
         <BookingLink locale={locale} placement="shout" className="btn" />
         <a href={`tel:${business.phone}`} className="underlined">{c.nav.call}</a>
       </div>
@@ -101,7 +101,7 @@ export function Footer({ locale }: { locale: Locale }) {
         </div>
 
         <div className="flex flex-col gap-2">
-          <BookingLink locale={locale} placement="footer" className="transition-colors hover:text-ink">
+          <BookingLink locale={locale} placement="footer" className="hidden transition-colors hover:text-ink md:inline-flex">
             {c.nav.book}
           </BookingLink>
           <a href={business.maps} target="_blank" rel="noopener" className="transition-colors hover:text-ink">
@@ -109,7 +109,7 @@ export function Footer({ locale }: { locale: Locale }) {
           </a>
           <a
             href={`tel:${business.phone}`}
-            className="transition-colors hover:text-ink"
+            className="hidden transition-colors hover:text-ink md:inline-flex"
           >
             {c.nav.call}
           </a>
@@ -132,19 +132,4 @@ export function Footer({ locale }: { locale: Locale }) {
   );
 }
 
-export function ActionBar({ locale }: { locale: Locale }) {
-  const c = content[locale];
-  const directions = `https://www.google.com/maps/dir/?api=1&destination=${business.geo.lat},${business.geo.lng}`;
-
-  return (
-    <div className="actionbar">
-      <BookingLink locale={locale} placement="mobile-bar" className="!bg-paper !text-ink">
-        {c.nav.book}
-      </BookingLink>
-      <a href={`tel:${business.phone}`}>{c.nav.call}</a>
-      <a href={directions} target="_blank" rel="noopener">
-        {c.visit.directions}
-      </a>
-    </div>
-  );
-}
+export { MobileActionBar as ActionBar } from "./MobileActionBar";

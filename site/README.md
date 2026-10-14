@@ -194,10 +194,22 @@ n'est pas remplacé.
 d'OpenStreetMap par `scripts/carte.mjs`. Attribution « © OpenStreetMap »
 affichée sur la carte, comme la licence l'exige.
 
-`public/frames/` — 72 images extraites de la vidéo du salon. Elles font le hero
-de l'accueil (`components/HeroCanvas.tsx`), piloté au défilement : la tête tourne
-du profil à la nuque pendant que la page est épinglée. `/design/hero` garde la
-même chose en page d'essai.
+`components/HeroCanvas.tsx` conserve les 72 poses, le cadrage et les fondus
+d’origine. Une horloge de 4,9 secondes remplace le facteur de défilement.
+La lecture est unique, suspendue hors écran et dans un onglet masqué.
+La page défile librement, sans épinglage.
+
+Les fichiers comprimés sont préparés avant la lecture, avec quatre requêtes
+simultanées. Seules douze images proches sont décodées, trois à la fois.
+Les variantes mobiles sont en 720 × 1280, celles de bureau en 1080 × 1920.
+Le mouvement réduit et l’économie de données gardent l’image HTML initiale.
+Les actions Réserver / Appeler sont regroupées sur mobile ; la barre fixe
+prend le relais quand le hero ou les actions contextuelles quittent l’écran.
+
+`public/frames/` contient les images originales ; la première est le poster
+prioritaire. `public/frames-mobile-v1/` et `public/frames-desktop-v1/` contiennent
+les variantes de la même séquence pour la lecture automatique.
+
 Dans Next.js, tout ce qui est dans `public/` est servi tel quel à la racine :
 `public/frames/frame_0001.webp` s'appelle `/frames/frame_0001.webp`. Les frames
 ne passent **pas** par `next/image` — elles sont chargées en `new Image()` et
@@ -217,16 +229,10 @@ native, avec une qualité WebP de 90 (anciennement 540 × 960, qualité 52).
 La séquence complète pèse environ **10,8 Mo**. Le cadrage et les instants de
 la rotation sont conservés ; aucun agrandissement artificiel n'est appliqué.
 
-Le hero charge en priorité l'image courante et ses voisines, avec trois
-chargements simultanés et un cache de dix images. Il affiche la première
-image décodée sans attendre la séquence entière. Les images éloignées sont
-libérées du cache du composant ; le navigateur peut réutiliser son cache
-HTTP au retour en arrière. Cela évite de retenir près de 600 Mo d'images
-Full HD décodées dans le composant.
-
-Le Canvas utilise jusqu'à 2× la densité d'écran, avec un redimensionnement
-de haute qualité. Le mode mouvement réduit charge seulement la première
-image. Le scroll reste natif et la progression du texte suit celle du visuel.
+Le canvas conserve les fondus et les cadrages d’origine, avec une densité
+limitée à 2×. La séquence complète n’est pas conservée sous forme d’images
+décodées : les fichiers comprimés et une fenêtre de douze poses suffisent.
+La première image reste visible pendant la préparation de l’animation.
 
 `public/travaux/` — quatre coupes faites par le barbier, confirmées par le
 client le 01/10/2026. Les lumières d'origine diffèrent beaucoup d'une photo à

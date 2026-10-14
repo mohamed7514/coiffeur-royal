@@ -11,6 +11,10 @@ const nextConfig = {
   async headers() {
     return [
       {
+        source: "/frames-:variant/:file*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" }],
+      },
+      {
         // Les 72 images du hero pèsent 1,7 Mo et ne changent jamais entre
         // deux mises en ligne. Sans cette règle, un visiteur qui revient
         // les retélécharge : Next ne met pas `public/` en cache longue

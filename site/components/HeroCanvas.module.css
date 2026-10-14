@@ -1,13 +1,13 @@
 .hero { position: relative; width: 100%; height: 100svh; overflow: hidden; background: #0a090c; color: var(--color-paper); }
 .veil { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgb(0 0 0 / 0.94), rgb(0 0 0 / 0.78) 30%, rgb(0 0 0 / 0.15) 58%, transparent 70%), linear-gradient(to bottom, rgb(0 0 0 / 0.65), rgb(0 0 0 / 0.25) 18%, transparent 32%); }
-.content { position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; padding: 6rem 4.5rem calc(5rem + env(safe-area-inset-bottom, 0px)) 1.25rem; pointer-events: none; }
+.content { position: absolute; inset: 0; z-index: 2; display: flex; align-items: flex-end; padding: 6rem 4.5rem calc(2rem + env(safe-area-inset-bottom, 0px)) 1.25rem; pointer-events: none; }
 .copy { width: 100%; max-width: 34rem; }
 .overlays { display: grid; align-items: end; }
 .overlay { grid-area: 1 / 1; pointer-events: none; }
 .title { font-size: clamp(1.625rem, 7.8vw, 2.6rem); line-height: 1.06; text-wrap: balance; }
 .subtitle { margin-top: 1rem; max-width: 35ch; font-size: 0.9rem; line-height: 1.5; color: rgb(245 244 241 / 0.82); }
 .book { display: inline-flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; border: 1px solid rgb(255 255 255 / 0.3); padding: 0.9rem 1.1rem; background: rgb(255 255 255 / 0.09); backdrop-filter: blur(12px); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; pointer-events: auto; transition: background 200ms, border-color 200ms; }
-.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-top: 1.5rem; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; margin-top: 1.5rem; }
 .actions .book { margin-top: 0; }
 .booking { background: var(--color-paper); color: var(--color-ink); border-color: var(--color-paper); }
 .book.booking:hover { background: white; color: var(--color-ink); }
@@ -48,3 +48,8 @@
   .posterBackdrop { display: block; position: absolute; inset: -24px; width: calc(100% + 48px); height: calc(100% + 48px); max-width: none; object-fit: fill; filter: blur(24px) brightness(0.5) saturate(0.7); }
   .posterImage { top: 0; left: 66%; width: auto; height: 100%; transform: translateX(-50%); object-fit: contain; mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent); }
 }
+
+.call { display: inline-flex; align-items: center; min-height: 3.5rem; border-bottom: 1px solid rgb(255 255 255 / 0.55); font-size: 0.85rem; pointer-events: auto; }
+.call:hover { border-color: white; }
+.book:focus-visible, .call:focus-visible { outline: 2px solid white; outline-offset: 5px; }
+@media (prefers-reduced-motion: reduce) { .hero canvas { display: none; } }

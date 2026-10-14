@@ -40,7 +40,7 @@ export function ServicesIndex({ locale }: { locale: Locale }) {
 
             <p className="mt-8 max-w-[44ch] text-[1.05rem] text-mute">{c.svc.allLead}</p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-5">
+            <div className="mt-8 flex flex-wrap items-center gap-5" data-primary-actions>
               <BookingLink locale={locale} placement="services-index" className="btn" />
               <a href={`tel:${business.phone}`} className="underlined">
                 {c.nav.call}

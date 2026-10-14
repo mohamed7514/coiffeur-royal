@@ -121,7 +121,7 @@ export function Services({ locale }: { locale: Locale }) {
               <div className="display num home-vip-price">{price(vip.price, locale)}</div>
               <p className="home-vip-savings">{c.vip.insteadOf(vip.partsTotal ?? 0)}</p>
             </div>
-            <BookingLink locale={locale} placement="vip" className="btn btn-light" />
+            <BookingLink locale={locale} placement="vip" className="btn btn-light hidden md:inline-flex" />
           </div>
           <a href={servicePath(vip, locale)} className="home-vip-detail">
             {copy.vipDetail} <Arrow diagonal />

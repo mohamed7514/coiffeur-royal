@@ -2,48 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { business } from "@/lib/business";
 import { content, type AnyCopy, type Locale } from "@/lib/content";
 import styles from "./HeroCanvas.module.css";
-import callEffects from "./CallEffects.module.css";
-import { PhoneIcon } from "./PhoneIcon";
 import { BookingLink } from "./BookingLink";
 
-/**
- * Hero en séquence d'images, pilotée au défilement.
- *
- * Les 72 frames de `public/frames/` sont extraites de la vidéo du salon
- * (orbite autour de la tête du client, profil → nuque) par la commande
- * documentée dans le README. Le défilement fait tourner la tête, et rien
- * d'autre : pas de lecture automatique au repos. L'image ne bouge que
- * quand le visiteur, lui, fait quelque chose.
- *
- * Trois choses méritent d'être lues avant de toucher au code :
- *
- * 1. Le cadrage. Le Canvas n'a pas d'`object-fit` : il est refait à la
- *    main (`drawCover`), avec un point focal réglable. Une image 9:16
- *    recadrée en 16:9 perd 60 % de sa hauteur, et un centrage naïf
- *    coupe le dessus du crâne — c'est-à-dire la coupe.
- *
- * 2. La qualité. Les frames sont en 1080 × 1920, WebP qualité 90.
- *    Seules les images proches de la position courante sont décodées,
- *    pour garder les détails sans retenir toute la séquence en mémoire.
- *
- * 3. L'épinglage. Pendant la rotation, la page ne bouge plus : le
- *    visiteur défile et c'est l'image qui répond. Plus c'est long, plus
- *    la liste des prix est loin.
- */
+/** Same image sequence and framing; a short clock owns progress.
+ * Compressed frames are buffered before playback and decoded in a bounded window. */
 
 const FRAME_COUNT = 72;
 const FRAME_SRC = (i: number) =>
   `/frames/frame_${String(i + 1).padStart(4, "0")}.webp`;
-
-/** Durée de l'épinglage, en hauteurs d'écran. Plus c'est long, plus la
- *  liste des prix est loin — et plus il y a de défilement entre deux
- *  images, donc moins le mouvement est fin. 500 % sur ordinateur tient la séquence
- *  entière sans que la page paraisse bloquée. */
-const PIN_DESKTOP = "+=500%";
 
 /** Point focal de l'image, en fractions de sa largeur et de sa hauteur.
  *  La tête du client est au tiers haut : c'est ce point-là qui doit
@@ -60,11 +29,11 @@ type Overlay = {
 
 /**
  * Les deux textes et leur fenêtre de progression, en fractions du
- * défilement.
+ * temps de lecture.
  *
  * Le premier est le `h1` de la page : c'est lui qui porte « barbier à
  * Gatineau », et il doit rester ce qu'un moteur de recherche lit en
- * premier. Le second est la récompense du défilement, au moment où la
+ * premier. Le second est la seconde partie de la séquence, au moment où la
  * nuque apparaît — celui-là peut parler métier.
  */
 const overlaysFor = (c: AnyCopy): Overlay[] => [
@@ -95,106 +64,187 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
   const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   /** Images préchargées et index courant, gardés hors du state React :
-   *  ils changent à chaque frame de défilement, et un rendu React par
+   *  ils changent à chaque frame de lecture, et un rendu React par
    *  frame coûterait le lissage. */
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const frameRef = useRef(0);
   const requestFramesRef = useRef<(frame: number) => void>(() => {});
   const lastDrawn = useRef(-1);
 
-  const [progress, setProgress] = useState(0);
-  const [ready, setReady] = useState(false);
+  const [sequenceReady, setSequenceReady] = useState(false);
+  const resumePlaybackRef = useRef<() => void>(() => {});
+  const animationProgressRef = useRef(0);
+  const sequenceEndedRef = useRef(false);
 
   /* ── Préchargement ──────────────────────────────────────────────── */
 
   useEffect(() => {
     let alive = true;
+    let inView = false;
+    let posterReady = false;
+    let bytesReady = false;
+    let failed = false;
+    let loading = false;
+    let revision = 0;
+    let controller: AbortController | undefined;
     const images: HTMLImageElement[] = [];
     imagesRef.current = images;
+    const blobs: (Blob | null)[] = Array.from({ length: FRAME_COUNT }, () => null);
+    const urls = new Map<number, string>();
     const pending = new Map<number, HTMLImageElement>();
-    const failed = new Set<number>();
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    const prefix = window.matchMedia("(max-width: 767px)").matches ? "/frames-mobile-v1" : "/frames-desktop-v1";
     let wanted: number[] = [];
     let lastCenter = -1;
-    let lastReduced = false;
-    let firstFrameReady = false;
-
-    // Dix images au plus dans le cache, trois décodages simultanés.
-    // Garder les 72 images Full HD décodées coûterait près de 600 Mo.
-    const pump = () => {
-      if (!alive) return;
-      for (const index of wanted) {
-        if (pending.size >= 3) break;
-        if (images[index] || pending.has(index) || failed.has(index)) continue;
-        const img = new Image();
-        img.decoding = "async";
-        img.fetchPriority = index === wanted[0] ? "high" : "low";
-        pending.set(index, img);
-        let counted = false;
-        const done = async () => {
-          if (counted || !alive) return;
-          counted = true;
-          try { await img.decode(); } catch { /* échec traité ci-dessous */ }
-          if (!alive || pending.get(index) !== img) return;
-          pending.delete(index);
-          if (img.naturalWidth && wanted.includes(index)) {
-            images[index] = img;
-            if (!firstFrameReady && (index === Math.floor(frameRef.current) || index === Math.ceil(frameRef.current))) {
-              firstFrameReady = true;
-              setProgress(1);
-              setReady(true);
-            }
-            const current = Math.floor(frameRef.current);
-            if (index === current || index === current + 1) draw(true);
-          } else if (!img.naturalWidth) {
-            failed.add(index);
-          }
-          pump();
-        };
-        img.onload = done;
-        img.onerror = done;
-        img.src = FRAME_SRC(index);
-        if (img.complete) void done();
+    let warmed = false;
+    const optOut = () => motion.matches || Boolean(connection?.saveData);
+    const checkReady = () => {
+      if (!warmed && bytesReady && wanted.slice(0, 8).every(index => images[index]?.naturalWidth)) {
+        warmed = true;
+        setSequenceReady(true);
       }
     };
-
-    const request = (frame: number) => {
-      const reduced = motionQuery.matches;
-      const center = reduced ? 0 : Math.floor(Math.max(0, Math.min(frame, FRAME_COUNT - 1)));
-      if (center === lastCenter && reduced === lastReduced) return;
-      lastCenter = center;
-      lastReduced = reduced;
-      // Keep the initial network budget for the poster; warm the sequence on scroll.
-      wanted = reduced || frame <= 0 ? [0] : [center, center + 1, center - 1, center + 2,
-        center - 2, center + 3, center - 3, center + 4, center - 4, center + 5]
-        .filter((index) => index >= 0 && index < FRAME_COUNT);
-      // Libérer les images éloignées ; les fichiers restent dans le cache HTTP.
-      for (let index = 0; index < images.length; index++) {
-        if (images[index] && !wanted.includes(index)) delete images[index];
-      }
-      for (const [index, img] of pending) {
-        if (!wanted.includes(index)) {
-          img.onload = img.onerror = null;
+    const release = (index: number) => {
+      if (index === 0) return;
+      delete images[index];
+      const url = urls.get(index);
+      if (url) { URL.revokeObjectURL(url); urls.delete(index); }
+    };
+    const pump = () => {
+      if (!alive || optOut()) return;
+      for (const index of wanted) {
+        if (pending.size >= 3) break;
+        if (images[index] || pending.has(index) || !blobs[index]) continue;
+        const image = new Image();
+        image.decoding = "async";
+        image.dataset.frameIndex = String(index);
+        const url = URL.createObjectURL(blobs[index]!);
+        urls.set(index, url);
+        pending.set(index, image);
+        image.src = url;
+        void image.decode().then(() => {
+          if (!alive) return;
           pending.delete(index);
-          img.src = "";
-        }
+          if (wanted.includes(index)) images[index] = image;
+          else release(index);
+          // A future decoded frame should not repaint the current pose.
+          draw();
+          checkReady();
+          resumePlaybackRef.current();
+          pump();
+        }).catch(() => {
+          if (!alive) return;
+          pending.delete(index);
+          release(index);
+          failed = true;
+          resumePlaybackRef.current();
+        });
+      }
+      checkReady();
+    };
+    const request = (frame: number) => {
+      const center = Math.floor(Math.max(0, Math.min(frame, FRAME_COUNT - 1)));
+      if (center === lastCenter) return;
+      lastCenter = center;
+      // Only a small forward decode window is retained. Compressed files
+      // are already in memory, so animation never competes with the network.
+      wanted = Array.from({ length: 12 }, (_, i) => center + i).filter(index => index < FRAME_COUNT);
+      for (let index = 1; index < images.length; index++) {
+        if (images[index] && !wanted.includes(index)) release(index);
       }
       pump();
     };
     requestFramesRef.current = request;
-    request(frameRef.current);
-
+    request(0);
+    const stopLoading = () => {
+      revision++;
+      controller?.abort();
+      loading = false;
+    };
+    const load = () => {
+      if (!alive || !inView || document.hidden || !posterReady || optOut() || bytesReady || loading || failed) return;
+      loading = true;
+      const currentRevision = ++revision;
+      controller = new AbortController();
+      const signal = controller.signal;
+      let cursor = 1; // The HTML poster is already the exact first frame.
+      const fetchFrame = async (index: number): Promise<Blob> => {
+        const url = `${prefix}/frame_${String(index + 1).padStart(4, "0")}.webp`;
+        for (let attempt = 0; ; attempt++) {
+          try {
+            const response = await fetch(url, { signal });
+            if (!response.ok) throw new Error("Frame unavailable");
+            return await response.blob();
+          } catch (error) {
+            if (signal.aborted || attempt >= 2) throw error;
+            // One transient network failure must not discard the whole buffer.
+            await new Promise(resolve => window.setTimeout(resolve, 200 * (attempt + 1)));
+          }
+        }
+      };
+      const worker = async () => {
+        while (alive && currentRevision === revision && cursor < FRAME_COUNT) {
+          const index = cursor++;
+          if (blobs[index]) continue;
+          const blob = await fetchFrame(index);
+          if (!alive || currentRevision !== revision) return;
+          blobs[index] = blob;
+          pump();
+        }
+      };
+      void Promise.all(Array.from({ length: 4 }, worker)).then(() => {
+        if (!alive || currentRevision !== revision) return;
+        bytesReady = blobs.slice(1).every(Boolean);
+        pump();
+      }).catch(() => {
+        if (alive && currentRevision === revision && !signal.aborted) failed = true;
+      }).finally(() => {
+        if (currentRevision === revision) loading = false;
+      });
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting && entry.intersectionRatio >= 0.2;
+      if (inView) load(); else stopLoading();
+    }, { threshold: [0, 0.2] });
+    observer.observe(rootRef.current!);
+    const onVisibility = () => { if (document.hidden || optOut()) stopLoading(); else load(); };
+    document.addEventListener("visibilitychange", onVisibility);
+    motion.addEventListener("change", onVisibility);
+    const poster = rootRef.current?.querySelector<HTMLImageElement>("[data-hero-poster]");
+    let stopWaitingForPoster = () => {};
+    const posterLoaded = new Promise<void>(resolve => {
+      if (!poster || poster.complete) { resolve(); return; }
+      const finish = () => {
+        poster.removeEventListener("load", finish);
+        poster.removeEventListener("error", finish);
+        resolve();
+      };
+      stopWaitingForPoster = finish;
+      poster.addEventListener("load", finish, { once: true });
+      poster.addEventListener("error", finish, { once: true });
+      if (poster.complete) finish();
+    });
+    void posterLoaded.then(() => poster?.decode().catch(() => {})).then(() => {
+      if (!alive) return;
+      if (poster?.naturalWidth) images[0] = poster;
+      posterReady = true;
+      draw(true);
+      load();
+    });
     return () => {
       alive = false;
-      requestFramesRef.current = () => {};
-      for (const img of pending.values()) {
-        img.onload = img.onerror = null;
-        img.src = "";
-      }
+      stopWaitingForPoster();
+      stopLoading();
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+      motion.removeEventListener("change", onVisibility);
+      for (const url of urls.values()) URL.revokeObjectURL(url);
       pending.clear();
+      requestFramesRef.current = () => {};
       imagesRef.current = [];
     };
-
+    // The renderer reads mutable refs instead of re-rendering React each frame.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -321,24 +371,24 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
 
   /** `forced` : un redimensionnement ou une image fraîchement décodée
    *  doit redessiner même si l'index n'a pas bougé. */
-  function draw(forced = false) {
+  function draw(forced = false): boolean {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    if (!canvas || !ctx) return;
+    if (!canvas || !ctx) return false;
 
     // L'index est gardé en décimal et les deux images voisines sont
-    // fondues selon la fraction : à 72 images sur l'épinglage, l'écart
+    // fondues selon la fraction : à 72 images sur la durée de lecture, l'écart
     // entre deux frames est assez faible pour que le fondu passe pour du
     // flou de mouvement plutôt que pour un dédoublement.
     const f = Math.min(Math.max(frameRef.current, 0), FRAME_COUNT - 1);
     requestFramesRef.current(f);
 
-    // Le lissage du `scrub` continue d'appeler le rendu bien après que
+    // L’horloge continue d’appeler le rendu bien après que
     // l'image a cessé de changer visiblement. Un vingtième de frame vaut
-    // ici environ un pixel de défilement : en dessous, il n'y a rien à
+    // ici une différence visuelle imperceptible : en dessous, il n'y a rien à
     // redessiner, et chaque redessin évité est un écran entier de moins
     // à rastériser.
-    if (!forced && Math.abs(f - lastDrawn.current) < 0.05) return;
+    if (!forced && Math.abs(f - lastDrawn.current) < 0.05) return true;
 
     const i0 = Math.floor(f);
     const i1 = Math.min(i0 + 1, FRAME_COUNT - 1);
@@ -353,7 +403,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
 
     const img = imagesRef.current[i0];
     const next = imagesRef.current[i1];
-    if (!img?.naturalWidth) return;
+    if (!img?.naturalWidth || !next?.naturalWidth) return false;
     lastDrawn.current = f;
 
     const w = canvas.clientWidth;
@@ -381,7 +431,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
         ctx.globalAlpha = 1;
       }
       canvas.style.opacity = "1";
-      return;
+      return true;
     }
 
     // Paysage : le fond flou et les vignettes sont posés une seule fois,
@@ -395,6 +445,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     }
     drawEdges(ctx, img, w, h);
     canvas.style.opacity = "1";
+    return true;
   }
 
   const barRef = useRef<HTMLDivElement>(null);
@@ -403,11 +454,9 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
   const lastUi = useRef({ step: "", hint: "" });
 
   /** Opacité et décalage des textes, écrits directement dans le style :
-   *  une mise à jour de state par frame de défilement serait du gâchis. */
+   *  une mise à jour de state par frame de lecture serait du gâchis. */
   function paintUi(p: number) {
-    // La jauge : sans elle, le visiteur ne sait pas combien de temps la
-    // page va rester bloquée, et c'est ce qui rend un hero épinglé
-    // pénible. Elle dit où on en est et qu'il y a une fin.
+    // La jauge indique la progression de la lecture, indépendante du scroll.
     if (barRef.current) barRef.current.style.transform = `scaleY(${p})`;
 
     const step = `${String(OVERLAYS.filter((o) => p >= o.from).length).padStart(2, "0")} / ${String(
@@ -418,10 +467,8 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
       lastUi.current.step = step;
     }
 
-    // L'invitation à défiler disparaît dès le premier geste ; à la fin,
-    // elle annonce ce qui vient après, pour que la section se termine
-    // sur une direction plutôt que sur un vide.
-    const hint = p < 0.02 ? c.hero.scroll : p > 0.9 ? c.hero.next : "";
+    // À la fin, la jauge indique la section suivante.
+    const hint = p > 0.9 ? c.hero.next : "";
     if (hintRef.current && lastUi.current.hint !== hint) {
       hintRef.current.textContent = hint;
       hintRef.current.style.opacity = hint ? "1" : "0";
@@ -435,7 +482,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
       // pas de rampe d'entrée, sinon le hero s'ouvre sur un titre vide.
       const rampIn = o.from === 0 ? 1 : (p - o.from) / FADE;
       // Et un texte qui va jusqu'au bout reste lisible jusqu'au bout :
-      // sinon il s'éteint pile au moment où l'épinglage se relâche.
+      // sinon il s'éteint pile à la fin de la lecture.
       const rampOut = o.to >= 1 ? 1 : (o.to - p) / FADE;
       const alpha = clamp01(Math.min(rampIn, rampOut, 1));
       el.style.opacity = String(alpha);
@@ -444,99 +491,74 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     });
   }
 
-  /* ── Défilement et redimensionnement ────────────────────────────── */
+  /* ── Horloge et redimensionnement ────────────────────────────── */
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-    ScrollTrigger.config({ ignoreMobileResize: true });
-    const media = gsap.matchMedia();
-    media.add(
-      {
-        desktop: "(min-width: 768px)",
-        mobile: "(max-width: 767px)",
-        reduced: "(prefers-reduced-motion: reduce)",
-      },
-      (context) => {
-        const { desktop, reduced } = context.conditions!;
-        const onResize = () => draw(true);
-        window.addEventListener("resize", onResize);
-        if (reduced) {
-          frameRef.current = 0;
-          paintUi(0);
-          draw(true);
-          return () => window.removeEventListener("resize", onResize);
-        }
-
-        const docEl = document.documentElement;
-        const previousBehavior = docEl.style.scrollBehavior;
-        docEl.style.scrollBehavior = "auto";
-        const state = { progress: 0 };
-        let settleTween: gsap.core.Tween | null = null;
-
-        const render = () => {
-          const p = clamp01(state.progress);
-          // Court arrêt au profil et à la nuque, avant la sortie du hero.
-          frameRef.current = clamp01((p - 0.06) / 0.84) * (FRAME_COUNT - 1);
-          draw();
-          // L'image, les textes et la jauge suivent le même amorti.
-          paintUi(p);
-        };
-        const settle = () => {
-          settleTween?.kill();
-          const target = Math.round(frameRef.current);
-          if (Math.abs(target - frameRef.current) < 0.01) return;
-          const at = { frame: frameRef.current };
-          settleTween = gsap.to(at, {
-            frame: target,
-            duration: 0.18,
-            ease: "power2.out",
-            onUpdate: () => {
-              frameRef.current = at.frame;
-              draw(true);
-            },
-          });
-        };
-        const tween = gsap.to(state, {
-          progress: 1,
-          ease: "none",
-          onUpdate: render,
-          scrollTrigger: {
-            trigger: root,
-            start: "top top",
-            end: desktop ? PIN_DESKTOP : "+=400%",
-            pin: true,
-            anticipatePin: 1,
-            scrub: 0.5,
-            // Garder le rattrapage sur un geste rapide, sans fastScrollEnd.
-            invalidateOnRefresh: true,
-            onUpdate: () => settleTween?.kill(),
-            onScrubComplete: settle,
-          },
-        });
-        render();
-        draw(true);
-        return () => {
-          settleTween?.kill();
-          tween.scrollTrigger?.kill();
-          tween.kill();
-          window.removeEventListener("resize", onResize);
-          docEl.style.scrollBehavior = previousBehavior;
-        };
-      },
-    );
-    return () => media.revert();
-
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    let inView = false;
+    const state = { progress: animationProgressRef.current };
+    let tween: gsap.core.Tween;
+    const pairReady = () => {
+      const index = Math.floor(frameRef.current);
+      return Boolean(imagesRef.current[index]?.naturalWidth && imagesRef.current[Math.min(index + 1, FRAME_COUNT - 1)]?.naturalWidth);
+    };
+    const sync = () => {
+      if (!sequenceReady || !inView || document.hidden || motion.matches || connection?.saveData || sequenceEndedRef.current || !pairReady()) {
+        tween.pause();
+      } else tween.resume();
+    };
+    const render = () => {
+      const progress = clamp01(state.progress);
+      frameRef.current = clamp01((progress - 0.06) / 0.84) * (FRAME_COUNT - 1);
+      if (!draw()) { tween.pause(); return; }
+      animationProgressRef.current = progress;
+      paintUi(progress);
+    };
+    tween = gsap.to(state, {
+      progress: 1,
+      duration: 4.9 * (1 - state.progress),
+      ease: "none",
+      paused: true,
+      onUpdate: render,
+      onComplete: () => { sequenceEndedRef.current = true; },
+    });
+    resumePlaybackRef.current = sync;
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting && entry.intersectionRatio >= 0.2;
+      sync();
+    }, { threshold: [0, 0.2] });
+    observer.observe(root);
+    const onPreference = () => {
+      if (motion.matches) paintUi(0);
+      else paintUi(animationProgressRef.current);
+      sync();
+    };
+    const onResize = () => draw(true);
+    document.addEventListener("visibilitychange", sync);
+    motion.addEventListener("change", onPreference);
+    window.addEventListener("resize", onResize);
+    render();
+    return () => {
+      tween.kill();
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+      motion.removeEventListener("change", onPreference);
+      window.removeEventListener("resize", onResize);
+      resumePlaybackRef.current = () => {};
+    };
+    // Rendering is driven by one GSAP clock; scrolling never writes progress.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [sequenceReady]);
 
   /* ── Rendu JSX ──────────────────────────────────────────────────── */
 
   return (
     <section
       ref={rootRef}
+      data-hero
       className={styles.hero}
       aria-label={c.hero.sequenceAlt}
     >
@@ -549,29 +571,11 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
         <img src={FRAME_SRC(0)} alt="" width={1080} height={1920}
           fetchPriority="high" loading="eager" className={styles.posterBackdrop} />
         <img src={FRAME_SRC(0)} alt="" width={1080} height={1920}
-          fetchPriority="high" loading="eager" className={styles.posterImage} />
+          fetchPriority="high" loading="eager" className={styles.posterImage} data-hero-poster />
       </div>
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" style={{ opacity: 0 }} aria-hidden />
 
       <div aria-hidden className={styles.veil} />
-
-      {/* Chargement : un compteur, pas un spinner. Le visiteur voit ce
-          qu'il attend et combien il en reste. */}
-      <div
-        className={`${styles.loading} transition-opacity duration-500 ${
-          ready ? "opacity-0" : "opacity-100"
-        }`}
-      >
-        <span className="text-[0.75rem] uppercase tracking-[0.12em] text-paper/60">
-          {Math.round(progress * 100)} %
-        </span>
-        <span className="h-px flex-1 origin-left bg-paper/15 ml-4">
-          <span
-            className="block h-px bg-paper/70 transition-[width] duration-200"
-            style={{ width: `${progress * 100}%` }}
-          />
-        </span>
-      </div>
 
       {/* La grille garde le bord inférieur des deux textes aligné. */}
       <div className={styles.content}>
@@ -594,20 +598,19 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
               </div>
             ))}
           </div>
-          <div className={styles.actions}>
+          <div className={styles.actions} data-primary-actions>
             <BookingLink locale={locale} placement="hero" className={styles.book + " " + styles.booking}>
-              {c.booking.label}<span aria-hidden>↗</span>
+              {c.nav.book}<span aria-hidden>↗</span>
             </BookingLink>
-            <a href={"tel:" + business.phone} className={styles.book + " " + callEffects.call + " " + callEffects.halo + " " + callEffects.ring}>
-              <span className={callEffects.callLabel}><PhoneIcon />{c.nav.call}</span>
-              <span aria-hidden className={callEffects.arrow}>{"\u2192"}</span>
+            <a href={"tel:" + business.phone} className={styles.call}>
+              {c.nav.call}
             </a>
           </div>
         </div>
       </div>
 
       {/* Jauge de progression, verticale, sur le bord droit : l'étape en
-          cours, un rail qui se remplit sur toute la durée de l'épinglage,
+          cours, un rail qui se remplit sur toute la durée de lecture,
           et l'invitation à défiler écrite dans le sens du rail.
           Le défilement est vertical, la jauge aussi — et sur le bord, elle
           ne dispute plus la place au titre ni au bouton. */}
@@ -631,7 +634,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
           ref={hintRef}
           className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-paper transition-opacity duration-500 [text-shadow:0_1px_6px_rgb(0_0_0/0.6)] [writing-mode:vertical-rl]"
         >
-          {c.hero.scroll}
+          {""}
         </span>
       </div>
 

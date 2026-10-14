@@ -43,7 +43,7 @@ export const content = {
       // le signe passer seul à la ligne suivante.
       craftSub: "De la tempe à la nuque, sans rupture. 25 $, sans rendez-vous.",
       sequenceAlt:
-        "Un dégradé exécuté au salon, vu du profil à la nuque à mesure que la page défile.",
+        "Un dégradé exécuté au salon, vu du profil à la nuque.",
     },
 
     /* Chaque section porte une étiquette en serif et une phrase en
@@ -178,7 +178,7 @@ export const content = {
       craft: "Surgical skin fade",
       craftSub: "Temple to nape, no break in the line. $25, walk in.",
       sequenceAlt:
-        "A skin fade done at the shop, seen from the profile to the nape as the page scrolls.",
+        "A skin fade done at the shop, seen from the profile to the nape.",
     },
 
     story: {

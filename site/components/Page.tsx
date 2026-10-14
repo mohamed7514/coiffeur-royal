@@ -16,8 +16,7 @@ export function Page({ locale }: { locale: Locale }) {
       <Nav locale={locale} overHero />
 
       <main>
-        {/* Hero en séquence d'images, piloté au défilement. La version
-            fixe reste dans Hero.tsx si cette direction est abandonnée. */}
+        {/* Une lecture courte, indépendante du défilement de la page. */}
         <HeroCanvas locale={locale} />
 
         {/* Tout ce qui suit le hero vit sur le beige, dans le même

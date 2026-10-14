@@ -24,10 +24,7 @@ export function Nav({ locale, overHero = false }: { locale: Locale; overHero?: b
   useEffect(() => {
     if (!overHero) return;
 
-    // Le hero est épinglé : il occupe deux écrans et demi de défilement,
-    // pas un. Un seuil exprimé en hauteurs d'écran ferait basculer la
-    // barre en beige alors que la photo est encore là. On se repère donc
-    // sur la section qui suit le hero, quelle que soit sa durée.
+    // Le fond change quand la section qui suit le hero atteint le menu.
     const after = document.getElementById("apres-hero");
 
     const onScroll = () => {
@@ -78,11 +75,11 @@ export function Nav({ locale, overHero = false }: { locale: Locale; overHero?: b
         <LangToggle locale={locale} />
         <a
           href={`tel:${business.phone}`}
-          className="hidden text-[0.82rem] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-65 sm:inline-flex"
+          className="hidden text-[0.82rem] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-65 md:inline-flex"
         >
           {c.nav.call}
         </a>
-        <BookingLink locale={locale} placement="nav" className="border border-current px-3 py-2 text-[0.75rem] font-bold uppercase tracking-[0.04em] transition-opacity hover:opacity-65">
+        <BookingLink locale={locale} placement="nav" className="hidden border border-current px-3 py-2 md:inline-flex text-[0.75rem] font-bold uppercase tracking-[0.04em] transition-opacity hover:opacity-65">
           {c.nav.book}
         </BookingLink>
       </div>
