@@ -1,7 +1,7 @@
 /** Decorative action icons; the link text supplies the accessible name. */
 export function ActionIcon({ kind }: { kind: "book" | "call" }) {
   return (
-    <svg className="attention-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg className="attention-icon" width={21} height={21} viewBox="0 0 24 24" fill="none" stroke="currentColor"
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
       {kind === "book" ? (
         <>

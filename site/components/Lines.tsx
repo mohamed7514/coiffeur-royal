@@ -1,7 +1,7 @@
 /**
  * La grille du gabarit laissée visible : six filets verticaux sur grand
  * écran, deux sur mobile. Purement décoratif, donc hors du flux et sans
- * interception du survol — voir `.lines` dans globals.css.
+ * interception du survol — voir `.lines` dans styles.css.
  */
 export function Lines() {
   return (

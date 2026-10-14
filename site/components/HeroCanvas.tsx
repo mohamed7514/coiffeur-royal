@@ -574,7 +574,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
         <img src={FRAME_SRC(0)} alt="" width={1080} height={1920}
           fetchPriority="high" loading="eager" className={styles.posterImage} data-hero-poster />
       </div>
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" style={{ opacity: 0 }} aria-hidden />
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" style={{ opacity: 0, pointerEvents: "none" }} aria-hidden />
 
       <div aria-hidden className={styles.veil} />
 

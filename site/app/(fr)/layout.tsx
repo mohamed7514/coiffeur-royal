@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { PhoneCallTracking } from "@/components/PhoneCallTracking";
 import { GoogleTagManager, GoogleTagManagerNoScript } from "@/components/GoogleTagManager";
-import "../globals.css";
+import "../styles.css";
 import { fontVars } from "@/lib/fonts";
 import { business } from "@/lib/business";
 import { SITE_URL } from "@/lib/site";
