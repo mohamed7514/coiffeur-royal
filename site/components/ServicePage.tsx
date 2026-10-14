@@ -16,6 +16,7 @@ import { CallBadge } from "./CallBadge";
 import { ServiceJsonLd } from "./JsonLd";
 import { Lines } from "./Lines";
 import { BookingLink } from "./BookingLink";
+import { ActionIcon } from "./ActionIcon";
 
 export function ServicePage({ service, locale }: { service: Service; locale: Locale }) {
   const c = content[locale];
@@ -68,9 +69,11 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
                 <p className="mt-8 max-w-[44ch] text-[1.05rem] text-mute">{copy.lead}</p>
 
                 <div className="mt-8 flex flex-wrap items-center gap-5" data-primary-actions>
-                  <BookingLink locale={locale} placement={"service-" + service.id} className="btn" />
-                  <a href={`tel:${business.phone}`} className="underlined">
-                    {c.hero.call}
+                  <BookingLink locale={locale} placement={"service-" + service.id} className="attention-cta attention-cta-book">
+                    <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="book" /><span>{c.booking.label}</span>
+                  </BookingLink>
+                  <a href={`tel:${business.phone}`} className="attention-cta attention-cta-call">
+                    <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="call" /><span>{c.nav.call}</span>
                   </a>
                 </div>
 

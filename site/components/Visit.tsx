@@ -4,6 +4,7 @@ import { Hours } from "./Hours";
 import { Map } from "./Map";
 import { OpenNow } from "./OpenNow";
 import { BookingLink } from "./BookingLink";
+import { ActionIcon } from "./ActionIcon";
 
 /**
  * L'adresse, les heures, puis la carte. La carte n'est pas une iframe
@@ -69,8 +70,12 @@ export function Shout({ locale }: { locale: Locale }) {
       <h2 className="display h2">{c.shout.title}</h2>
       <p className="max-w-[40ch] text-mute">{c.booking.note}</p>
       <div className="flex flex-wrap items-center justify-center gap-5" data-primary-actions>
-        <BookingLink locale={locale} placement="shout" className="btn" />
-        <a href={`tel:${business.phone}`} className="underlined">{c.nav.call}</a>
+        <BookingLink locale={locale} placement="shout" className="attention-cta attention-cta-book">
+          <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="book" /><span>{c.booking.label}</span>
+        </BookingLink>
+        <a href={`tel:${business.phone}`} className="attention-cta attention-cta-call">
+          <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="call" /><span>{c.nav.call}</span>
+        </a>
       </div>
     </section>
   );

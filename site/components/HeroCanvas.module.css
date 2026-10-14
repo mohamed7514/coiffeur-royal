@@ -6,20 +6,15 @@
 .overlay { grid-area: 1 / 1; pointer-events: none; }
 .title { font-size: clamp(1.625rem, 7.8vw, 2.6rem); line-height: 1.06; text-wrap: balance; }
 .subtitle { margin-top: 1rem; max-width: 35ch; font-size: 0.9rem; line-height: 1.5; color: rgb(245 244 241 / 0.82); }
-.book { display: inline-flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; border: 1px solid rgb(255 255 255 / 0.3); padding: 0.9rem 1.1rem; background: rgb(255 255 255 / 0.09); backdrop-filter: blur(12px); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; pointer-events: auto; transition: background 200ms, border-color 200ms; }
-.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; margin-top: 1.5rem; }
-.actions .book { margin-top: 0; }
-.booking { background: var(--color-paper); color: var(--color-ink); border-color: var(--color-paper); }
-.book.booking:hover { background: white; color: var(--color-ink); }
-.book:hover { background: rgb(255 255 255 / 0.18); border-color: rgb(255 255 255 / 0.65); }
+.actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin-top: 1.5rem; margin-inline-end: -3.25rem; }
 .loading { position: absolute; top: 8rem; left: 1.25rem; width: min(10rem, 40vw); display: flex; align-items: center; pointer-events: none; }
 .gauge { position: absolute; right: 0.875rem; top: 45%; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 1rem; transform: translateY(-50%); pointer-events: none; }
 .exitFade { position: absolute; inset-inline: 0; bottom: 0; height: 2rem; pointer-events: none; background: linear-gradient(to top, var(--color-paper), transparent); }
 @media (min-width: 48rem) {
+  .actions { margin-inline-end: 0; }
   .content { padding: 7rem 5rem clamp(3rem, 7svh, 5rem) 2rem; }
   .title { font-size: clamp(2.25rem, 4.2vw, 4rem); }
   .subtitle { margin-top: 1.25rem; font-size: 1rem; }
-  .book { padding: 1rem 1.5rem; font-size: 0.8rem; margin-top: 1.75rem; }
   .loading { left: 2rem; top: 8.5rem; }
   .gauge { right: 2rem; top: 50%; gap: 1.25rem; }
   .exitFade { height: 2.5rem; }
@@ -33,7 +28,6 @@
   .content { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)); }
   .title { font-size: clamp(1.4rem, 3.5vw, 2rem); }
   .subtitle { margin-top: 0.5rem; font-size: 0.8rem; }
-  .book { margin-top: 0.75rem; padding-block: 0.65rem; }
   .loading { top: 6rem; }
   .gauge { gap: 0.6rem; }
 }
@@ -49,7 +43,4 @@
   .posterImage { top: 0; left: 66%; width: auto; height: 100%; transform: translateX(-50%); object-fit: contain; mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent); }
 }
 
-.call { display: inline-flex; align-items: center; min-height: 3.5rem; border-bottom: 1px solid rgb(255 255 255 / 0.55); font-size: 0.85rem; pointer-events: auto; }
-.call:hover { border-color: white; }
-.book:focus-visible, .call:focus-visible { outline: 2px solid white; outline-offset: 5px; }
 @media (prefers-reduced-motion: reduce) { .hero canvas { display: none; } }

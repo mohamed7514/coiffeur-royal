@@ -6,6 +6,7 @@ import { business } from "@/lib/business";
 import { content, type AnyCopy, type Locale } from "@/lib/content";
 import styles from "./HeroCanvas.module.css";
 import { BookingLink } from "./BookingLink";
+import { ActionIcon } from "./ActionIcon";
 
 /** Same image sequence and framing; a short clock owns progress.
  * Compressed frames are buffered before playback and decoded in a bounded window. */
@@ -599,11 +600,11 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
             ))}
           </div>
           <div className={styles.actions} data-primary-actions>
-            <BookingLink locale={locale} placement="hero" className={styles.book + " " + styles.booking}>
-              {c.nav.book}<span aria-hidden>↗</span>
+            <BookingLink locale={locale} placement="hero" className="attention-cta attention-cta-book">
+              <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="book" /><span>{c.nav.book}</span>
             </BookingLink>
-            <a href={"tel:" + business.phone} className={styles.call}>
-              {c.nav.call}
+            <a href={"tel:" + business.phone} className="attention-cta attention-cta-call">
+              <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="call" /><span>{c.nav.call}</span>
             </a>
           </div>
         </div>
