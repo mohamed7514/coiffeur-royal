@@ -195,20 +195,22 @@ d'OpenStreetMap par `scripts/carte.mjs`. Attribution « © OpenStreetMap »
 affichée sur la carte, comme la licence l'exige.
 
 `components/HeroCanvas.tsx` conserve les 72 poses, le cadrage et les fondus
-d’origine. Une horloge de 4,9 secondes remplace le facteur de défilement.
+d’origine. Une horloge native de 4,9 secondes remplace le facteur de défilement, sans GSAP.
 La lecture est unique, suspendue hors écran et dans un onglet masqué.
 La page défile librement, sans épinglage.
 
 Les fichiers comprimés sont préparés avant la lecture, avec quatre requêtes
 simultanées. Seules douze images proches sont décodées, trois à la fois.
-Les variantes mobiles sont en 720 × 1280, celles de bureau en 1080 × 1920.
+Les variantes mobiles sont en 720 × 1280 (AVIF, avec repli WebP), celles de bureau en 1080 × 1920 (WebP).
+Les 72 AVIF mobiles pèsent 1,7 Mo, contre 2,8 Mo pour le repli WebP.
 Le mouvement réduit et l’économie de données gardent l’image HTML initiale.
 Les actions Réserver / Appeler sont regroupées sur mobile ; la barre fixe
 prend le relais quand le hero ou les actions contextuelles quittent l’écran.
 
-`public/frames/` contient les images originales ; la première est le poster
-prioritaire. `public/frames-mobile-v1/` et `public/frames-desktop-v1/` contiennent
-les variantes de la même séquence pour la lecture automatique.
+`public/frames/` conserve les images originales ; les posters sont servis depuis les variantes adaptées à chaque écran.
+`public/frames-mobile-v1/` et `public/frames-desktop-v1/` contiennent
+les variantes WebP de la même séquence pour la lecture automatique.
+`public/frames-mobile-avif-v1/` contient les 72 variantes AVIF sélectionnées nativement par `<picture>`.
 
 Dans Next.js, tout ce qui est dans `public/` est servi tel quel à la racine :
 `public/frames/frame_0001.webp` s'appelle `/frames/frame_0001.webp`. Les frames
@@ -229,8 +231,9 @@ native, avec une qualité WebP de 90 (anciennement 540 × 960, qualité 52).
 La séquence complète pèse environ **10,8 Mo**. Le cadrage et les instants de
 la rotation sont conservés ; aucun agrandissement artificiel n'est appliqué.
 
-Le canvas conserve les fondus et les cadrages d’origine, avec une densité
-limitée à 2×. La séquence complète n’est pas conservée sous forme d’images
+Le canvas conserve les fondus et les cadrages d’origine, à 30 dessins par seconde.
+Le mouvement est rendu en densité 1× ; l’image finale est redessinée jusqu’à 2×.
+Le poster HTML prioritaire reste visible jusqu’à la première pose en mouvement. La séquence complète n’est pas conservée sous forme d’images
 décodées : les fichiers comprimés et une fenêtre de douze poses suffisent.
 La première image reste visible pendant la préparation de l’animation.
 

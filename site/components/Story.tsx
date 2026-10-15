@@ -25,8 +25,9 @@ export function Story({ locale }: { locale: Locale }) {
             src={salon}
             alt={c.hero.photoAlt}
             fill
-            quality={90}
-            sizes="(max-width: 64rem) 100vw, 33vw"
+            quality={75}
+            fetchPriority="low"
+            sizes="(min-width: 1024px) 33vw, calc(100vw - 32px)"
             className="object-cover"
           />
       </div>

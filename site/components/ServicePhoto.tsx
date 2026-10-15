@@ -14,7 +14,7 @@ export function ServicePhoto({ id, locale, sizes, className = "", preload = fals
   const photo = (placement === "home" ? homeServiceImages : serviceImages)[id];
   return (
     <span className={"service-photo " + className}>
-      <Image src={photo.src} alt={photo.alt[locale]} fill quality={90} sizes={sizes} preload={preload} />
+      <Image src={photo.src} alt={photo.alt[locale]} fill quality={75} fetchPriority={preload ? "high" : "low"} sizes={sizes} preload={preload} />
     </span>
   );
 }

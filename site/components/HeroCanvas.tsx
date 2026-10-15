@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
 import { business } from "@/lib/business";
 import { content, type AnyCopy, type Locale } from "@/lib/content";
 import styles from "./HeroCanvas.module.css";
@@ -13,7 +12,7 @@ import { ActionIcon } from "./ActionIcon";
 
 const FRAME_COUNT = 72;
 const FRAME_SRC = (i: number) =>
-  `/frames/frame_${String(i + 1).padStart(4, "0")}.webp`;
+  `/frames-desktop-v1/frame_${String(i + 1).padStart(4, "0")}.webp`;
 
 /** Point focal de l'image, en fractions de sa largeur et de sa hauteur.
  *  La tête du client est au tiers haut : c'est ce point-là qui doit
@@ -95,7 +94,8 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     const pending = new Map<number, HTMLImageElement>();
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-    const prefix = window.matchMedia("(max-width: 767px)").matches ? "/frames-mobile-v1" : "/frames-desktop-v1";
+    let prefix = window.matchMedia("(max-width: 767px)").matches ? "/frames-mobile-v1" : "/frames-desktop-v1";
+    let extension = "webp";
     let wanted: number[] = [];
     let lastCenter = -1;
     let warmed = false;
@@ -171,10 +171,10 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
       const signal = controller.signal;
       let cursor = 1; // The HTML poster is already the exact first frame.
       const fetchFrame = async (index: number): Promise<Blob> => {
-        const url = `${prefix}/frame_${String(index + 1).padStart(4, "0")}.webp`;
+        const url = `${prefix}/frame_${String(index + 1).padStart(4, "0")}.${extension}`;
         for (let attempt = 0; ; attempt++) {
           try {
-            const response = await fetch(url, { signal });
+            const response = await fetch(url, { signal, priority: "low" });
             if (!response.ok) throw new Error("Frame unavailable");
             return await response.blob();
           } catch (error) {
@@ -229,6 +229,10 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     void posterLoaded.then(() => poster?.decode().catch(() => {})).then(() => {
       if (!alive) return;
       if (poster?.naturalWidth) images[0] = poster;
+      if (poster?.currentSrc.includes("/frames-mobile-avif-v1/")) {
+        prefix = "/frames-mobile-avif-v1";
+        extension = "avif";
+      }
       posterReady = true;
       draw(true);
       load();
@@ -374,7 +378,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
    *  doit redessiner même si l'index n'a pas bougé. */
   function draw(forced = false): boolean {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
+    const ctx = canvas?.getContext("2d", { alpha: false });
     if (!canvas || !ctx) return false;
 
     // L'index est gardé en décimal et les deux images voisines sont
@@ -383,6 +387,8 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     // flou de mouvement plutôt que pour un dédoublement.
     const f = Math.min(Math.max(frameRef.current, 0), FRAME_COUNT - 1);
     requestFramesRef.current(f);
+    // Keep the sharp HTML poster visible until the first moving pose.
+    if (f === 0) { canvas.style.opacity = "0"; lastDrawn.current = 0; return true; }
 
     // L’horloge continue d’appeler le rendu bien après que
     // l'image a cessé de changer visiblement. Un vingtième de frame vaut
@@ -409,8 +415,9 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
 
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
-    // La source Full HD conserve les détails sur les écrans Retina.
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Motion uses fewer pixels; the final still is redrawn at Retina density.
+    const atRest = f >= FRAME_COUNT - 1;
+    const dpr = atRest ? Math.min(window.devicePixelRatio || 1, 2) : 1;
 
     if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
       canvas.width = Math.round(w * dpr);
@@ -419,7 +426,7 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
+    ctx.imageSmoothingQuality = atRest ? "high" : "medium";
 
     const blend = mix > 0.01 && next?.naturalWidth && next !== img ? mix : 0;
 
@@ -500,32 +507,44 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
     let inView = false;
-    const state = { progress: animationProgressRef.current };
-    let tween: gsap.core.Tween;
+    let frameRequest = 0;
+    let lastPaintTime = 0;
+    let progress = animationProgressRef.current;
     const pairReady = () => {
       const index = Math.floor(frameRef.current);
       return Boolean(imagesRef.current[index]?.naturalWidth && imagesRef.current[Math.min(index + 1, FRAME_COUNT - 1)]?.naturalWidth);
     };
-    const sync = () => {
-      if (!sequenceReady || !inView || document.hidden || motion.matches || connection?.saveData || sequenceEndedRef.current || !pairReady()) {
-        tween.pause();
-      } else tween.resume();
-    };
+    const canPlay = () => sequenceReady && inView && !document.hidden && !motion.matches && !connection?.saveData && !sequenceEndedRef.current && pairReady();
     const render = () => {
-      const progress = clamp01(state.progress);
       frameRef.current = clamp01((progress - 0.06) / 0.84) * (FRAME_COUNT - 1);
-      if (!draw()) { tween.pause(); return; }
+      if (!draw()) return false;
       animationProgressRef.current = progress;
       paintUi(progress);
+      return true;
     };
-    tween = gsap.to(state, {
-      progress: 1,
-      duration: 4.9 * (1 - state.progress),
-      ease: "none",
-      paused: true,
-      onUpdate: render,
-      onComplete: () => { sequenceEndedRef.current = true; },
-    });
+    const tick = (now: number) => {
+      frameRequest = 0;
+      if (!canPlay()) { lastPaintTime = 0; return; }
+      // Thirty blended draws per second preserve all 72 poses while avoiding
+      // full-screen resampling at the display's 60/120 Hz refresh rate.
+      if (lastPaintTime && now - lastPaintTime < 1000 / 30) {
+        frameRequest = requestAnimationFrame(tick);
+        return;
+      }
+      const elapsed = lastPaintTime ? Math.min(now - lastPaintTime, 100) : 0;
+      lastPaintTime = now;
+      progress = Math.min(1, progress + elapsed / 4900);
+      if (!render()) { lastPaintTime = 0; return; }
+      if (progress >= 1) sequenceEndedRef.current = true;
+      else frameRequest = requestAnimationFrame(tick);
+    };
+    const sync = () => {
+      if (!canPlay()) {
+        cancelAnimationFrame(frameRequest);
+        frameRequest = 0;
+        lastPaintTime = 0;
+      } else if (!frameRequest) frameRequest = requestAnimationFrame(tick);
+    };
     resumePlaybackRef.current = sync;
     const observer = new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting && entry.intersectionRatio >= 0.2;
@@ -533,24 +552,26 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     }, { threshold: [0, 0.2] });
     observer.observe(root);
     const onPreference = () => {
-      if (motion.matches) paintUi(0);
-      else paintUi(animationProgressRef.current);
+      paintUi(motion.matches ? 0 : animationProgressRef.current);
       sync();
     };
-    const onResize = () => draw(true);
+    const onResize = () => { draw(true); sync(); };
+    const poster = root.querySelector<HTMLImageElement>("[data-hero-poster]");
+    poster?.addEventListener("load", onResize);
     document.addEventListener("visibilitychange", sync);
     motion.addEventListener("change", onPreference);
     window.addEventListener("resize", onResize);
     render();
     return () => {
-      tween.kill();
+      cancelAnimationFrame(frameRequest);
       observer.disconnect();
       document.removeEventListener("visibilitychange", sync);
       motion.removeEventListener("change", onPreference);
       window.removeEventListener("resize", onResize);
+      poster?.removeEventListener("load", onResize);
       resumePlaybackRef.current = () => {};
     };
-    // Rendering is driven by one GSAP clock; scrolling never writes progress.
+    // Mutable refs keep playback out of React's render loop.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sequenceReady]);
 
@@ -565,14 +586,23 @@ export function HeroCanvas({ locale }: { locale: Locale }) {
     >
       {/* La première image décide du LCP : elle part en même temps que le
           document, sans attendre que le JavaScript s'exécute. */}
-      <link rel="preload" href={FRAME_SRC(0)} as="image" fetchPriority="high" />
+      <link rel="preload" href="/frames-mobile-avif-v1/frame_0001.avif" as="image" type="image/avif" media="(max-width: 767px)" fetchPriority="high" />
+      <link rel="preload" href={FRAME_SRC(0)} as="image" type="image/webp" media="(min-width: 768px)" fetchPriority="high" />
 
       {/* Server-rendered poster stays visible until a frame is actually drawn. */}
       <div className={styles.poster} aria-hidden="true">
-        <img src={FRAME_SRC(0)} alt="" width={1080} height={1920}
-          fetchPriority="high" loading="eager" className={styles.posterBackdrop} />
-        <img src={FRAME_SRC(0)} alt="" width={1080} height={1920}
-          fetchPriority="high" loading="eager" className={styles.posterImage} data-hero-poster />
+        <picture>
+          <source media="(max-width: 767px)" type="image/avif" srcSet="/frames-mobile-avif-v1/frame_0001.avif" />
+          <source media="(max-width: 767px)" type="image/webp" srcSet="/frames-mobile-v1/frame_0001.webp" />
+          <img src={FRAME_SRC(0)} alt="" width={1080} height={1920}
+            fetchPriority="high" loading="eager" className={styles.posterBackdrop} />
+        </picture>
+        <picture>
+          <source media="(max-width: 767px)" type="image/avif" srcSet="/frames-mobile-avif-v1/frame_0001.avif" />
+          <source media="(max-width: 767px)" type="image/webp" srcSet="/frames-mobile-v1/frame_0001.webp" />
+          <img src={FRAME_SRC(0)} alt="" width={1080} height={1920}
+            fetchPriority="high" loading="eager" className={styles.posterImage} data-hero-poster />
+        </picture>
       </div>
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" style={{ opacity: 0, pointerEvents: "none" }} aria-hidden />
 
