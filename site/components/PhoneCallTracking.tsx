@@ -9,15 +9,27 @@ declare global {
   }
 }
 
-/** GTM owns Google Ads tags; this component only reports the phone interaction. */
+/** GTM owns Google Ads tags; one listener reports phone and booking clicks. */
 export function PhoneCallTracking() {
   useEffect(() => {
     window.dataLayer = window.dataLayer || [];
     const timers = new Set<number>();
     const onClick = (event: MouseEvent) => {
+      const anchor = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a") : null;
+      if (anchor?.hasAttribute("data-booking")) {
+        try {
+          window.dataLayer!.push({
+            event: "booking_click",
+            booking_provider: "squire",
+            booking_url: business.booking,
+            link_location: anchor.dataset.booking,
+            page_path: window.location.pathname,
+          });
+        } catch { /* Booking stays available when measurement is blocked. */ }
+        return;
+      }
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       if (window.location.pathname.startsWith("/design")) return;
-      const anchor = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href^='tel:']") : null;
       const href = anchor?.getAttribute("href");
       if (!href || href.replace(/[ ()-]/g, "") !== "tel:" + business.phone) return;
 
