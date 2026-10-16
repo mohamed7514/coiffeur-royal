@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { allServices } from "@/lib/business";
 import { SITE_URL } from "@/lib/site";
+import { localLandingPaths } from "@/lib/local-landing";
 
 /**
- * Les 18 pages réelles, dans les deux langues.
+ * Les pages publiques, dans les deux langues.
  *
  * Chaque entrée déclare sa jumelle dans l'autre langue : c'est ce que
  * Google attend pour comprendre qu'une page française et sa version
@@ -36,6 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...pair("/", "/en", 1),
+    ...pair(localLandingPaths.fr, localLandingPaths.en, 0.8),
     ...pair("/services", "/en/services", 0.8),
     ...allServices.flatMap((s) =>
       pair(`/services/${s.slug}`, `/en/services/${s.slugEn}`, 0.7),

@@ -1,5 +1,7 @@
 import { type Locale } from "@/lib/content";
 
+export type LanguagePaths = { fr: string; en: string };
+
 /**
  * Les deux langues visibles d'un coup, l'active soulignée. Un bouton
  * unique qui n'affiche que l'autre langue laisse le visiteur deviner
@@ -8,10 +10,13 @@ import { type Locale } from "@/lib/content";
  * Pas de pastille ni de cadre : l'en-tête se pose sur une photo, et
  * tout habillage y deviendrait du bruit.
  */
-export function LangToggle({ locale }: { locale: Locale }) {
+export function LangToggle({ locale, paths = { fr: "/", en: "/en" } }: {
+  locale: Locale;
+  paths?: LanguagePaths;
+}) {
   const langs = [
-    { code: "FR", href: "/", label: "Français", active: locale === "fr" },
-    { code: "EN", href: "/en", label: "English", active: locale === "en" },
+    { code: "FR", href: paths.fr, label: "Français", active: locale === "fr" },
+    { code: "EN", href: paths.en, label: "English", active: locale === "en" },
   ];
 
   return (

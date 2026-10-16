@@ -15,7 +15,7 @@ export function ServicesIndex({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <Nav locale={locale} />
+      <Nav locale={locale} languagePaths={{ fr: "/services", en: "/en/services" }} />
 
       <main>
         <div className="wrapper">

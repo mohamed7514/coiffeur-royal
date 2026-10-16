@@ -5,6 +5,7 @@ import { Map } from "./Map";
 import { OpenNow } from "./OpenNow";
 import { BookingLink } from "./BookingLink";
 import { ActionIcon } from "./ActionIcon";
+import { localLandingPaths } from "@/lib/local-landing";
 
 /**
  * L'adresse, les heures, puis la carte. La carte n'est pas une iframe
@@ -123,6 +124,9 @@ export function Footer({ locale }: { locale: Locale }) {
             className="transition-colors hover:text-ink"
           >
             {c.nav.services}
+          </a>
+          <a href={localLandingPaths[locale]} className="transition-colors hover:text-ink">
+            {locale === "fr" ? "Le salon à Hull" : "The shop in Hull"}
           </a>
         </div>
       </div>

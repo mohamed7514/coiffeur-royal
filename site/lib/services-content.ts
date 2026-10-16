@@ -20,6 +20,9 @@ export type ServiceCopy = {
   tagline: string;
   /** Paragraphe d'introduction de la page. */
   lead: string;
+  /** Résumé court près du prix ; le détail reste disponible dans la page. */
+  summary?: string;
+  heading?: string;
   /** Ce que la séance comprend. */
   includes: string[];
   /** À qui ça s'adresse, ou quand y penser. */
@@ -32,6 +35,8 @@ export const serviceCopy: Record<ServiceId, Pair> = {
   coupe: {
     fr: {
       tagline: "Coupe complète, contours et nuque finis",
+      heading: "Coupe homme",
+      summary: "Ciseaux, tondeuse et dégradé, avec contours et nuque finis. Montrez votre photo avant de commencer.",
       lead: "La coupe du salon, aux ciseaux, à la tondeuse ou les deux selon le résultat visé. Le barbier travaille la longueur, les dégradés et la finition des contours, de la nuque et des pattes. Trente minutes, le temps de faire les choses proprement.",
       includes: [
         "Discussion de la coupe voulue avant de commencer",
@@ -44,6 +49,8 @@ export const serviceCopy: Record<ServiceId, Pair> = {
     },
     en: {
       tagline: "Full cut, lines and neckline finished",
+      heading: "Men’s haircut",
+      summary: "Scissors, clippers and fades, with lines and neckline finished. Bring a photo to discuss your cut.",
       lead: "The shop's haircut — scissors, clippers, or both, depending on the result you want. Your barber works the length, the fade and the finish around the lines, neckline and sideburns. Thirty minutes, enough to do it properly.",
       includes: [
         "A word about the cut you want before anything starts",

@@ -19,9 +19,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const s = serviceBySlug(slug, "fr");
   if (!s) return {};
+  const heading = serviceCopy[s.id].fr.heading ?? s.name;
 
   return {
-    title: `${s.name} à Gatineau — ${price(s.price, "fr")} | Barbier RoyalMK`,
+    title: `${heading} à Gatineau — ${price(s.price, "fr")} | Barbier RoyalMK`,
     description: serviceCopy[s.id].fr.lead.slice(0, 155),
     alternates: {
       canonical: `/services/${s.slug}`,
@@ -34,7 +35,7 @@ export async function generateMetadata({
       type: "article",
       locale: "fr_CA",
       url: `/services/${s.slug}`,
-      title: `${s.name} à Gatineau — ${price(s.price, "fr")}`,
+      title: `${heading} à Gatineau — ${price(s.price, "fr")}`,
       description: serviceCopy[s.id].fr.tagline,
       // L'image de partage commune, au format 1200 × 630. Déclarée ici
       // parce qu'une page qui définit son propre bloc `openGraph` ne

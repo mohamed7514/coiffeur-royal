@@ -1,8 +1,9 @@
 import { business, services, vip, nameFor, servicePath, type Service } from "@/lib/business";
 import { serviceCopy } from "@/lib/services-content";
 import { content, type Locale } from "@/lib/content";
+import { SITE_URL } from "@/lib/site";
 
-const SITE = "https://barbierroyalmk.ca";
+const SITE = SITE_URL;
 
 const hhmm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -17,8 +18,8 @@ const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
  * La note reste affichée à l'écran : c'est l'affichage qui est permis,
  * pas le balisage.
  */
-export function JsonLd({ locale }: { locale: Locale }) {
-  const url = locale === "fr" ? "https://barbierroyalmk.ca/" : "https://barbierroyalmk.ca/en";
+export function JsonLd({ locale, path }: { locale: Locale; path?: string }) {
+  const url = SITE + (path ?? (locale === "fr" ? "/" : "/en"));
 
   const data = {
     "@context": "https://schema.org",
@@ -26,7 +27,7 @@ export function JsonLd({ locale }: { locale: Locale }) {
     name: business.name,
     url,
     telephone: business.phone,
-    image: "https://barbierroyalmk.ca/salon-hd.webp",
+    image: `${SITE}/salon-hd.webp`,
     priceRange: "$$",
     currenciesAccepted: "CAD",
     address: {

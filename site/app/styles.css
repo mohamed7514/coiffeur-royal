@@ -620,6 +620,142 @@
   }
 }
 
+/* Ads landing pages: essential information before the photograph on mobile. */
+@layer components {
+  .landing-wrapper {
+    gap: clamp(3.5rem, 7vw, 7rem);
+    padding-top: 6.25rem;
+  }
+  .landing-hero {
+    display: grid;
+    align-items: start;
+    gap: 2rem;
+  }
+  .landing-service-hero { margin-top: 1.5rem; }
+  .landing-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+  }
+  .landing-title {
+    max-width: 19ch;
+    margin-top: 0.85rem;
+    font-size: clamp(2.1rem, 5vw, 4.5rem);
+    line-height: 1.02;
+  }
+  .landing-lead {
+    max-width: 48ch;
+    margin-top: 1rem;
+    color: var(--color-mute);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .landing-offer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+  .landing-price {
+    flex: none;
+    font-size: clamp(2.75rem, 4.8vw, 4rem);
+    white-space: nowrap;
+  }
+  .landing-address {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    font-style: normal;
+    line-height: 1.5;
+  }
+  .landing-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.25rem 0.75rem;
+    max-width: 30rem;
+    margin-top: 1rem;
+  }
+  .landing-actions .btn {
+    min-height: 3.25rem;
+    padding: 0.8rem 0.5rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.01em;
+  }
+  .landing-actions .landing-call {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .landing-actions .landing-call:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .landing-directions {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2.75rem;
+    border-bottom: 1px solid var(--color-ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .landing-hours {
+    margin-top: 0.8rem;
+    color: var(--color-mute);
+  }
+  .landing-hours > div { font-size: 0.8rem; }
+  .landing-rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.65rem;
+    width: fit-content;
+    margin-top: 0.85rem;
+    font-size: 0.75rem;
+  }
+  .landing-alternatives {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-top: 0.85rem;
+    font-size: 0.75rem;
+  }
+  .landing-alternatives a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .landing-shop-photo { margin: 0; }
+  .landing-shop-photo img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .landing-service-row { align-items: center; }
+  .landing-work-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 1rem;
+    margin-top: 1.5rem;
+  }
+  .landing-work-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .landing-reviews blockquote { font-size: 0.95rem; }
+  .landing-reviews > .grid { margin-top: 1.5rem; padding-top: 1.5rem; }
+  .landing-faq summary { min-height: 2.75rem; align-content: center; }
+  /* These pages use steady actions; the home image sequence keeps its own treatment. */
+  .landing-page .attention-cta::before,
+  .landing-page .attention-sheen::after,
+  .landing-page .attention-cta .attention-icon { animation: none; }
+
+  @media (min-width: 64rem) {
+    .landing-wrapper { padding-top: 8rem; }
+    .landing-hero { grid-template-columns: 1.1fr 0.9fr; gap: 3rem; }
+    .landing-work-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }
+    .landing-shop-photo { align-self: stretch; }
+    .landing-shop-photo img { height: 100%; max-height: 42rem; }
+  }
+}
+
 /* Prominent conversion actions share one treatment across hero, services and bar. */
 @layer components {
   .attention-cta {

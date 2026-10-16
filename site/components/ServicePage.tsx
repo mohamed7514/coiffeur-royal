@@ -15,8 +15,11 @@ import { Visit, Shout, Footer, ActionBar } from "./Visit";
 import { CallBadge } from "./CallBadge";
 import { ServiceJsonLd } from "./JsonLd";
 import { Lines } from "./Lines";
-import { BookingLink } from "./BookingLink";
-import { ActionIcon } from "./ActionIcon";
+import { LandingActions, directionsUrl } from "./LandingActions";
+import { RatingLink } from "./RatingLink";
+import { Reviews } from "./Reviews";
+import { HaircutWork } from "./HaircutWork";
+import { localLandingPaths } from "@/lib/local-landing";
 
 export function ServicePage({ service, locale }: { service: Service; locale: Locale }) {
   const c = content[locale];
@@ -29,12 +32,12 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
   const saved = service.partsTotal ? service.partsTotal - service.price : 0;
 
   return (
-    <>
+    <div className="landing-page">
       <ServiceJsonLd service={service} locale={locale} />
-      <Nav locale={locale} />
+      <Nav locale={locale} languagePaths={{ fr: servicePath(service, "fr"), en: servicePath(service, "en") }} />
 
       <main>
-        <article className="wrapper">
+        <article className="wrapper landing-wrapper">
           <Lines />
 
           <div className="section shell">
@@ -56,71 +59,54 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
               <span>{name}</span>
             </nav>
 
-            <div className="mt-10 grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
+            <div className="landing-hero landing-service-hero">
               <div>
                 <OpenNow locale={locale} className="text-mute" />
 
-                <div className="mini mt-3">{c.svc.all}</div>
+                <div className="mini mt-2">RoyalMK · Hull, Gatineau</div>
 
-                <h1 className="display h1 mt-2">
-                  {name} {c.svc.inCity}
+                <h1 className="display landing-title">
+                  {copy.heading ?? name} {c.svc.inCity}
                 </h1>
 
-                <p className="mt-8 max-w-[44ch] text-[1.05rem] text-mute">{copy.lead}</p>
-
-                <div className="mt-8 flex flex-wrap items-center gap-5" data-primary-actions>
-                  <BookingLink locale={locale} placement={"service-" + service.id} className="attention-cta attention-cta-book">
-                    <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="book" /><span>{c.booking.label}</span>
-                  </BookingLink>
-                  <a href={`tel:${business.phone}`} className="attention-cta attention-cta-call">
-                    <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="call" /><span>{c.nav.call}</span>
-                  </a>
+                <div className="landing-offer" data-landing-price>
+                  <span className="display num landing-price">{price(service.price, locale)}</span>
+                  <div>
+                    <p className="font-semibold">{duration(service.minutes, locale)}</p>
+                    <p className="text-xs text-mute">{locale === "fr" ? "CAD · taxes en sus" : "CAD · taxes extra"}</p>
+                  </div>
                 </div>
 
-                <p className="mt-5 max-w-[46ch] text-[0.85rem] text-mute">{c.svc.walkInNote}</p>
+                {saved > 0 && (
+                  <p className="mt-3 text-sm text-mute">
+                    <s className="num">{price(service.partsTotal ?? 0, locale)}</s>{" "}{c.svc.savings(saved)}
+                  </p>
+                )}
+                <p className="landing-lead">{copy.summary ?? copy.tagline}</p>
+                <address className="landing-address" data-landing-address>
+                  <a href={directionsUrl} target="_blank" rel="noopener noreferrer">
+                    <strong>{business.address.street}</strong><br />Hull, Gatineau
+                  </a>
+                </address>
+                <LandingActions locale={locale} placement={"service-" + service.id} />
+                <p className="mt-3 max-w-[46ch] text-sm text-mute">{c.svc.walkInNote}</p>
+                <RatingLink locale={locale} />
+                {service.id === "coupe" && (
+                  <div className="landing-alternatives">
+                    {allServices.filter((s) => s.id === "enfant" || s.id === "coupe-barbe").map((s) => (
+                      <a key={s.id} href={servicePath(s, locale)} className="underlined">
+                        {nameFor(s, locale)} · {price(s.price, locale)}
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Prix et durée tenus ensemble : les deux questions qu'on se
-                  pose avant de réserver quoi que ce soit. */}
               <div className="self-start">
-                <figure className="m-0 mb-8 max-w-[600px]">
+                <figure className="m-0 max-w-[600px]">
                   <ServicePhoto id={service.id} locale={locale} sizes="(min-width: 1024px) 40vw, (min-width: 640px) 600px, calc(100vw - 32px)" preload />
                   {photo.caption && <figcaption className="mt-3 text-sm text-mute">{photo.caption[locale]}</figcaption>}
                 </figure>
-                <aside className="border-t border-ink pt-6">
-                  <div className="flex flex-wrap gap-12">
-                    <div>
-                      <div className="mini">{c.svc.price}</div>
-                      <div className="display num mt-2 text-[clamp(2.4rem,6vw,3.4rem)] leading-[0.85]">
-                        {price(service.price, locale)}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="mini">{c.svc.duration}</div>
-                      <div className="display num mt-2 text-[clamp(2.4rem,6vw,3.4rem)] leading-[0.85]">
-                        {duration(service.minutes, locale)}
-                      </div>
-                    </div>
-                  </div>
-
-                  {saved > 0 && (
-                    <p className="mt-6 text-[0.85rem] text-mute">
-                      <s className="num">{price(service.partsTotal ?? 0, locale)}</s>{" "}
-                      {c.svc.savings(saved)}
-                    </p>
-                  )}
-
-                  <div className="mt-8 border-t border-rule pt-5">
-                    <div className="mini">{c.visit.addressLabel}</div>
-                    <p className="mt-2 leading-snug">
-                      {business.address.street}
-                      <br />
-                      <span className="text-mute">
-                        {business.address.city}, {business.address.sector}
-                      </span>
-                    </p>
-                  </div>
-                </aside>
               </div>
             </div>
           </div>
@@ -139,9 +125,13 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
 
             <div>
               <h2 className="display h3">{c.svc.forWho}</h2>
-              <p className="mt-6 max-w-[48ch] leading-relaxed text-mute">{copy.forWho}</p>
+              <p className="mt-6 max-w-[48ch] leading-relaxed text-mute">{copy.lead}</p>
+              <p className="mt-4 max-w-[48ch] leading-relaxed text-mute">{copy.forWho}</p>
             </div>
           </div>
+
+          {service.id === "coupe" && <HaircutWork locale={locale} />}
+          <Reviews locale={locale} compact />
 
           <div className="section shell">
             <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3">
@@ -165,6 +155,9 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
                 </a>
               ))}
             </div>
+            <a href={localLandingPaths[locale]} className="underlined mt-6 inline-block text-sm">
+              {locale === "fr" ? "Le salon à Hull : horaires, accès et services" : "The shop in Hull: hours, directions and services"}
+            </a>
           </div>
 
           <Visit locale={locale} />
@@ -175,6 +168,6 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
       <Footer locale={locale} />
       <CallBadge locale={locale} />
       <ActionBar locale={locale} />
-    </>
+    </div>
   );
 }

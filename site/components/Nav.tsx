@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { business } from "@/lib/business";
 import { content, type Locale } from "@/lib/content";
-import { LangToggle } from "./LangToggle";
+import { LangToggle, type LanguagePaths } from "./LangToggle";
 import { BookingLink } from "./BookingLink";
 
 /**
@@ -14,11 +14,17 @@ import { BookingLink } from "./BookingLink";
  * ailleurs — pages de services — il n'y a pas de photo, donc il est noir
  * dès le départ : d'où `overHero`.
  */
-export function Nav({ locale, overHero = false }: { locale: Locale; overHero?: boolean }) {
+export function Nav({ locale, overHero = false, languagePaths, localNavigation = false }: {
+  locale: Locale;
+  overHero?: boolean;
+  languagePaths?: LanguagePaths;
+  localNavigation?: boolean;
+}) {
   const c = content[locale];
   /** Les ancres ne vivent que sur l'accueil : depuis une page de service,
    *  elles doivent y ramener plutôt que de ne rien faire. */
   const home = locale === "fr" ? "/" : "/en";
+  const sectionBase = localNavigation ? "" : home;
   const [solid, setSolid] = useState(!overHero);
 
   useEffect(() => {
@@ -51,15 +57,15 @@ export function Nav({ locale, overHero = false }: { locale: Locale; overHero?: b
     >
       <nav className="hidden items-center gap-6 text-[0.82rem] uppercase tracking-[0.06em] lg:flex">
         <a
-          href={locale === "fr" ? "/services" : "/en/services"}
+          href={localNavigation ? "#services" : locale === "fr" ? "/services" : "/en/services"}
           className="opacity-75 transition-opacity hover:opacity-100"
         >
           {c.nav.services}
         </a>
-        <a href={home + "#travaux"} className="opacity-75 transition-opacity hover:opacity-100">
+        <a href={sectionBase + "#travaux"} className="opacity-75 transition-opacity hover:opacity-100">
           {c.nav.gallery}
         </a>
-        <a href={home + "#visiter"} className="opacity-75 transition-opacity hover:opacity-100">
+        <a href={sectionBase + "#visiter"} className="opacity-75 transition-opacity hover:opacity-100">
           {c.nav.visit}
         </a>
       </nav>
@@ -72,7 +78,7 @@ export function Nav({ locale, overHero = false }: { locale: Locale; overHero?: b
       </a>
 
       <div className="flex items-center justify-end gap-3 md:gap-4 lg:col-start-3">
-        <LangToggle locale={locale} />
+        <LangToggle locale={locale} paths={languagePaths} />
         <a
           href={`tel:${business.phone}`}
           className="hidden text-[0.82rem] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-65 md:inline-flex"

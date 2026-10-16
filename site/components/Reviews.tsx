@@ -10,24 +10,25 @@ import { content, type Locale } from "@/lib/content";
  * Note affichée à l'écran, jamais balisée en aggregateRating : Google
  * interdit de marquer ses propres avis sur son propre site.
  */
-export function Reviews({ locale }: { locale: Locale }) {
+export function Reviews({ locale, compact = false }: { locale: Locale; compact?: boolean }) {
   const c = content[locale];
   const { score, count } = business.rating;
+  const selected = compact ? reviews.slice(-3) : reviews;
 
   return (
-    <section className="section shell">
+    <section className={`section shell${compact ? " landing-reviews" : ""}`}>
       <div className="flex flex-col gap-3">
         <span className="mini">{c.reviews.label}</span>
-        <h2 className="display h2">{c.reviews.title(score, count)}</h2>
+        <h2 className={`display ${compact ? "h3" : "h2"}`}>{c.reviews.title(score, count)}</h2>
       </div>
 
-      {reviews.length === 0 ? (
+      {selected.length === 0 ? (
         <div className="mt-14 border border-dashed border-rule p-8 text-sm leading-relaxed text-mute">
           {c.reviews.empty}
         </div>
       ) : (
         <div className="mt-14 grid gap-8 border-t border-ink pt-10 lg:grid-cols-3 lg:gap-12">
-          {reviews.map((r) => {
+          {selected.map((r) => {
             // Les avis sont écrits moitié en français, moitié en anglais :
             // chaque page montre la traduction quand il le faut, et le dit.
             const other = locale === "fr" ? r.textFr : r.textEn;
@@ -56,7 +57,7 @@ export function Reviews({ locale }: { locale: Locale }) {
                 {/* Les signatures s'alignent en bas, quelle que soit la
                     longueur de l'avis. */}
                 <figcaption className="mt-auto pt-5 font-[family-name:var(--font-label)] text-[0.95rem] text-mute">
-                  {r.author} · <time dateTime={r.date}>{when}</time>
+                  <a href={r.source} target="_blank" rel="noopener noreferrer" className="underlined">{r.author}</a> · <time dateTime={r.approx ? when : r.date}>{when}</time>
                   {translated && (
                     <span className="font-[family-name:var(--font-body)] text-[0.72rem] uppercase tracking-[0.04em]">
                       {" "}
