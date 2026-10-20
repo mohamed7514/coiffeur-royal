@@ -1,3 +1,5 @@
+import type { ServiceId } from "./business";
+
 /**
  * Avis clients repris de la fiche Google.
  *
@@ -43,11 +45,15 @@ export type Review = {
    *  comme les mots d'origine du client : l'affichage le dit. */
   textFr?: string;
   textEn?: string;
+  /** Exact excerpts of the original or its existing translation, for short quotes. */
+  excerpt?: { fr?: string; en?: string };
   /** Note donnée par ce client, de 1 à 5. */
   stars: number;
   /** Lien direct vers l'avis, pour pouvoir le revérifier. */
   source: string;
 };
+
+export type ReviewContext = "local" | ServiceId;
 
 export const reviews: Review[] = [
   {
@@ -90,6 +96,10 @@ export const reviews: Review[] = [
     text: "Je suis allé deux fois chez RoyalMK et je suis vraiment satisfait. Il prend son temps, travaille proprement et avec beaucoup de précision autant pour la barbe que pour la coupe. Ambiance calme, pas de blabla inutile, juste du travail solide et attentionné. Je recommande à 100% à ceux qui veulent un résultat net et pro.",
     textEn:
       "I’ve been to RoyalMK twice and I’m really satisfied. He takes his time and works cleanly, with a lot of precision on the beard as much as on the cut. Quiet atmosphere, no needless chit-chat, just solid, careful work. I recommend it 100% to anyone who wants a sharp, professional result.",
+    excerpt: {
+      fr: "Il prend son temps, travaille proprement et avec beaucoup de précision autant pour la barbe que pour la coupe.",
+      en: "He takes his time and works cleanly, with a lot of precision on the beard as much as on the cut.",
+    },
     stars: 5,
     source: "https://maps.app.goo.gl/6g8FEaRsVedLhkYp9",
   },
@@ -101,6 +111,10 @@ export const reviews: Review[] = [
     text: "Super bel accueil! Des gens chaleureux, ils m’ont fait une place même si je n’avais pas de rendez-vous et la coupe était exactement ce que j’avais demandé. Une nouvelle entreprise que je recommande à tous!",
     textEn:
       "Lovely welcome! Warm people — they made room for me even though I had no appointment, and the cut was exactly what I asked for. A new business I recommend to everyone!",
+    excerpt: {
+      fr: "la coupe était exactement ce que j’avais demandé.",
+      en: "the cut was exactly what I asked for.",
+    },
     stars: 5,
     source: "https://maps.app.goo.gl/iX4oZUp1p6WDURvZ9",
   },
@@ -116,3 +130,33 @@ export const reviews: Review[] = [
     source: "https://maps.app.goo.gl/94gjiAeDVKE6jAxV7",
   },
 ];
+
+const reviewSources = {
+  walkIn: "https://maps.app.goo.gl/iX4oZUp1p6WDURvZ9",
+  haircut: "https://maps.app.goo.gl/94gjiAeDVKE6jAxV7",
+  beard: "https://maps.app.goo.gl/6g8FEaRsVedLhkYp9",
+  kids: "https://maps.app.goo.gl/DVqV9piiBJTDNNeR9",
+} as const;
+
+const compactReviewOrder: Partial<Record<ReviewContext, readonly string[]>> = {
+  local: [reviewSources.walkIn, reviewSources.haircut, reviewSources.beard],
+  coupe: [reviewSources.walkIn, reviewSources.haircut, reviewSources.beard],
+  enfant: [reviewSources.kids, reviewSources.walkIn, reviewSources.haircut],
+  barbe: [reviewSources.beard, reviewSources.walkIn, reviewSources.haircut],
+  "coupe-barbe": [reviewSources.beard, reviewSources.walkIn, reviewSources.haircut],
+};
+
+/** Keep the established selection by default; context only changes its order and relevance.
+ * The historical review mentioning a $25 haircut-and-beard visit is excluded from
+ * these selections because it does not describe the current offer. */
+export function selectCompactReviews(context?: ReviewContext): Review[] {
+  const fallback = reviews.slice(-3);
+  const sources = context ? compactReviewOrder[context] : undefined;
+  if (!sources) return fallback;
+
+  const selected = sources.flatMap((source) => {
+    const review = reviews.find((item) => item.source === source);
+    return review ? [review] : [];
+  });
+  return [...new Set([...selected, ...fallback])].slice(0, 3);
+}

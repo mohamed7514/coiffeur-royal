@@ -739,6 +739,23 @@
     margin-top: 1.5rem;
   }
   .landing-work-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .landing-arrival { display: grid; gap: 2rem; align-items: start; }
+  .review-highlight {
+    max-width: 52rem;
+    margin: 0;
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--color-ink);
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .review-highlight-label { font-size: 0.75rem; color: var(--color-mute); }
+  .review-highlight-quote {
+    margin: 0.8rem 0 1rem;
+    font-size: clamp(1.25rem, 2.5vw, 1.85rem);
+    line-height: 1.4;
+  }
+  .review-highlight-source { font-size: 0.85rem; }
+  .review-highlight-source a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+  .review-highlight-translated { color: var(--color-mute); font-size: 0.75rem; }
   .landing-reviews blockquote { font-size: 0.95rem; }
   .landing-reviews > .grid { margin-top: 1.5rem; padding-top: 1.5rem; }
   .landing-faq summary { min-height: 2.75rem; align-content: center; }
@@ -751,6 +768,8 @@
     .landing-wrapper { padding-top: 8rem; }
     .landing-hero { grid-template-columns: 1.1fr 0.9fr; gap: 3rem; }
     .landing-work-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; }
+    .landing-work-grid-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .landing-arrival { grid-template-columns: 1.1fr 0.9fr; gap: 3rem; }
     .landing-shop-photo { align-self: stretch; }
     .landing-shop-photo img { height: 100%; max-height: 42rem; }
   }

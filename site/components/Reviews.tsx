@@ -1,5 +1,5 @@
 import { business } from "@/lib/business";
-import { reviews } from "@/lib/reviews";
+import { reviews, selectCompactReviews, type ReviewContext } from "@/lib/reviews";
 import { content, type Locale } from "@/lib/content";
 
 /**
@@ -10,10 +10,14 @@ import { content, type Locale } from "@/lib/content";
  * Note affichée à l'écran, jamais balisée en aggregateRating : Google
  * interdit de marquer ses propres avis sur son propre site.
  */
-export function Reviews({ locale, compact = false }: { locale: Locale; compact?: boolean }) {
+export function Reviews({ locale, compact = false, context }: {
+  locale: Locale;
+  compact?: boolean;
+  context?: ReviewContext;
+}) {
   const c = content[locale];
   const { score, count } = business.rating;
-  const selected = compact ? reviews.slice(-3) : reviews;
+  const selected = compact ? selectCompactReviews(context) : reviews;
 
   return (
     <section className={`section shell${compact ? " landing-reviews" : ""}`}>
@@ -77,5 +81,35 @@ export function Reviews({ locale, compact = false }: { locale: Locale; compact?:
         </a>
       </div>
     </section>
+  );
+}
+
+/** A short, sourced quote from the first review relevant to this page. */
+export function ReviewHighlight({ locale, context }: { locale: Locale; context: ReviewContext }) {
+  const review = selectCompactReviews(context)[0];
+  if (!review) return null;
+
+  const other = locale === "fr" ? review.textFr : review.textEn;
+  const translated = review.lang !== locale && Boolean(other);
+  const excerpt = review.excerpt?.[locale];
+  const text = excerpt ?? (translated ? other : review.text);
+
+  return (
+    <figure className="review-highlight">
+      <span className="review-highlight-label">
+        {locale === "fr"
+          ? excerpt ? "Extrait d’un avis Google" : "Avis Google"
+          : excerpt ? "Excerpt from a Google review" : "Google review"}
+      </span>
+      <blockquote className="review-highlight-quote">{text}</blockquote>
+      <figcaption className="review-highlight-source">
+        <a href={review.source} target="_blank" rel="noopener noreferrer" className="underlined">
+          {review.author}
+        </a>
+        {translated && (
+          <span className="review-highlight-translated"> · {content[locale].reviews.translated}</span>
+        )}
+      </figcaption>
+    </figure>
   );
 }

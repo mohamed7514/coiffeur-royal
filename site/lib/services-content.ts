@@ -36,8 +36,8 @@ export const serviceCopy: Record<ServiceId, Pair> = {
     fr: {
       tagline: "Coupe complète, contours et nuque finis",
       heading: "Coupe homme",
-      summary: "Ciseaux, tondeuse et dégradé, avec contours et nuque finis. Montrez votre photo avant de commencer.",
-      lead: "La coupe du salon, aux ciseaux, à la tondeuse ou les deux selon le résultat visé. Le barbier travaille la longueur, les dégradés et la finition des contours, de la nuque et des pattes. Trente minutes, le temps de faire les choses proprement.",
+      summary: "Coupe aux ciseaux ou à la tondeuse, contours et nuque finis, puis coiffage. Apportez une photo pour discuter du résultat souhaité.",
+      lead: "Avant de commencer, discutez de la longueur et de la finition souhaitées avec le barbier. La coupe se fait aux ciseaux, à la tondeuse ou avec les deux, puis les contours, la nuque et les pattes sont repris. Le coiffage est inclus.",
       includes: [
         "Discussion de la coupe voulue avant de commencer",
         "Coupe aux ciseaux, à la tondeuse, ou les deux",
@@ -45,121 +45,136 @@ export const serviceCopy: Record<ServiceId, Pair> = {
         "Coiffage en fin de séance",
       ],
       forWho:
-        "Pour un entretien régulier comme pour un changement de style. Si vous hésitez sur la longueur, venez avec une photo : c'est le moyen le plus sûr de se comprendre.",
+        "Pour entretenir votre coupe ou changer de longueur. Vous pouvez montrer une photo au barbier pour préciser ce que vous souhaitez garder ou modifier.",
     },
     en: {
-      tagline: "Full cut, lines and neckline finished",
+      tagline: "Haircut with edges and neckline finished",
       heading: "Men’s haircut",
-      summary: "Scissors, clippers and fades, with lines and neckline finished. Bring a photo to discuss your cut.",
-      lead: "The shop's haircut — scissors, clippers, or both, depending on the result you want. Your barber works the length, the fade and the finish around the lines, neckline and sideburns. Thirty minutes, enough to do it properly.",
+      summary: "Scissors or clippers, with your edges and neckline finished and your hair styled. Bring a photo to discuss the cut you want.",
+      lead: "Discuss the length and finish you want with your barber before the cut starts. Your haircut uses scissors, clippers or both, with the edges, neckline and sideburns finished. Styling is included.",
       includes: [
-        "A word about the cut you want before anything starts",
+        "Discuss your haircut before we start",
         "Scissor work, clipper work, or both",
-        "Lines, neckline and sideburns finished",
+        "Edges, neckline and sideburns finished",
         "Styled before you leave",
       ],
       forWho:
-        "For a regular trim or a change of style. If you are unsure about length, bring a photo — it is the surest way to be understood.",
+        "For a regular trim or a change in length. Show your barber a reference photo to explain what you would like to keep or change.",
     },
   },
 
   enfant: {
     fr: {
-      tagline: "Même travail, au rythme de l’enfant",
-      lead: "La même coupe que pour un adulte, menée au rythme de l'enfant. Le barbier prend le temps qu'il faut, explique ce qu'il fait, et s'arrête si ça devient trop. Trente minutes pour prendre le temps, même si la coupe en prend quinze.",
+      tagline: "Une coupe au rythme de votre enfant",
+      heading: "Coupe enfant",
+      summary: "Une coupe adaptée à votre enfant, avec finition des contours et de la nuque. Des pauses au besoin et un parent bienvenu près du fauteuil.",
+      lead: "Le barbier adapte la coupe à votre enfant, avec des pauses si nécessaire. Les contours et la nuque sont finis pendant la séance. Un parent peut rester à côté du fauteuil.",
       includes: [
         "Coupe adaptée à l'âge et à la texture des cheveux",
         "Finition des contours et de la nuque",
-        "Pauses au besoin, sans précipiter",
+        "Pauses si nécessaire",
       ],
       forWho:
-        "Pour les enfants, jusqu'à l'âge où ils passent naturellement à la coupe adulte. Pour une première visite, un parent peut rester à côté du fauteuil.",
+        "Pour entretenir la coupe de votre enfant ou préparer sa première visite chez le barbier. Vous pouvez apporter une photo de la coupe souhaitée.",
     },
     en: {
-      tagline: "Same work, at the child’s pace",
-      lead: "The same haircut as for an adult, done at the child's pace. Your barber takes the time it needs, explains what he is doing, and stops if it gets to be too much. Thirty minutes are set aside even when the cut takes fifteen.",
+      tagline: "A haircut at your child’s pace",
+      heading: "Kids’ haircut",
+      summary: "A haircut suited to your child, with edges and neckline finished. Breaks when needed, and a parent is welcome beside the chair.",
+      lead: "Your barber adapts the haircut to your child, with breaks when needed. The service includes finishing the edges and neckline. A parent is welcome to stay beside the chair.",
       includes: [
         "Cut suited to the child's age and hair texture",
-        "Lines and neckline finished",
-        "Breaks whenever they help, with nothing rushed",
+        "Edges and neckline finished",
+        "Breaks when needed",
       ],
       forWho:
-        "For children, up to the age where they move on to the adult cut. On a first visit, a parent is welcome beside the chair.",
+        "For a regular trim or your child’s first visit to the barber. Bring a reference photo if you have a particular cut in mind.",
     },
   },
 
   "coupe-barbe": {
     fr: {
-      tagline: "Les deux en une visite, 8 $ de moins",
-      lead: "La coupe et la barbe dans la même séance, pensées ensemble. C'est la différence entre une coupe correcte et une tête qui se tient : la ligne de barbe se décide en fonction de la coupe, pas séparément. Pris à la pièce, les deux coûtent 44 $.",
+      tagline: "Coupe et barbe ensemble : économisez 8 $",
+      heading: "Coupe + barbe",
+      summary: "Votre coupe et votre barbe dans la même séance, avec les contours et les finitions. Économisez 8 $ sur les deux services pris séparément.",
+      lead: "La coupe de cheveux et la taille de barbe sont réunies dans un seul rendez-vous. Le barbier travaille la longueur, la forme de la barbe et les contours. À 36 $, la formule coûte 8 $ de moins que la coupe à 25 $ et la barbe à 19 $ prises séparément.",
       includes: [
         "Coupe complète, contours et nuque finis",
         "Barbe mise en forme et longueur égalisée",
-        "Lignes de barbe tracées en accord avec la coupe",
+        "Contours des joues et du cou retracés",
         "Coiffage en fin de séance",
       ],
       forWho:
-        "Pour qui porte la barbe et veut que l'ensemble se tienne. C'est aussi la formule la plus simple quand on espace les visites.",
+        "Pour faire entretenir votre coupe et votre barbe au même rendez-vous. Choisissez cette formule si vous avez besoin des deux services.",
     },
     en: {
-      tagline: "Both in one visit, $8 less",
-      lead: "Haircut and beard in the same sitting, worked as one. That is the difference between a decent cut and a head that holds together: the beard line is decided against the cut, not on its own. Taken separately, the two come to $44.",
+      tagline: "Haircut and beard together: save $8",
+      heading: "Haircut + beard",
+      summary: "A haircut and beard trim in one visit, with the edges and neckline finished. Save $8 compared with booking the two services separately.",
+      lead: "Get your haircut and beard trim in the same appointment. Your barber works on the length, beard shape and edges. At $36, the package saves you $8 compared with a $25 haircut and a $19 beard trim booked separately.",
       includes: [
-        "Full haircut, lines and neckline finished",
+        "Full haircut, edges and neckline finished",
         "Beard shaped and evened out",
-        "Beard lines drawn to match the cut",
+        "Cheek and neck lines defined",
         "Styled before you leave",
       ],
       forWho:
-        "For anyone who wears a beard and wants the whole thing to hold together. It is also the simplest option when you space out visits.",
+        "For maintaining your haircut and beard in the same appointment. Choose this package when you need both services.",
     },
   },
 
   barbe: {
     fr: {
       tagline: "Mise en forme, lignes et longueur",
-      lead: "La barbe reprise en entier : longueur égalisée, épaisseur dégradée là où il faut, et les lignes retracées au niveau des joues et du cou. C'est le tracé du cou qui fait la différence entre une barbe entretenue et une barbe qui a poussé.",
+      heading: "Taille de barbe",
+      summary: "Longueur égalisée, contours des joues et du cou redessinés, moustache reprise. Pour entretenir votre barbe en gardant la forme souhaitée.",
+      lead: "Discutez de la longueur à conserver avec le barbier avant la taille. La barbe est égalisée et mise en forme, les contours des joues et du cou sont retracés, puis la moustache est reprise.",
       includes: [
         "Longueur égalisée sur l'ensemble",
-        "Dégradé des joues vers le menton",
+        "Mise en forme de la barbe",
         "Lignes de joues et de cou retracées",
         "Moustache reprise",
       ],
       forWho:
-        "Pour entretenir une barbe existante. Toutes les deux à trois semaines, c'est le rythme qui garde une barbe nette sans la raccourcir.",
+        "Pour entretenir une barbe existante. Vous souhaitez aussi une coupe de cheveux ? La formule coupe + barbe réunit les deux services à 36 $.",
     },
     en: {
       tagline: "Shape, lines and length",
-      lead: "The whole beard taken in hand: length evened out, bulk faded where it needs to be, and the cheek and neck lines drawn again. The neckline is what separates a kept beard from one that has simply grown.",
+      heading: "Beard trim",
+      summary: "Even length, defined cheek and neck lines, and a tidy moustache. Maintain the beard you already have and discuss the shape you want.",
+      lead: "Tell your barber how much length you want to keep before the trim. Your beard is evened out and shaped, the cheek and neck lines are defined, and your moustache is tidied.",
       includes: [
         "Length evened out across the beard",
-        "Faded from the cheeks down to the chin",
-        "Cheek and neck lines redrawn",
+        "Beard shaped",
+        "Cheek and neck lines defined",
         "Moustache tidied",
       ],
       forWho:
-        "For keeping an existing beard. Every two to three weeks is the rhythm that holds a beard sharp without shortening it.",
+        "For maintaining an existing beard. Need a haircut too? The haircut and beard package includes both services for $36.",
     },
   },
 
   rasage: {
     fr: {
       tagline: "Rasage complet au rasoir",
-      lead: "Un rasage complet au rasoir, mené du début à la fin par le barbier. C'est plus net que ce qu'une tondeuse ou un rasoir électrique permet d'obtenir, et c'est une demi-heure assis sans rien faire.",
+      heading: "Rasage au rasoir",
+      summary: "Un rasage complet du visage au rasoir, avec le travail des contours. Choisissez ce service si vous souhaitez un visage entièrement rasé.",
+      lead: "Le barbier réalise le rasage complet du visage au rasoir et travaille les contours. Ce service convient si vous souhaitez retirer votre barbe plutôt que la tailler.",
       includes: [
         "Rasage complet du visage au rasoir",
-        "Travail des contours",
-        "Trente minutes pour prendre le temps",
+        "Travail des contours du visage",
       ],
       forWho:
-        "Pour un visage net, ou avant une occasion. Si vous n'avez jamais essayé le rasoir en salon, dites-le au barbier en arrivant.",
+        "Pour un visage rasé de près. Si vous souhaitez conserver votre barbe et en entretenir la forme, choisissez plutôt la taille de barbe.",
     },
     en: {
-      tagline: "A full razor shave",
-      lead: "A full shave with the razor, handled start to finish by your barber. It is cleaner than anything clippers or an electric razor will give you, and it is half an hour sitting down doing nothing.",
-      includes: ["Full face shave with the razor", "Edges worked", "Thirty minutes set aside"],
+      tagline: "A full face shave with a razor",
+      heading: "Razor shave",
+      summary: "A full face shave with a razor, with the edges finished. Choose this service when you want a clean-shaven face rather than a beard trim.",
+      lead: "Your barber shaves your face with a razor and finishes the edges. Choose this service if you want to remove your beard rather than trim it.",
+      includes: ["Full face shave with a razor", "Facial edges finished"],
       forWho:
-        "For a clean face, or ahead of an occasion. If you have never had a shop shave, say so when you arrive.",
+        "For a clean-shaven look. If you want to keep your beard and maintain its shape, choose a beard trim instead.",
     },
   },
 
@@ -199,27 +214,31 @@ export const serviceCopy: Record<ServiceId, Pair> = {
   vip: {
     fr: {
       tagline: "Coupe, barbe, shampooing et soins en une heure",
-      lead: "Tout en une visite : la coupe, la barbe, le shampooing et les soins complets. Une heure de soins, sans se presser. Pris séparément, l'ensemble revient à 65 $.",
+      heading: "Forfait VIP",
+      summary: "Coupe, barbe, shampooing et soins dans un rendez-vous d’une heure. Appelez le salon pour connaître le détail des soins inclus.",
+      lead: "Le forfait VIP réunit la coupe de cheveux, la taille de barbe, le shampooing et des soins dans un rendez-vous de 60 minutes, à 55 $ taxes en sus.",
       includes: [
         "Coupe complète, contours et nuque finis",
         "Barbe mise en forme, lignes retracées",
         "Shampooing au bac",
-        "Soins complets",
+        "Soins complémentaires du forfait",
       ],
       forWho:
-        "Quand on veut tout régler d'un coup, ou avant une occasion. C'est aussi le créneau le plus long du salon : une heure, l'esprit ailleurs.",
+        "Pour regrouper votre coupe, votre barbe, votre shampooing et les soins dans la même visite. Pour connaître les soins inclus dans ce forfait, appelez le salon avant de réserver.",
     },
     en: {
-      tagline: "Haircut, beard, shampoo and care in an hour",
-      lead: "Everything in one visit: the haircut, the beard, the shampoo and full care. A full hour set aside, nothing rushed. Taken separately, the same adds up to $65.",
+      tagline: "Haircut, beard trim, shampoo and care in one hour",
+      heading: "VIP package",
+      summary: "Haircut, beard trim, shampoo and care in a one-hour appointment. Call the shop for details about the care included.",
+      lead: "The VIP package includes a haircut, beard trim, shampoo and care in a 60-minute appointment for $55, taxes extra.",
       includes: [
-        "Full haircut, lines and neckline finished",
-        "Beard shaped, lines redrawn",
+        "Full haircut, edges and neckline finished",
+        "Beard shaped, cheek and neck lines defined",
         "Wash at the basin",
-        "Full care",
+        "Additional care included in the package",
       ],
       forWho:
-        "For settling everything at once, or ahead of an occasion. It is also the shop's longest slot: an hour with your mind elsewhere.",
+        "For a haircut, beard trim, shampoo and care in the same visit. Call the shop before booking to find out which care services are included.",
     },
   },
 };

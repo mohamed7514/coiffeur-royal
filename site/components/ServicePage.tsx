@@ -26,10 +26,13 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
   const copy = serviceCopy[service.id][locale];
   const name = nameFor(service, locale);
   const photo = serviceImages[service.id];
-  /** Quatre suggestions : une rangée pleine sur grand écran, deux sur
-   *  tablette. Les sept autres laisseraient une case vide en fin de grille. */
-  const others = allServices.filter((s) => s.id !== service.id).slice(0, 4);
-  const saved = service.partsTotal ? service.partsTotal - service.price : 0;
+  const relatedIds = service.id === "barbe" || service.id === "rasage"
+    ? ["barbe", "rasage", "coupe-barbe", "coupe"]
+    : ["coupe", "coupe-barbe", "enfant", "barbe", "rasage"];
+  const others = relatedIds.filter(id => id !== service.id).slice(0, 4)
+    .map(id => allServices.find(s => s.id === id)!);
+  const saved = service.id === "coupe-barbe" && service.partsTotal
+    ? service.partsTotal - service.price : 0;
 
   return (
     <div className="landing-page">
@@ -66,7 +69,7 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
                 <div className="mini mt-2">RoyalMK · Hull, Gatineau</div>
 
                 <h1 className="display landing-title">
-                  {copy.heading ?? name} {c.svc.inCity}
+                  {copy.heading ?? name}
                 </h1>
 
                 <div className="landing-offer" data-landing-price>
@@ -91,9 +94,11 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
                 <LandingActions locale={locale} placement={"service-" + service.id} />
                 <p className="mt-3 max-w-[46ch] text-sm text-mute">{c.svc.walkInNote}</p>
                 <RatingLink locale={locale} />
-                {service.id === "coupe" && (
+                {(service.id === "coupe" || service.id === "barbe" || service.id === "rasage") && (
                   <div className="landing-alternatives">
-                    {allServices.filter((s) => s.id === "enfant" || s.id === "coupe-barbe").map((s) => (
+                    {allServices.filter((s) => service.id === "coupe"
+                      ? s.id === "enfant" || s.id === "coupe-barbe"
+                      : s.id !== service.id && (s.id === "barbe" || s.id === "rasage" || s.id === "coupe-barbe")).map((s) => (
                       <a key={s.id} href={servicePath(s, locale)} className="underlined">
                         {nameFor(s, locale)} · {price(s.price, locale)}
                       </a>
@@ -110,6 +115,8 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
               </div>
             </div>
           </div>
+
+          {service.id === "coupe" && <HaircutWork locale={locale} />}
 
           <div className="section shell grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
@@ -130,8 +137,7 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
             </div>
           </div>
 
-          {service.id === "coupe" && <HaircutWork locale={locale} />}
-          <Reviews locale={locale} compact />
+          <Reviews locale={locale} compact context={service.id} />
 
           <div className="section shell">
             <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3">

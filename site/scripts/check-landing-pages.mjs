@@ -86,7 +86,7 @@ try {
         assert.match(measured.address.text, /331 boul\. Saint-Joseph/, path);
         assert.equal(measured.phone, "tel:+18193180861", path);
         assert.equal(measured.booking, "https://getsquire.com/booking/book/royalmk-gatineau/barber/khadija-ayad/services", path);
-        assert.equal(measured.reviews, 3, path);
+        assert.ok(measured.reviews >= 1, `No customer review: ${path}`);
         assert.equal(measured.heroMedia, 0, path);
         assert.equal(measured.frames, 0, `Map loaded before user interaction: ${path}`);
         assert.ok(!JSON.stringify(measured.structuredData).includes("barbierroyalmk.ca"), path);
