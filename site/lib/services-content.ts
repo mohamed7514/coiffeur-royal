@@ -75,7 +75,7 @@ export const serviceCopy: Record<ServiceId, Pair> = {
         "Pauses si nécessaire",
       ],
       forWho:
-        "Pour entretenir la coupe de votre enfant ou préparer sa première visite chez le barbier. Vous pouvez apporter une photo de la coupe souhaitée.",
+        "Pour entretenir la coupe de votre enfant ou préparer sa première visite chez le barbier. Si vous hésitez entre le tarif enfant et le tarif homme, appelez le salon avant de réserver.",
     },
     en: {
       tagline: "A haircut at your child’s pace",
@@ -88,7 +88,7 @@ export const serviceCopy: Record<ServiceId, Pair> = {
         "Breaks when needed",
       ],
       forWho:
-        "For a regular trim or your child’s first visit to the barber. Bring a reference photo if you have a particular cut in mind.",
+        "For a regular trim or your child’s first visit to the barber. If you are unsure whether the kids’ or men’s rate applies, call the shop before booking.",
     },
   },
 
@@ -180,18 +180,22 @@ export const serviceCopy: Record<ServiceId, Pair> = {
 
   epilation: {
     fr: {
-      tagline: "Les zones du visage, en complément",
-      lead: "L'épilation des zones du visage, en complément d'une coupe ou seule. Dix dollars, et ça règle ce qu'aucune tondeuse n'atteint proprement.",
-      includes: ["Zones du visage au choix", "Peut s'ajouter à une coupe ou à une barbe"],
+      tagline: "Épilation du visage, seule ou en complément",
+      heading: "Épilation du visage",
+      summary: "Une épilation du visage, seule ou avec une coupe. Appelez le salon pour connaître les zones traitées et la méthode proposée.",
+      lead: "Une prestation pour retirer les poils de certaines zones du visage. Renseignez-vous auprès du salon sur les zones traitées et la méthode utilisée avant votre visite.",
+      includes: ["Épilation du visage", "Peut s'ajouter à une coupe ou à une barbe"],
       forWho:
-        "Souvent ajouté à une coupe plutôt que pris seul. Mentionnez-le en arrivant, et le barbier l'intègre à la séance.",
+        "Pour compléter une coupe ou prendre cette prestation seule. Précisez les zones souhaitées au salon avant de réserver.",
     },
     en: {
-      tagline: "Facial areas, as an add-on",
-      lead: "Waxing of the facial areas, alongside a haircut or on its own. Ten dollars, and it handles what no trimmer reaches cleanly.",
-      includes: ["Facial areas of your choice", "Can be added to a haircut or a beard trim"],
+      tagline: "Facial hair removal, on its own or as an add-on",
+      heading: "Facial hair removal",
+      summary: "Facial hair removal, on its own or with a haircut. Call the shop to ask which areas are treated and which method is used.",
+      lead: "A service for removing hair from certain areas of the face. Ask the shop which areas are treated and which method is used before your visit.",
+      includes: ["Facial hair removal", "Can be added to a haircut or a beard trim"],
       forWho:
-        "Usually added to a haircut rather than taken on its own. Mention it when you arrive and your barber will work it in.",
+        "Book on its own or alongside a haircut. Tell the shop which areas you would like treated before booking.",
     },
   },
 
@@ -213,32 +217,30 @@ export const serviceCopy: Record<ServiceId, Pair> = {
 
   vip: {
     fr: {
-      tagline: "Coupe, barbe, shampooing et soins en une heure",
+      tagline: "Coupe, barbe et shampooing en une heure",
       heading: "Forfait VIP",
-      summary: "Coupe, barbe, shampooing et soins dans un rendez-vous d’une heure. Appelez le salon pour connaître le détail des soins inclus.",
-      lead: "Le forfait VIP réunit la coupe de cheveux, la taille de barbe, le shampooing et des soins dans un rendez-vous de 60 minutes, à 55 $ taxes en sus.",
+      summary: "Coupe, taille de barbe et shampooing dans un rendez-vous d’une heure. Appelez le salon pour connaître le détail des soins du forfait.",
+      lead: "Le forfait VIP comprend la coupe de cheveux, la taille de barbe et le shampooing. Le rendez-vous dure 60 minutes, à 55 $ taxes en sus.",
       includes: [
         "Coupe complète, contours et nuque finis",
         "Barbe mise en forme, lignes retracées",
         "Shampooing au bac",
-        "Soins complémentaires du forfait",
       ],
       forWho:
-        "Pour regrouper votre coupe, votre barbe, votre shampooing et les soins dans la même visite. Pour connaître les soins inclus dans ce forfait, appelez le salon avant de réserver.",
+        "Pour regrouper votre coupe, votre barbe et votre shampooing dans la même visite. Appelez le salon pour connaître le détail des soins du forfait avant de réserver.",
     },
     en: {
-      tagline: "Haircut, beard trim, shampoo and care in one hour",
+      tagline: "Haircut, beard trim and shampoo in one hour",
       heading: "VIP package",
-      summary: "Haircut, beard trim, shampoo and care in a one-hour appointment. Call the shop for details about the care included.",
-      lead: "The VIP package includes a haircut, beard trim, shampoo and care in a 60-minute appointment for $55, taxes extra.",
+      summary: "A haircut, beard trim and shampoo in a one-hour appointment. Call the shop for details about the care offered with this package.",
+      lead: "The VIP package includes a haircut, beard trim and shampoo in a 60-minute appointment for $55, taxes extra.",
       includes: [
         "Full haircut, edges and neckline finished",
         "Beard shaped, cheek and neck lines defined",
         "Wash at the basin",
-        "Additional care included in the package",
       ],
       forWho:
-        "For a haircut, beard trim, shampoo and care in the same visit. Call the shop before booking to find out which care services are included.",
+        "For a haircut, beard trim and shampoo in the same visit. Call the shop for details about the care offered with this package before booking.",
     },
   },
 };

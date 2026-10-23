@@ -136,7 +136,7 @@ export function DesignB() {
             <div>
               <div className={s.invertPrice}>{price(vip.price, "fr")}</div>
               <p className={s.invertWas}>
-                au lieu de {price(vip.partsTotal ?? 0, "fr")} à la pièce
+                Une heure réservée · détail des soins auprès du salon
               </p>
               <a
                 href={`tel:${business.phone}`}

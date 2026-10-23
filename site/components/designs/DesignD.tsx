@@ -228,7 +228,7 @@ export function DesignD() {
                 <div>
                   <div className={s.vipPrice}>{price(vip.price, "fr")}</div>
                   <p className={s.vipWas}>
-                    au lieu de {price(vip.partsTotal ?? 0, "fr")} à la pièce
+                    Une heure réservée · détail des soins auprès du salon
                   </p>
                 </div>
               </div>

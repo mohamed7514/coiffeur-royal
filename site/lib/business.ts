@@ -125,7 +125,7 @@ export const services: Service[] = [
     slug: "epilation-faciale",
     slugEn: "facial-waxing",
     name: "Épilation Faciale",
-    nameEn: "Facial Waxing",
+    nameEn: "Facial Hair Removal",
     minutes: 30,
     price: 10,
   },
@@ -140,7 +140,7 @@ export const services: Service[] = [
   },
 ];
 
-/** Le forfait est traité à part sur l'accueil : c'est l'offre à pousser. */
+/** Forfait présenté séparément ; aucune comparaison tarifaire sans détail confirmé. */
 export const vip: Service = {
   id: "vip",
   slug: "forfait-vip",
@@ -149,10 +149,8 @@ export const vip: Service = {
   nameEn: "VIP Package",
   minutes: 60,
   price: 55,
-  /** Coupe 25 + barbe 19 + shampooing 4 + soins = l'écart à montrer. */
-  partsTotal: 65,
-  includes: ["Coupe de Cheveux", "Taillage de Barbe", "Shampooing", "Soins complets"],
-  includesEn: ["Haircut", "Beard trim", "Shampoo", "Full care"],
+  includes: ["Coupe de Cheveux", "Taillage de Barbe", "Shampooing"],
+  includesEn: ["Haircut", "Beard trim", "Shampoo"],
 };
 
 /** Tout ce qui mérite sa page. */

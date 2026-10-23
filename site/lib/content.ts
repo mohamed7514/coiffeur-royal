@@ -12,7 +12,7 @@ export const content = {
 
     nav: {
       services: "Services",
-      gallery: "Travaux",
+      gallery: "Nos coupes",
       visit: "Nous trouver",
       call: "Appeler",
       book: "Réserver",
@@ -68,7 +68,7 @@ export const content = {
       label: "Nos services",
       title: "Voici la liste des prix.",
       aLaCarte: "À la carte",
-      lead: "Prix de base, taxes en sus. Chaque ligne ouvre sa page.",
+      lead: "Tarifs en dollars canadiens, taxes en sus.",
       durationLabel: "Durée",
       go: "Voir",
       note: "Prix en dollars canadiens, taxes en sus. Paiement au salon.",
@@ -94,17 +94,16 @@ export const content = {
 
     vip: {
       label: "Forfait VIP",
-      title: "Tout, en une heure",
+      title: "Un rendez-vous d’une heure",
       included: "inclus",
-      body: "Coupe, barbe, shampooing et soins complets en une seule visite.",
-      savings: (saved: number) => `Soit ${saved} $ de moins qu'à la pièce.`,
-      insteadOf: (n: number) => `au lieu de ${n} $ à la pièce`,
+      body: "Coupe, taille de barbe et shampooing dans la même visite.",
+      note: "Pour connaître le détail des soins du forfait, appelez le salon.",
     },
 
     gallery: {
       label: "Notre travail",
       title: "Ce qu’on fait de mieux.",
-      lead: "Des coupes faites au salon, cette semaine.",
+      lead: "Des coupes réalisées au salon.",
       empty:
         "Les photos du salon viennent ici. Déposez-les dans site/public/travaux/ puis listez-les dans lib/gallery.ts.",
     },
@@ -201,7 +200,7 @@ export const content = {
       label: "Our services",
       title: "See our price list.",
       aLaCarte: "À la carte",
-      lead: "Base prices, taxes extra. Each line opens its page.",
+      lead: "Prices in Canadian dollars, taxes extra.",
       durationLabel: "Length",
       go: "View",
       note: "Canadian dollars, taxes extra. Payment at the shop.",
@@ -227,17 +226,16 @@ export const content = {
 
     vip: {
       label: "VIP Package",
-      title: "Everything, in an hour",
+      title: "A one-hour appointment",
       included: "included",
-      body: "Haircut, beard, shampoo and full care in a single visit.",
-      savings: (saved: number) => `That’s $${saved} less than taking them separately.`,
-      insteadOf: (n: number) => `instead of $${n} taken separately`,
+      body: "A haircut, beard trim and shampoo in the same visit.",
+      note: "Call the shop for details about the care offered with this package.",
     },
 
     gallery: {
       label: "Our work",
       title: "What we do best.",
-      lead: "Cuts done at the shop this week.",
+      lead: "Haircuts done at the shop.",
       empty:
         "Shop photos go here. Drop them in site/public/travaux/ and list them in lib/gallery.ts.",
     },

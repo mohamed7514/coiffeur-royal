@@ -123,7 +123,7 @@ export function DesignA() {
           <div className={s.vipLabel}>Forfait VIP</div>
           <div className={s.vipPrice}>{price(vip.price, "fr")}</div>
           <p className={s.vipWas}>
-            au lieu de {price(vip.partsTotal ?? 0, "fr")} à la pièce — une heure réservée
+            Une heure réservée · détail des soins auprès du salon
           </p>
           <ul className={s.vipList}>
             {(vip.includes ?? []).map((i) => (

@@ -14,17 +14,19 @@ import { BookingLink } from "./BookingLink";
  * ailleurs — pages de services — il n'y a pas de photo, donc il est noir
  * dès le départ : d'où `overHero`.
  */
-export function Nav({ locale, overHero = false, languagePaths, localNavigation = false }: {
+export function Nav({ locale, overHero = false, languagePaths, localNavigation = false, sectionLinks }: {
   locale: Locale;
   overHero?: boolean;
   languagePaths?: LanguagePaths;
   localNavigation?: boolean;
+  sectionLinks?: { gallery?: string; visit?: string };
 }) {
   const c = content[locale];
-  /** Les ancres ne vivent que sur l'accueil : depuis une page de service,
-   *  elles doivent y ramener plutôt que de ne rien faire. */
+  /** Each page can link to its own sections while keeping a home fallback. */
   const home = locale === "fr" ? "/" : "/en";
   const sectionBase = localNavigation ? "" : home;
+  const galleryHref = sectionLinks?.gallery ?? sectionBase + "#travaux";
+  const visitHref = sectionLinks?.visit ?? sectionBase + "#visiter";
   const [solid, setSolid] = useState(!overHero);
 
   useEffect(() => {
@@ -62,10 +64,10 @@ export function Nav({ locale, overHero = false, languagePaths, localNavigation =
         >
           {c.nav.services}
         </a>
-        <a href={sectionBase + "#travaux"} className="opacity-75 transition-opacity hover:opacity-100">
+        <a href={galleryHref} className="opacity-75 transition-opacity hover:opacity-100">
           {c.nav.gallery}
         </a>
-        <a href={sectionBase + "#visiter"} className="opacity-75 transition-opacity hover:opacity-100">
+        <a href={visitHref} className="opacity-75 transition-opacity hover:opacity-100">
           {c.nav.visit}
         </a>
       </nav>

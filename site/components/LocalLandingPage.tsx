@@ -107,6 +107,7 @@ export function LocalLandingPage({ locale }: { locale: Locale }) {
         <section className="section shell landing-arrival">
           <div className="landing-faq">
             <h2 className="display h3">{copy.faqTitle}</h2>
+            <p className="mt-4 max-w-[65ch] text-mute">{copy.appointmentNote}</p>
             <div className="mt-6 border-t border-ink">
               {faqs.map(([question, answer]) => (
                 <details key={question} className="border-b border-rule py-5">

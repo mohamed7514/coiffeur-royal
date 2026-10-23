@@ -37,7 +37,14 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
   return (
     <div className="landing-page">
       <ServiceJsonLd service={service} locale={locale} />
-      <Nav locale={locale} languagePaths={{ fr: servicePath(service, "fr"), en: servicePath(service, "en") }} />
+      <Nav
+        locale={locale}
+        languagePaths={{ fr: servicePath(service, "fr"), en: servicePath(service, "en") }}
+        sectionLinks={{
+          gallery: service.id === "coupe" ? "#travaux" : `${locale === "fr" ? "/" : "/en"}#travaux`,
+          visit: "#visiter",
+        }}
+      />
 
       <main>
         <article className="wrapper landing-wrapper">

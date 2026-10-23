@@ -158,7 +158,7 @@ export function DesignC() {
           <div>
             <div className={s.vipPrice}>{price(vip.price, "fr")}</div>
             <p className={s.vipWas}>
-              au lieu de {price(vip.partsTotal ?? 0, "fr")} à la pièce — une heure réservée
+              Une heure réservée · détail des soins auprès du salon
             </p>
             <div className={s.actions}>
               <a href={`tel:${business.phone}`} className={s.btn}>

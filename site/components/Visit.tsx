@@ -128,6 +128,9 @@ export function Footer({ locale }: { locale: Locale }) {
           <a href={localLandingPaths[locale]} className="transition-colors hover:text-ink">
             {locale === "fr" ? "Le salon à Hull" : "The shop in Hull"}
           </a>
+          <a href={locale === "fr" ? "/confidentialite" : "/en/privacy"} className="transition-colors hover:text-ink">
+            {locale === "fr" ? "Confidentialité" : "Privacy"}
+          </a>
         </div>
       </div>
 

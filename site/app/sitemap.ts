@@ -39,6 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...pair("/", "/en", 1),
     ...pair(localLandingPaths.fr, localLandingPaths.en, 0.8),
     ...pair("/services", "/en/services", 0.8),
+    ...pair("/confidentialite", "/en/privacy", 0.3),
     ...allServices.flatMap((s) =>
       pair(`/services/${s.slug}`, `/en/services/${s.slugEn}`, 0.7),
     ),
