@@ -7,12 +7,12 @@ export function HaircutWork({ locale, compact = false }: { locale: Locale; compa
   const shots = compact ? gallery.slice(1, 3) : gallery;
   return (
     <section id="travaux" className="section shell">
-      <span className="mini">{locale === "fr" ? "Notre travail" : "Our work"}</span>
-      <h2 className="display h3 mt-3">{locale === "fr" ? "Des coupes réalisées chez RoyalMK." : "Haircuts done at RoyalMK."}</h2>
+      <span className="mini">RoyalMK</span>
+      <h2 className="display h3 mt-3">{locale === "fr" ? "Nos coupes en photos." : "Haircuts at RoyalMK."}</h2>
       <p className="mt-4 max-w-[58ch] text-mute">
         {locale === "fr"
-          ? "Regardez les longueurs, les dégradés et les finitions. Ces photos montrent le travail du salon."
-          : "Take a look at the lengths, fades and finishes. These photos show the work done at the shop."}
+          ? "Une photo vous plaît ? Montrez-la au barbier pour discuter de la longueur et des finitions souhaitées."
+          : "See a haircut you like? Show your barber the photo to discuss the length and finish you want."}
       </p>
       <div className={`landing-work-grid${compact ? " landing-work-grid-compact" : ""}`}>
         {shots.map((shot) => (

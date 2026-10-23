@@ -73,7 +73,7 @@ export function LocalLandingPage({ locale }: { locale: Locale }) {
           <figure className="landing-shop-photo">
             <Image src={heroPhoto.src} alt={locale === "fr" ? heroPhoto.alt : heroPhoto.altEn} width={510} height={510} sizes="(min-width: 1024px) 45vw, calc(100vw - 32px)" quality={75} loading="eager" fetchPriority="high" />
             <figcaption className="mt-3 text-sm text-mute">
-              {locale === "fr" ? "Une coupe réalisée chez RoyalMK." : "A haircut done at RoyalMK."}
+              {locale === "fr" ? heroPhoto.alt : heroPhoto.altEn}
             </figcaption>
           </figure>
         </section>

@@ -28,22 +28,22 @@ export type Shot = {
 export const gallery: Shot[] = [
   {
     src: "/travaux/degrade-texture.webp",
-    alt: "Dégradé sur les côtés, dessus laissé long et texturé en volume",
-    altEn: "Faded sides with a long, textured top worn full",
+    alt: "Dégradé sur les côtés et dessus texturé.",
+    altEn: "Faded sides and a textured top.",
   },
   {
     src: "/travaux/pompadour-degrade.webp",
-    alt: "Dégradé haut très net, dessus relevé en pompadour, barbe courte dessinée",
-    altEn: "High skin fade with a pompadour on top and a short lined beard",
+    alt: "Dessus relevé, côtés dégradés et barbe dessinée.",
+    altEn: "Lifted top, faded sides and a defined beard.",
   },
   {
     src: "/travaux/raie-cote-barbe.webp",
-    alt: "Dégradé moyen, cheveux peignés sur le côté, barbe fournie taillée",
-    altEn: "Mid fade, hair combed to one side, full trimmed beard",
+    alt: "Cheveux coiffés vers l’arrière, dégradé et barbe taillée.",
+    altEn: "Hair swept back, faded sides and a trimmed beard.",
   },
   {
     src: "/travaux/gris-barbe-pleine.webp",
-    alt: "Cheveux gris coiffés vers l’arrière et barbe blanche pleine, taillée net",
-    altEn: "Silver hair swept back with a full white beard, cleanly trimmed",
+    alt: "Cheveux gris coiffés vers l’arrière et barbe blanche taillée.",
+    altEn: "Grey hair swept back and a trimmed white beard.",
   },
 ];
