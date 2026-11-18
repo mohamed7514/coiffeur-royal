@@ -1,4 +1,4 @@
-import { business } from "@/lib/business";
+import { business, type ServiceId } from "@/lib/business";
 import { content, type Locale } from "@/lib/content";
 import { ActionIcon } from "./ActionIcon";
 import { BookingLink } from "./BookingLink";
@@ -6,11 +6,11 @@ import { BookingLink } from "./BookingLink";
 export const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${business.geo.lat},${business.geo.lng}`;
 
 /** Plain server-rendered links keep the first actions available before hydration. */
-export function LandingActions({ locale, placement }: { locale: Locale; placement: string }) {
+export function LandingActions({ locale, placement, service }: { locale: Locale; placement: string; service?: ServiceId }) {
   const c = content[locale];
   return (
     <div className="landing-actions" data-primary-actions>
-      <BookingLink locale={locale} placement={placement} className="btn">
+      <BookingLink locale={locale} placement={placement} service={service} className="btn">
         <ActionIcon kind="book" /><span>{c.nav.book}</span>
       </BookingLink>
       <a href={`tel:${business.phone}`} className="btn landing-call">

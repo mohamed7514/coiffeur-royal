@@ -20,8 +20,8 @@ export function PhoneCallTracking() {
         try {
           window.dataLayer!.push({
             event: "booking_click",
-            booking_provider: "squire",
-            booking_url: business.booking,
+            booking_provider: "site",
+            booking_url: anchor.getAttribute("href"),
             link_location: anchor.dataset.booking,
             page_path: window.location.pathname,
           });

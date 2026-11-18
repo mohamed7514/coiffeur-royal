@@ -21,7 +21,6 @@ export const content = {
     booking: {
       label: "Réserver en ligne",
       note: "Réservez avec Khadija Ayad ou passez sans rendez-vous.",
-      newTab: "sur Squire, dans un nouvel onglet",
     },
 
     hero: {
@@ -161,7 +160,6 @@ export const content = {
     booking: {
       label: "Book online",
       note: "Book with Khadija Ayad or walk in.",
-      newTab: "on Squire, in a new tab",
     },
 
     hero: {

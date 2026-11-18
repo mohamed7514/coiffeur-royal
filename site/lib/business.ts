@@ -1,6 +1,6 @@
 /**
  * Source unique des informations du salon.
- * Vérifiées le 01/10/2026 : prix et durées relevés dans Squire,
+ * Vérifiées le 01/10/2026 : prix et durées du catalogue du salon,
  * note et avis sur la fiche Google, coordonnées GPS tirées du lien Maps.
  *
  * Toute modification se fait ICI, jamais dans un composant : le nom,
@@ -11,9 +11,6 @@
 export const business = {
   name: "Barbier RoyalMK",
   tagline: "Adoptez le style que vous méritez",
-
-  /** Public booking page; never reuse a visitor-specific cart. */
-  booking: "https://getsquire.com/booking/book/royalmk-gatineau/barber/khadija-ayad/services",
 
   phone: "+18193180861",
   phoneDisplay: "(819) 318-0861",

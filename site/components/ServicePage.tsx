@@ -98,7 +98,7 @@ export function ServicePage({ service, locale }: { service: Service; locale: Loc
                     <strong>{business.address.street}</strong><br />Hull, Gatineau
                   </a>
                 </address>
-                <LandingActions locale={locale} placement={"service-" + service.id} />
+                <LandingActions locale={locale} placement={"service-" + service.id} service={service.id} />
                 <p className="mt-3 max-w-[46ch] text-sm text-mute">{c.svc.walkInNote}</p>
                 <RatingLink locale={locale} />
                 {(service.id === "coupe" || service.id === "barbe" || service.id === "rasage") && (

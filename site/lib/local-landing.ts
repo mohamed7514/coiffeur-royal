@@ -29,7 +29,7 @@ export const localLandingCopy = {
     styleQuestion: "Puis-je montrer une photo de la coupe souhaitée ?",
     styleAnswer: "Oui. Apportez une photo pour discuter de la longueur, du dégradé et de la finition avec le barbier avant de commencer.",
     paymentQuestion: "Comment réserver et payer ?",
-    paymentAnswer: "La réservation se fait sur Squire. Les prix sont en dollars canadiens, taxes en sus, et le paiement se fait au salon.",
+    paymentAnswer: "La réservation se fait en ligne, sur ce site : choisissez votre service, votre jour et votre heure. Les prix sont en dollars canadiens, taxes en sus, et le paiement se fait au salon.",
   },
   en: {
     title: "Your barber in Hull.",
@@ -50,7 +50,7 @@ export const localLandingCopy = {
     styleQuestion: "Can I bring a haircut photo?",
     styleAnswer: "Yes. Bring a reference photo to discuss length, the fade and the finish with your barber before the cut starts.",
     paymentQuestion: "How do booking and payment work?",
-    paymentAnswer: "Book through Squire. Prices are in Canadian dollars, taxes extra, and payment is at the shop.",
+    paymentAnswer: "Book online on this site: choose your service, day and time. Prices are in Canadian dollars, taxes extra, and payment is at the shop.",
   },
 } as const;
 

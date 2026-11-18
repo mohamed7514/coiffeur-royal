@@ -85,7 +85,10 @@ try {
         assert.ok(measured.price.text.includes(locale === "fr" ? `${amount} $` : `$${amount}`), path);
         assert.match(measured.address.text, /331 boul\. Saint-Joseph/, path);
         assert.equal(measured.phone, "tel:+18193180861", path);
-        assert.equal(measured.booking, "https://getsquire.com/booking/book/royalmk-gatineau/barber/khadija-ayad/services", path);
+        // La réservation est sur ce site, dans la langue de la page ; depuis un service, la prestation est préchoisie.
+        const bookingUrl = new URL(measured.booking);
+        assert.equal(bookingUrl.pathname, locale === "fr" ? "/reserver" : "/en/book", path);
+        assert.equal(bookingUrl.searchParams.has("service"), path.includes("/services/"), path);
         assert.ok(measured.reviews >= 1, `No customer review: ${path}`);
         assert.equal(measured.heroMedia, 0, path);
         assert.equal(measured.frames, 0, `Map loaded before user interaction: ${path}`);
@@ -156,7 +159,8 @@ try {
   await noJs.close();
 
   const sitemap = await (await fetch(base + "/sitemap.xml")).text();
-  for (const path of ["/barbier-gatineau", "/en/barber-gatineau"]) assert.ok(sitemap.includes(`https://www.royalmk.ca${path}`));
+  for (const path of ["/barbier-gatineau", "/en/barber-gatineau", "/reserver", "/en/book"]) assert.ok(sitemap.includes(`https://www.royalmk.ca${path}`), path);
+  assert.ok(!sitemap.includes("/annuler") && !sitemap.includes("/cancel"), "Cancellation pages must stay out of the sitemap");
   writeFileSync(`${output}/checks.json`, JSON.stringify(results, null, 2));
   console.log(JSON.stringify({ passed: true, pageChecks: results.length, widths: [320, 390, 768, 1440], languageAndServiceFlow: true, noJavaScript: true, sitemap: true, output }));
 } finally {
