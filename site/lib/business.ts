@@ -12,8 +12,8 @@ export const business = {
   name: "Barbier RoyalMK",
   tagline: "Adoptez le style que vous méritez",
 
-  phone: "+18193180861",
-  phoneDisplay: "(819) 318-0861",
+  phone: "+15142352094",
+  phoneDisplay: "(514) 235-2094",
 
   address: {
     street: "331 boul. Saint-Joseph",

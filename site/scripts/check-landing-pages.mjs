@@ -84,7 +84,7 @@ try {
         assert.equal(measured.overflow, 0, `Horizontal overflow: ${path} at ${width}`);
         assert.ok(measured.price.text.includes(locale === "fr" ? `${amount} $` : `$${amount}`), path);
         assert.match(measured.address.text, /331 boul\. Saint-Joseph/, path);
-        assert.equal(measured.phone, "tel:+18193180861", path);
+        assert.equal(measured.phone, "tel:+15142352094", path);
         // La réservation est sur ce site, dans la langue de la page ; depuis un service, la prestation est préchoisie.
         const bookingUrl = new URL(measured.booking);
         assert.equal(bookingUrl.pathname, locale === "fr" ? "/reserver" : "/en/book", path);
