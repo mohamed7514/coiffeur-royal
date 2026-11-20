@@ -12,11 +12,17 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null);
   const checked = validateBooking(body);
-  if (!checked.ok) return fail("invalid", checked.field);
+  if (!checked.ok) {
+    console.warn(`[reservation] refusé : champ « ${checked.field} » invalide`);
+    return fail("invalid", checked.field);
+  }
 
   // Un robot remplit le champ piège ou envoie le formulaire en un éclair.
   // On lui répond comme à un humain refusé, sans rien écrire.
-  if (checked.value.website || checked.value.elapsed < 2500) return fail("invalid", "form");
+  if (checked.value.website || checked.value.elapsed < 2500) {
+    console.warn(`[reservation] refusé : anti-robot (champ piège ${checked.value.website ? "rempli" : "vide"}, ${checked.value.elapsed} ms)`);
+    return fail("invalid", "form");
+  }
 
   try {
     return json(await book(checked.value), 201);

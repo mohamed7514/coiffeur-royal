@@ -125,100 +125,6 @@
 
 /* ── Services ───────────────────────────────────────────────────────── */
 
-.list {
-  display: grid;
-  gap: 0.6rem;
-  margin: 1.5rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.item {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.15rem 0.9rem;
-  width: 100%;
-  min-height: 4.25rem;
-  padding: 0.9rem 1.1rem;
-  border: 1.5px solid var(--color-rule);
-  border-radius: 0.9rem;
-  background: #fff;
-  color: var(--color-ink);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.item:active {
-  transform: scale(0.985);
-}
-
-@media (hover: hover) {
-  .item:hover {
-    border-color: rgb(10 9 12 / 0.45);
-  }
-}
-
-.item[aria-pressed="true"] {
-  border-color: var(--color-ink);
-  box-shadow: 0 0 0 1px var(--color-ink);
-}
-
-.radio {
-  grid-row: 1 / span 2;
-  display: grid;
-  place-items: center;
-  width: 1.4rem;
-  height: 1.4rem;
-  border: 1.5px solid rgb(10 9 12 / 0.35);
-  border-radius: 50%;
-  transition: background-color 160ms ease, border-color 160ms ease;
-}
-
-.radio::after {
-  content: "";
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: var(--color-paper);
-  transform: scale(0);
-  transition: transform 160ms ease;
-}
-
-.item[aria-pressed="true"] .radio {
-  border-color: var(--color-ink);
-  background: var(--color-ink);
-}
-
-.item[aria-pressed="true"] .radio::after {
-  transform: scale(1);
-}
-
-.itemName {
-  font-weight: 700;
-  font-size: 1.02rem;
-  line-height: 1.25;
-}
-
-.itemMeta {
-  grid-column: 2;
-  font-size: 0.82rem;
-  color: var(--color-mute);
-  line-height: 1.4;
-}
-
-.itemPrice {
-  grid-row: 1 / span 2;
-  grid-column: 3;
-  font-weight: 800;
-  font-size: 1.05rem;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
 .tag {
   display: inline-block;
   margin-left: 0.5rem;
@@ -231,7 +137,217 @@
   vertical-align: 0.1em;
 }
 
+/* Grille de services : 2 colonnes sur téléphone, 3 dès qu'il y a la place.
+   Le forfait prend toute la largeur pour montrer ce qu'il comprend. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 36rem) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.grid > li {
+  display: flex;
+}
+
+/* Sur 3 colonnes, le forfait en occupe 2 : la dernière rangée reste pleine
+   (3 + 3 + 1 + forfait). Sur 2 colonnes, 8 cartes font 4 rangées pleines. */
+@media (min-width: 36rem) {
+  .wide {
+    grid-column: span 2;
+  }
+}
+
+.card2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+  min-height: 7.5rem;
+  padding: 0.9rem 0.95rem 0.85rem;
+  border: 1.5px solid var(--color-rule);
+  border-radius: 0.9rem;
+  background: #fff;
+  color: var(--color-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card2:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) {
+  .card2:hover {
+    border-color: rgb(10 9 12 / 0.45);
+  }
+}
+
+.card2[aria-pressed="true"] {
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 1px var(--color-ink);
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cardName {
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.tick {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 1.5px solid rgb(10 9 12 / 0.3);
+  border-radius: 50%;
+  color: transparent;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.tick svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.card2[aria-pressed="true"] .tick {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.badges .tag {
+  margin-left: 0;
+  white-space: nowrap;
+}
+
+/* Très petits écrans (320 px) : un peu moins de marge, pour que les noms
+   longs et les badges tiennent sans toucher la coche. */
+@media (max-width: 22.5rem) {
+  .card2 {
+    padding: 0.8rem 0.7rem 0.75rem;
+  }
+
+  .cardName {
+    font-size: 0.86rem;
+    hyphens: auto;
+  }
+
+  .tick {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .badges .tag {
+    font-size: 0.62rem;
+  }
+}
+
+.tagStrong {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.cardIncl {
+  font-size: 0.82rem;
+  color: var(--color-mute);
+  line-height: 1.4;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.cardPrice {
+  font-weight: 800;
+  font-size: 1.35rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cardDur {
+  font-size: 0.8rem;
+  color: var(--color-mute);
+  white-space: nowrap;
+}
+
 /* ── Date et heure ──────────────────────────────────────────────────── */
+
+/* Raccourci : la prochaine place libre, en un toucher. */
+.nextFree {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 0.85rem 0.85rem 0.85rem 1.1rem;
+  border: 1.5px solid var(--color-ink);
+  border-radius: 0.9rem;
+  background: #fff;
+}
+
+.nextFree strong {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.nextLabel {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--color-mute);
+}
+
+.nextFree .secondary {
+  flex: none;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  font-size: 0.92rem;
+}
+
+.period + .period {
+  margin-top: 1.1rem;
+}
+
+.periodLabel {
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
 
 .monthRow {
   display: flex;
@@ -562,6 +678,87 @@ textarea.input {
   min-height: 5.5rem;
   resize: vertical;
   line-height: 1.5;
+}
+
+/* Champ avec préfixe (+1) et coche de validation. */
+.inputWrap {
+  position: relative;
+}
+
+.prefix {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-mute);
+  pointer-events: none;
+}
+
+.inputWrap[data-prefix] .input {
+  padding-left: 2.7rem;
+}
+
+.inputWrap[data-valid] .input {
+  padding-right: 2.75rem;
+}
+
+.validMark {
+  position: absolute;
+  top: 50%;
+  right: 0.9rem;
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: #1f7a3d;
+  color: #fff;
+  transform: translateY(-50%);
+}
+
+.validMark svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.suggest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.25rem;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 0.6rem;
+  background: rgb(10 9 12 / 0.05);
+  font-size: 0.88rem;
+}
+
+.suggest .linkBtn {
+  min-height: 2.25rem;
+  margin-left: 0.35rem;
+}
+
+.summary {
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  background: rgb(216 64 44 / 0.09);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.summary p {
+  font-weight: 700;
+}
+
+.summary ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.summary .linkBtn {
+  min-height: 2rem;
 }
 
 .fieldHint {

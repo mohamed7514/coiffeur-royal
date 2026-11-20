@@ -1,10 +1,29 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 import { business, nameFor, type ServiceId } from "@/lib/business";
 import { duration, price, type Locale } from "@/lib/content";
 import { bookableService, bookableServices } from "@/lib/booking/config";
-import { bookingCopy, cancelPaths } from "@/lib/booking/copy";
+import { bookingCopy, cancelPaths, type BookingCopy } from "@/lib/booking/copy";
+import {
+  caretAfterDigits,
+  checkEmail,
+  checkPhone,
+  digitsBefore,
+  formatPhoneTyping,
+  isInternational,
+  suggestEmail,
+} from "@/lib/booking/fields";
 import { dayNumber, longDate, monthYear, shortMonth, shortWeekday, timeLabel } from "@/lib/booking/format";
 import { trackConfirmed, trackStep } from "@/lib/booking/track";
 import type { AvailabilityResponse, BookingConfirmation, BookingErrorCode } from "@/lib/booking/types";
@@ -62,13 +81,31 @@ async function request<T>(
   }
 }
 
-const formatPhoneInput = (raw: string) => {
-  const d = raw.replace(/\D/g, "");
-  const local = d.length === 11 && d.startsWith("1") ? d.slice(1) : d;
-  return local.length === 10 && !raw.trim().startsWith("+")
-    ? `(${local.slice(0, 3)}) ${local.slice(3, 6)}-${local.slice(6)}`
-    : raw.trim();
-};
+const FIELD_ORDER: FieldName[] = ["firstName", "phone", "email"];
+/** Ordre de passage d'un champ à l'autre avec la touche « suivant » du clavier. */
+const NEXT_FIELD: Partial<Record<keyof Fields, keyof Fields>> = { firstName: "lastName", lastName: "phone", phone: "email" };
+/** Un humain met plus que ça à remplir le formulaire ; en deçà, le serveur
+ *  croit à un robot. Le navigateur attend donc la différence avant d'envoyer. */
+const MIN_FILL_MS = 2600;
+
+/** Le message précis pour un champ, ou undefined s'il est bon. */
+function fieldError(c: BookingCopy, name: FieldName, value: string): string | undefined {
+  if (name === "firstName") return value.trim() ? undefined : c.errors.firstName;
+  if (name === "phone") {
+    const r = checkPhone(value);
+    if (r.ok) return undefined;
+    return r.problem === "short" ? c.phoneErrors.short(r.missing ?? 1) : c.phoneErrors[r.problem];
+  }
+  const problem = checkEmail(value);
+  return problem ? c.emailErrors[problem] : undefined;
+}
+
+/** Matin avant midi, soir à partir de 17 h. */
+const periodOf = (hhmm: string): "morning" | "afternoon" | "evening" =>
+  hhmm < "12:00" ? "morning" : hhmm < "17:00" ? "afternoon" : "evening";
+
+/** Service mis en avant dans la grille avec le badge « Le plus demandé ». */
+const POPULAR: ServiceId = "vip";
 
 export function BookingFlow({ locale, initialService }: { locale: Locale; initialService?: ServiceId }) {
   const c = bookingCopy[locale];
@@ -86,9 +123,13 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
   const [banner, setBanner] = useState<{ step: Step; text: string } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState<BookingConfirmation | null>(null);
+  const [showSummary, setShowSummary] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
 
   const startedAt = useRef(Date.now());
   const honeypot = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const phoneCaret = useRef<number | null>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const datesRef = useRef<HTMLDivElement>(null);
   const firstRender = useRef(true);
@@ -98,12 +139,13 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
   const days = current?.status === "ready" ? current.data.days : [];
   const demo = current?.status === "ready" && current.data.demo;
   const day = days.find((d) => d.date === date);
+  const firstFree = days.find((d) => d.slots.length);
   const stepIndex = STEPS.indexOf(step);
 
   /* ── Reprise : coordonnées mémorisées, rendez-vous qui vient d'être pris ── */
   useEffect(() => {
     const saved = store.get<Fields>(STORE_CLIENT);
-    if (saved) setFields((f) => ({ ...f, ...saved, note: "" }));
+    if (saved) setFields((f) => ({ ...f, ...saved, phone: formatPhoneTyping(saved.phone ?? ""), note: "" }));
     const last = store.get<BookingConfirmation>(STORE_LAST, true);
     if (last && Date.parse(last.booking.end) > Date.now()) setDone(last);
   }, []);
@@ -198,28 +240,82 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
 
   const canContinue = step === "service" ? Boolean(service) : step === "when" ? Boolean(date && time) : true;
 
+  /** Un toucher sur un service suffit : on passe directement à la date. */
+  const chooseService = (id: ServiceId) => {
+    const svc = bookableService(id);
+    if (!svc) return;
+    setServiceId(id);
+    trackStep("booking_service_selected", { service_id: svc.id, service_name: nameFor(svc, "fr"), value: svc.price, currency: "CAD" });
+    setBanner(null);
+    setStep("when");
+    try {
+      history.pushState({ ...history.state, bkStep: "when" }, "");
+    } catch {}
+  };
+
+  /** La prochaine place libre, prise en un toucher. */
+  const takeSlot = (d: string, t: string) => {
+    setDate(d);
+    setTime(t);
+    trackStep("booking_slot_selected", { service_id: serviceId, booking_date: d, booking_time: t });
+    go("details");
+  };
+
   /* ── Envoi ────────────────────────────────────────────────────────── */
   const validate = (): Partial<Record<FieldName, string>> => {
     const e: Partial<Record<FieldName, string>> = {};
-    if (!fields.firstName.trim()) e.firstName = c.errors.firstName;
-    const digits = fields.phone.replace(/\D/g, "");
-    if (digits.length < 10 || digits.length > 15) e.phone = c.errors.phone;
-    if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(fields.email.trim())) e.email = c.errors.email;
+    for (const name of FIELD_ORDER) {
+      const err = fieldError(c, name, fields[name]);
+      if (err) e[name] = err;
+    }
     return e;
   };
 
   const focusField = (name: string) => document.getElementById(`bk-${name}`)?.focus();
+
+  // Le curseur reste là où le client tapait, même quand la mise en forme
+  // ajoute une parenthèse ou un tiret avant lui.
+  useLayoutEffect(() => {
+    const el = phoneRef.current;
+    const pos = phoneCaret.current;
+    phoneCaret.current = null;
+    if (el && pos !== null && document.activeElement === el) el.setSelectionRange(pos, pos);
+  }, [fields.phone]);
+
+  const onPhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    const caret = e.target.selectionStart ?? raw.length;
+    const formatted = formatPhoneTyping(raw);
+    phoneCaret.current = caret >= raw.length ? formatted.length : caretAfterDigits(formatted, digitsBefore(raw, caret));
+    setFields((f) => ({ ...f, phone: formatted }));
+    // Une erreur déjà affichée se met à jour pendant la frappe et disparaît
+    // dès que le numéro est bon ; une nouvelle erreur attend la sortie du champ.
+    if (errors.phone) setErrors((x) => ({ ...x, phone: fieldError(c, "phone", formatted) }));
+  };
+
+  const onFieldKey = (name: keyof Fields) => (e: KeyboardEvent<HTMLInputElement>) => {
+    const next = NEXT_FIELD[name];
+    if (e.key === "Enter" && next) {
+      e.preventDefault();
+      focusField(next);
+    }
+  };
 
   const submit = async (ev: FormEvent) => {
     ev.preventDefault();
     if (submitting || !serviceId || !date || !time) return;
     const found = validate();
     setErrors(found);
-    const firstBad = (["firstName", "phone", "email"] as FieldName[]).find((k) => found[k]);
+    const firstBad = FIELD_ORDER.find((k) => found[k]);
+    setShowSummary(Boolean(firstBad));
     if (firstBad) return focusField(firstBad);
 
     setSubmitting(true);
     setBanner(null);
+    // Client rapide (coordonnées mémorisées, service déjà choisi) : on attend
+    // le temps minimal au lieu de se faire refuser comme un robot.
+    const wait = MIN_FILL_MS - (Date.now() - startedAt.current);
+    if (wait > 0) await new Promise((r) => setTimeout(r, wait));
     const res = await request<BookingConfirmation>("/api/reservation", {
       method: "POST",
       body: JSON.stringify({
@@ -250,9 +346,28 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
       setBanner({ step: "when", text: c.errors.slot_taken });
       return;
     }
-    if (res.code === "invalid" && res.field && res.field in c.errors) {
-      setErrors({ [res.field]: c.errors[res.field as FieldName] });
-      return focusField(res.field);
+    if (res.code === "invalid") {
+      const f = res.field;
+      if (f === "firstName" || f === "phone" || f === "email") {
+        setErrors({ [f]: c.errors[f] });
+        setShowSummary(true);
+        return focusField(f);
+      }
+      if (f === "date" || f === "time") {
+        setTime(null);
+        await load(serviceId, true);
+        setStep("when");
+        setBanner({ step: "when", text: c.errors.slot_invalid });
+        return;
+      }
+      if (f === "service") {
+        setServiceId(null);
+        setStep("service");
+        setBanner({ step: "service", text: c.errors.service_invalid });
+        return;
+      }
+      setBanner({ step: "details", text: c.errors.form });
+      return;
     }
     const key = res.code in c.errors ? (res.code as keyof typeof c.errors) : "unavailable";
     setBanner({ step: "details", text: c.errors[key] });
@@ -275,41 +390,86 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
     if (el) el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: "smooth" });
   };
 
+  /** Vérifie un champ quand le client le quitte, s'il y a écrit quelque chose. */
+  const checkOnBlur = (name: keyof Fields) => {
+    if (name === "email") setEmailTouched(true);
+    if (name === "lastName" || name === "note") return;
+    const value = fields[name];
+    if (!value.trim() && !errors[name]) return;
+    setErrors((x) => ({ ...x, [name]: fieldError(c, name, value) }));
+  };
+
   const field = (
     name: keyof Fields,
     label: string,
-    opts: { type?: string; autoComplete?: string; hint?: string; optional?: boolean; inputMode?: "tel" | "email" | "text"; placeholder?: string } = {},
+    opts: {
+      type?: string;
+      autoComplete?: string;
+      hint?: string;
+      optional?: boolean;
+      inputMode?: "tel" | "email" | "text";
+      placeholder?: string;
+      autoCapitalize?: string;
+      prefix?: string;
+      valid?: boolean;
+      after?: ReactNode;
+    } = {},
   ) => {
     const err = errors[name as FieldName];
     const hintId = opts.hint ? `bk-${name}-hint` : undefined;
     const errId = err ? `bk-${name}-err` : undefined;
+    const isPhone = name === "phone";
     return (
       <div className={s.field}>
         <label className={s.label} htmlFor={`bk-${name}`}>
           {label} {opts.optional && <em>({c.optional})</em>}
         </label>
-        <input
-          id={`bk-${name}`}
-          name={name}
-          className={s.input}
-          type={opts.type ?? "text"}
-          inputMode={opts.inputMode}
-          autoComplete={opts.autoComplete}
-          required={!opts.optional}
-          placeholder={opts.placeholder}
-          aria-invalid={err ? true : undefined}
-          aria-describedby={[errId, hintId].filter(Boolean).join(" ") || undefined}
-          value={fields[name]}
-          maxLength={name === "email" ? 254 : 60}
-          onChange={(e) => {
-            const v = e.target.value;
-            setFields((f) => ({ ...f, [name]: v }));
-            if (err) setErrors((x) => ({ ...x, [name]: undefined }));
-          }}
-          onBlur={name === "phone" ? () => setFields((f) => ({ ...f, phone: formatPhoneInput(f.phone) })) : undefined}
-        />
+        <div className={s.inputWrap} data-prefix={opts.prefix ? true : undefined} data-valid={opts.valid ? true : undefined}>
+          {opts.prefix && (
+            <span className={s.prefix} aria-hidden>
+              {opts.prefix}
+            </span>
+          )}
+          <input
+            id={`bk-${name}`}
+            ref={isPhone ? phoneRef : undefined}
+            name={name}
+            className={s.input}
+            type={opts.type ?? "text"}
+            inputMode={opts.inputMode}
+            autoComplete={opts.autoComplete}
+            autoCapitalize={opts.autoCapitalize}
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint={NEXT_FIELD[name] ? "next" : "done"}
+            required={!opts.optional}
+            placeholder={opts.placeholder}
+            aria-invalid={err ? true : undefined}
+            aria-describedby={[errId, hintId].filter(Boolean).join(" ") || undefined}
+            value={fields[name]}
+            maxLength={name === "email" ? 254 : isPhone ? 22 : 60}
+            onChange={
+              isPhone
+                ? onPhoneChange
+                : (e) => {
+                    const v = e.target.value;
+                    setFields((f) => ({ ...f, [name]: v }));
+                    if (err) setErrors((x) => ({ ...x, [name]: fieldError(c, name as FieldName, v) }));
+                  }
+            }
+            onBlur={() => checkOnBlur(name)}
+            onKeyDown={onFieldKey(name)}
+          />
+          {opts.valid && !err && (
+            <span className={s.validMark} role="img" aria-label={c.phoneOk}>
+              <svg viewBox="0 0 16 16" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3.5 8.5l3 3 6-7" />
+              </svg>
+            </span>
+          )}
+        </div>
         {err ? (
-          <p id={errId} className={s.fieldError}>
+          <p id={errId} className={s.fieldError} aria-live="polite">
             {err}
           </p>
         ) : opts.hint ? (
@@ -317,9 +477,13 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
             {opts.hint}
           </p>
         ) : null}
+        {opts.after}
       </div>
     );
   };
+
+  const emailSuggestion = emailTouched ? suggestEmail(fields.email) : null;
+  const errorList = FIELD_ORDER.filter((k) => errors[k]);
 
   const callBanner = (text: string) => (
     <div className={s.banner} role="alert">
@@ -366,24 +530,40 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
         {step === "service" && <p className={s.sub}>{c.perks.join(" · ")}</p>}
         {demo && <p className={s.demo}>{c.demo}</p>}
 
-        {/* ── Étape 1 : service ── */}
+        {/* ── Étape 1 : service, en grille ── */}
+        {step === "service" && banner?.step === "service" && (
+          <div className={s.banner} role="alert">
+            <span>{banner.text}</span>
+          </div>
+        )}
         {step === "service" && (
-          <ul className={s.list}>
+          <ul className={s.grid}>
             {bookableServices.map((svc) => {
               const includes = svc.includes && (locale === "fr" ? svc.includes : svc.includesEn ?? svc.includes);
+              const saved = svc.partsTotal ? svc.partsTotal - svc.price : 0;
               return (
-                <li key={svc.id}>
-                  <button type="button" className={s.item} aria-pressed={svc.id === serviceId} onClick={() => setServiceId(svc.id)}>
-                    <span className={s.radio} aria-hidden />
-                    <span className={s.itemName}>
-                      {nameFor(svc, locale)}
-                      {includes && <span className={s.tag}>{c.package}</span>}
+                <li key={svc.id} className={includes ? s.wide : undefined}>
+                  <button type="button" className={s.card2} aria-pressed={svc.id === serviceId} onClick={() => chooseService(svc.id)}>
+                    <span className={s.cardTop}>
+                      <span className={s.cardName}>{nameFor(svc, locale)}</span>
+                      <span className={s.tick} aria-hidden>
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M3.5 8.5l3 3 6-7" />
+                        </svg>
+                      </span>
                     </span>
-                    <span className={s.itemMeta}>
-                      {duration(svc.minutes, locale)}
-                      {includes && ` · ${includes.join(", ").toLowerCase()}`}
+                    {(svc.id === POPULAR || includes || saved > 0) && (
+                      <span className={s.badges}>
+                        {svc.id === POPULAR && <span className={`${s.tag} ${s.tagStrong}`}>{c.popular}</span>}
+                        {includes && <span className={s.tag}>{c.package}</span>}
+                        {saved > 0 && <span className={s.tag}>{c.savings(saved)}</span>}
+                      </span>
+                    )}
+                    {includes && <span className={s.cardIncl}>{includes.join(" + ")}</span>}
+                    <span className={s.cardFoot}>
+                      <span className={s.cardPrice}>{price(svc.price, locale)}</span>
+                      <span className={s.cardDur}>{duration(svc.minutes, locale)}</span>
                     </span>
-                    <span className={s.itemPrice}>{price(svc.price, locale)}</span>
                   </button>
                 </li>
               );
@@ -429,6 +609,25 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
 
             {current?.status === "ready" && days.some((d) => d.slots.length) && (
               <>
+                {firstFree && !(date === firstFree.date && time === firstFree.slots[0]) && (
+                  <div className={s.nextFree}>
+                    <div>
+                      <span className={s.nextLabel}>{c.nextSlot}</span>
+                      <strong className={s.cap}>
+                        {firstFree.date === days[0]?.date
+                          ? c.today
+                          : firstFree.date === days[1]?.date
+                            ? c.tomorrow
+                            : longDate(firstFree.date, locale)}{" "}
+                        {c.at} {timeLabel(firstFree.slots[0], locale)}
+                      </strong>
+                    </div>
+                    <button type="button" className={s.secondary} onClick={() => takeSlot(firstFree.date, firstFree.slots[0])}>
+                      {c.take}
+                    </button>
+                  </div>
+                )}
+
                 <div className={s.monthRow}>
                   <span className={s.month} aria-live="polite">
                     {date ? monthYear(date, locale) : ""}
@@ -468,20 +667,29 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
                 {day && day.slots.length > 0 && (
                   <div key={day.date}>
                     <p className={s.sectionLabel}>{c.availableOn(longDate(day.date, locale))}</p>
-                    <div className={s.slots}>
-                      {day.slots.map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          className={s.slot}
-                          aria-pressed={t === time}
-                          aria-label={`${longDate(day.date, locale)}, ${timeLabel(t, locale)}`}
-                          onClick={() => setTime(t)}
-                        >
-                          {timeLabel(t, locale)}
-                        </button>
-                      ))}
-                    </div>
+                    {(["morning", "afternoon", "evening"] as const).map((period) => {
+                      const list = day.slots.filter((t) => periodOf(t) === period);
+                      if (!list.length) return null;
+                      return (
+                        <div key={period} className={s.period} role="group" aria-label={c.periods[period]}>
+                          <p className={s.periodLabel}>{c.periods[period]}</p>
+                          <div className={s.slots}>
+                            {list.map((t) => (
+                              <button
+                                key={t}
+                                type="button"
+                                className={s.slot}
+                                aria-pressed={t === time}
+                                aria-label={`${longDate(day.date, locale)}, ${timeLabel(t, locale)}`}
+                                onClick={() => setTime(t)}
+                              >
+                                {timeLabel(t, locale)}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 
@@ -533,17 +741,59 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
             {banner?.step === "details" && callBanner(banner.text)}
 
             <form id="bk-form" className={s.form} onSubmit={submit} noValidate>
+              {showSummary && errorList.length > 0 && (
+                <div className={s.summary} role="alert">
+                  <p>{c.errorSummary(errorList.length)}</p>
+                  <ul>
+                    {errorList.map((k) => (
+                      <li key={k}>
+                        <button type="button" className={s.linkBtn} onClick={() => focusField(k)}>
+                          {c.fieldNames[k]}
+                        </button>
+                        {locale === "fr" ? " : " : ": "}
+                        {errors[k]}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               <div className={s.row2}>
-                {field("firstName", c.firstName, { autoComplete: "given-name" })}
-                {field("lastName", c.lastName, { autoComplete: "family-name", optional: true })}
+                {field("firstName", c.firstName, { autoComplete: "given-name", autoCapitalize: "words" })}
+                {field("lastName", c.lastName, { autoComplete: "family-name", optional: true, autoCapitalize: "words" })}
               </div>
-              {field("phone", c.phone, { type: "tel", inputMode: "tel", autoComplete: "tel", placeholder: "819 555-1234" })}
+              {field("phone", c.phone, {
+                type: "tel",
+                inputMode: "tel",
+                autoComplete: "tel",
+                placeholder: isInternational(fields.phone) ? "+33 6 12 34 56 78" : "(819) 555-1234",
+                prefix: isInternational(fields.phone) ? undefined : "+1",
+                valid: checkPhone(fields.phone).ok,
+                hint: c.phoneIntlHint,
+              })}
               {field("email", c.email, {
                 type: "email",
                 inputMode: "email",
                 autoComplete: "email",
+                autoCapitalize: "none",
                 hint: c.emailHint,
                 placeholder: locale === "fr" ? "nom@exemple.com" : "name@example.com",
+                after: emailSuggestion && (
+                  <p className={s.suggest} aria-live="polite">
+                    {c.emailSuggest} <strong>{emailSuggestion}</strong>
+                    {locale === "fr" ? " ? " : "? "}
+                    <button
+                      type="button"
+                      className={s.linkBtn}
+                      onClick={() => {
+                        setFields((f) => ({ ...f, email: emailSuggestion }));
+                        setErrors((x) => ({ ...x, email: undefined }));
+                      }}
+                    >
+                      {c.emailFix}
+                    </button>
+                  </p>
+                ),
               })}
 
               {showNote || fields.note ? (
@@ -570,8 +820,8 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
               {/* Champ piège : invisible pour un humain, rempli par les robots. */}
               <div className={s.honeypot} aria-hidden="true">
                 <label>
-                  Website
-                  <input ref={honeypot} type="text" name="website" tabIndex={-1} autoComplete="off" />
+                  Leave this field empty
+                  <input ref={honeypot} type="text" name="hp-bot-trap" tabIndex={-1} autoComplete="off" data-lpignore="true" data-1p-ignore="true" />
                 </label>
               </div>
 

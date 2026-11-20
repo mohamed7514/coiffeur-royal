@@ -1,18 +1,13 @@
 import { bookableService } from "./config";
 import { isDateKey } from "./time";
+import { checkPhone, isEmail } from "./fields";
 import type { BookingRequest } from "./types";
 
-/** Téléphone en format international (E.164), ou null s'il est invalide. */
+/** Téléphone en format international (E.164), ou null s'il est invalide.
+ *  Même règle que le formulaire (`lib/booking/fields.ts`). */
 export function normalizePhone(raw: string): string | null {
-  const t = raw.trim();
-  const digits = t.replace(/\D/g, "");
-  if (t.startsWith("+")) {
-    if (digits.startsWith("1")) return digits.length === 11 && /^1[2-9]/.test(digits) ? `+${digits}` : null;
-    return digits.length >= 8 && digits.length <= 15 ? `+${digits}` : null;
-  }
-  if (digits.length === 10 && /^[2-9]/.test(digits)) return `+1${digits}`;
-  if (digits.length === 11 && /^1[2-9]/.test(digits)) return `+${digits}`;
-  return null;
+  const r = checkPhone(raw);
+  return r.ok ? r.e164 : null;
 }
 
 /** (819) 555-1234 pour un numéro nord-américain, sinon tel quel. */
@@ -21,7 +16,7 @@ export function displayPhone(e164: string): string {
   return m ? `(${m[1]}) ${m[2]}-${m[3]}` : e164;
 }
 
-export const isEmail = (s: string) => s.length <= 254 && /^[^\s@<>()",;]+@[^\s@<>()",;]+\.[a-z]{2,}$/i.test(s);
+export { isEmail };
 
 /** Texte libre nettoyé : sans caractères de contrôle, espaces resserrées. */
 const clean = (v: unknown, max: number, multiline = false) => {
