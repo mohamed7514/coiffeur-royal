@@ -1,3 +1,4 @@
+import nodemailer, { type Transporter } from "nodemailer";
 import { business, nameFor } from "@/lib/business";
 import { price, duration } from "@/lib/content";
 import { SITE_URL } from "@/lib/site";
@@ -8,13 +9,28 @@ import { displayPhone } from "./validate";
 import type { Booking } from "./types";
 
 /**
- * Courriels de confirmation et d'annulation, par l'API de Resend.
+ * Courriels de confirmation et d'annulation.
  *
- * Facultatif : sans `RESEND_API_KEY`, rien ne part et la réservation
+ * Deux façons d'envoyer, au choix par les variables d'environnement :
+ * - Gmail (ou tout serveur SMTP) : `SMTP_USER` + `SMTP_PASSWORD`, un mot de
+ *   passe d'application Google, jamais le mot de passe du compte.
+ * - Resend : `RESEND_API_KEY` + `BOOKING_FROM_EMAIL`, une fois le domaine
+ *   vérifié. Prioritaire sur Gmail quand les deux sont posés.
+ *
+ * Facultatif : sans l'un ou l'autre, rien ne part et la réservation
  * fonctionne quand même — l'écran de confirmation donne déjà le lien
  * d'agenda et le lien d'annulation. Un courriel qui échoue n'annule
  * jamais un rendez-vous.
  */
+
+type Mail = {
+  to: string[];
+  subject: string;
+  text: string;
+  html?: string;
+  reply_to?: string;
+  attachments?: { filename: string; content: string }[];
+};
 
 const cancelPath = (l: Booking["locale"]) => (l === "fr" ? "/reserver/annuler" : "/en/book/cancel");
 
@@ -51,19 +67,58 @@ function rowsFor(b: Booking): [string, string][] {
   ];
 }
 
-async function send(payload: Record<string, unknown>): Promise<boolean> {
+async function sendResend(key: string, from: string, mail: Mail): Promise<boolean> {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from, ...mail }),
+    signal: AbortSignal.timeout(6000),
+  });
+  if (!res.ok) console.error("[reservation] courriel refusé", res.status, await res.text());
+  return res.ok;
+}
+
+let smtp: Transporter | undefined;
+
+async function sendSmtp(user: string, pass: string, mail: Mail): Promise<boolean> {
+  smtp ??= nodemailer.createTransport({
+    host: process.env.SMTP_HOST || "smtp.gmail.com",
+    port: Number(process.env.SMTP_PORT) || 465,
+    secure: (Number(process.env.SMTP_PORT) || 465) === 465,
+    // Le mot de passe d'application Google s'affiche en 4 groupes : les espaces ne comptent pas.
+    auth: { user, pass: pass.replace(/\s+/g, "") },
+    connectionTimeout: 6000,
+    greetingTimeout: 6000,
+    socketTimeout: 8000,
+  });
+  // Gmail impose l'adresse du compte comme expéditeur : seul le nom affiché change.
+  const from = { name: business.name, address: user };
+  await smtp.sendMail({
+    from,
+    to: mail.to,
+    replyTo: mail.reply_to,
+    subject: mail.subject,
+    text: mail.text,
+    html: mail.html,
+    attachments: mail.attachments?.map((a) => ({
+      filename: a.filename,
+      content: a.content,
+      encoding: "base64",
+      contentType: "text/calendar; charset=utf-8",
+    })),
+  });
+  return true;
+}
+
+async function send(mail: Mail): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.BOOKING_FROM_EMAIL;
-  if (!key || !from) return false;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASSWORD;
   try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, ...payload }),
-      signal: AbortSignal.timeout(6000),
-    });
-    if (!res.ok) console.error("[reservation] courriel refusé", res.status, await res.text());
-    return res.ok;
+    if (key && from) return await sendResend(key, from, mail);
+    if (user && pass) return await sendSmtp(user, pass, mail);
+    return false;
   } catch (err) {
     console.error("[reservation] courriel non envoyé", err);
     return false;

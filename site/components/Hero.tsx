@@ -59,6 +59,7 @@ export function Hero({ locale }: { locale: Locale }) {
         <BookingLink locale={locale} placement="static-hero" className="btn btn-light rise" style={{ ["--d" as string]: "320ms" }} />
         <a
           href={`tel:${business.phone}`}
+          data-call="hero"
           className="btn btn-light rise"
           style={{ ["--d" as string]: "320ms" }}
         >

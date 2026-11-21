@@ -40,6 +40,7 @@ export function trackConfirmed(b: Booking, serviceName: string) {
   const daysAhead = Math.max(0, Math.round((Date.parse(b.start) - Date.now()) / 86_400_000));
   push({
     event: "booking_confirmed",
+    conversion_type: "rendez_vous",
     booking_provider: "site",
     page_path: window.location.pathname,
     transaction_id: b.id,

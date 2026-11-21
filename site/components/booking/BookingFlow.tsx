@@ -488,7 +488,7 @@ export function BookingFlow({ locale, initialService }: { locale: Locale; initia
   const callBanner = (text: string) => (
     <div className={s.banner} role="alert">
       <span>{text}</span>
-      <a href={`tel:${business.phone}`}>{business.phoneDisplay}</a>
+      <a href={`tel:${business.phone}`} data-call="reservation">{business.phoneDisplay}</a>
     </div>
   );
 

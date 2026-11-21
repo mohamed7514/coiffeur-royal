@@ -13,7 +13,7 @@ export function LandingActions({ locale, placement, service }: { locale: Locale;
       <BookingLink locale={locale} placement={placement} service={service} className="btn">
         <ActionIcon kind="book" /><span>{c.nav.book}</span>
       </BookingLink>
-      <a href={`tel:${business.phone}`} className="btn landing-call">
+      <a href={`tel:${business.phone}`} className="btn landing-call" data-call="landing">
         <ActionIcon kind="call" /><span>{c.nav.call}</span>
       </a>
       <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="landing-directions">

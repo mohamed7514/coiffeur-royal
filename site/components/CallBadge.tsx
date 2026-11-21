@@ -32,6 +32,7 @@ export function CallBadge({ locale }: { locale: Locale }) {
   return (
     <a
       href={`tel:${business.phone}`}
+      data-call="badge-flottant"
       aria-label={`${content[locale].hero.call} ${business.phoneDisplay}`}
       className={`fixed bottom-6 right-6 z-50 hidden items-center gap-3 bg-ink px-5 py-3.5 text-[0.82rem] leading-tight text-paper transition-all duration-300 md:flex ${
         shown ? "visible translate-y-0 opacity-100" : "invisible translate-y-2 opacity-0"

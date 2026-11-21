@@ -69,7 +69,7 @@ export function CancelBooking({ locale, token }: { locale: Locale; token: string
   const booking = "booking" in view ? view.booking : undefined;
   const svc = booking && bookableService(booking.service);
   const call = (
-    <a href={`tel:${business.phone}`} className={s.primary} style={{ marginTop: "1.25rem", width: "100%" }}>
+    <a href={`tel:${business.phone}`} data-call="annulation" className={s.primary} style={{ marginTop: "1.25rem", width: "100%" }}>
       {b.callUs} · {business.phoneDisplay}
     </a>
   );

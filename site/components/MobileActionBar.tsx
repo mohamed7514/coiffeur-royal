@@ -39,7 +39,7 @@ export function MobileActionBar({ locale }: { locale: Locale }) {
       <BookingLink locale={locale} placement="mobile-bar" className="attention-cta attention-cta-book">
         <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="book" /><span>{c.nav.book}</span>
       </BookingLink>
-      <a href={`tel:${business.phone}`} className="attention-cta attention-cta-call">
+      <a href={`tel:${business.phone}`} className="attention-cta attention-cta-call" data-call="barre-mobile">
         <span className="attention-sheen" aria-hidden="true" /><ActionIcon kind="call" /><span>{c.nav.call}</span>
       </a>
     </div>

@@ -116,7 +116,8 @@ export const bookingCopy = {
 
     doneLabel: "Rendez-vous confirmé",
     doneTitle: (name: string) => `C’est réservé, ${name}.`,
-    doneEmail: (email: string) => `La confirmation est partie à ${email}.`,
+    doneEmail: (email: string) =>
+      `La confirmation est partie à ${email}. Pas reçue d’ici quelques minutes ? Regardez dans les courriels indésirables.`,
     doneNoEmail: "Gardez cette page : le lien d’annulation est plus bas.",
     home: "Retour à l’accueil",
     cancelLink: "Un empêchement ? Annuler ce rendez-vous",
@@ -237,7 +238,8 @@ export const bookingCopy = {
 
     doneLabel: "Appointment confirmed",
     doneTitle: (name: string) => `You’re booked, ${name}.`,
-    doneEmail: (email: string) => `Confirmation sent to ${email}.`,
+    doneEmail: (email: string) =>
+      `Confirmation sent to ${email}. Not there in a few minutes? Check your spam folder.`,
     doneNoEmail: "Keep this page: your cancellation link is below.",
     home: "Back to home",
     cancelLink: "Can’t make it? Cancel this appointment",

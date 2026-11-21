@@ -43,7 +43,8 @@ Les poser dans Vercel. Le modèle est dans `.env.example`.
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | `client_email` du fichier JSON |
 | `GOOGLE_PRIVATE_KEY` | `private_key` du fichier JSON, avec ses `\n` |
 | `BOOKING_SECRET` | Signe les liens d'annulation (32 caractères au moins) |
-| `RESEND_API_KEY`, `BOOKING_FROM_EMAIL` | Courriels de confirmation (facultatif) |
+| `SMTP_USER`, `SMTP_PASSWORD` | Courriels de confirmation par Gmail : l'adresse Gmail et un **mot de passe d'application** (facultatif) |
+| `RESEND_API_KEY`, `BOOKING_FROM_EMAIL` | Courriels par Resend, une fois le domaine vérifié. Prioritaire sur Gmail (facultatif) |
 | `SALON_NOTIFY_EMAIL` | Copie de chaque réservation au salon, et alertes de panne (facultatif, recommandé) |
 En production, si une variable Google ou `BOOKING_SECRET` manque, la page
 affiche « réservation momentanément indisponible » avec le numéro du salon.
@@ -75,16 +76,28 @@ Le site envoie ces événements dans le `dataLayer` :
 | --- | --- | --- |
 | `booking_service_selected` | service choisi | `service_id`, `value` |
 | `booking_slot_selected` | heure choisie | `booking_date`, `booking_time` |
-| **`booking_confirmed`** | **rendez-vous écrit dans l'agenda** | `transaction_id`, `value`, `currency` (CAD), `service_id`, `service_name`, `days_ahead`, `user_data` |
+| **`booking_confirmed`** | **rendez-vous écrit dans l'agenda** | `conversion_type` = `rendez_vous`, `transaction_id`, `value` (prix du service), `currency` (CAD), `service_id`, `service_name`, `days_ahead`, `user_data` |
+| **`phone_call_click`** | **clic sur un numéro de téléphone** | `conversion_type` = `appel`, `value` (25, valeur estimée), `currency` (CAD), `call_location` (hero, barre-mobile, navigation…), `call_device` (mobile / ordinateur) |
+| `booking_click` | clic sur un bouton « Réserver » (intention, pas une conversion) | `link_location` |
 
-`booking_confirmed` est **la** conversion. Il part une seule fois par rendez-vous, même si la page est rechargée.
+Deux conversions **distinctes** dans Google Ads :
 
-Réglages dans GTM :
+| Action de conversion | Catégorie | Valeur | Décompte |
+| --- | --- | --- | --- |
+| Rendez-vous en ligne | Prise de rendez-vous | variable (prix du service) | Toutes |
+| Appel (clic) | Appel téléphonique | 25 $ | Une |
+
+`booking_confirmed` part une seule fois par rendez-vous, même si la page est rechargée.
+
+**Import rapide** : `gtm/GTM-NFJ2LFXQ-conversions.json` contient le Conversion Linker, les deux balises de conversion, leurs déclencheurs et variables. Dans GTM : Administration → Importer un conteneur → **Fusionner**. Remplacer ensuite les 3 constantes `Ads - ID de conversion`, `Ads - Libellé rendez-vous` et `Ads - Libellé appel` par les valeurs de Google Ads.
+
+Réglages manuels équivalents dans GTM :
 1. **Déclencheur** : Événement personnalisé, nom `booking_confirmed`.
 2. **Variables de couche de données** : `value`, `transaction_id`, `service_id`, `user_data.email`, `user_data.phone_number`.
 3. **Balise d'événement GA4** `booking_confirmed`, avec `value`, `currency`, `transaction_id`. Dans GA4, la marquer comme **événement clé**.
 4. **Balise de conversion Google Ads** : valeur `{{value}}`, devise CAD, ID de transaction `{{transaction_id}}`. Activer les **conversions améliorées** avec une variable « Données fournies par l'utilisateur » qui lit `user_data.email` et `user_data.phone_number`. GTM les chiffre avant l'envoi.
-5. Dans Google Ads, mettre cette conversion en **principale**. Passer `booking_click` et `phone_call_click` en **secondaires**.
+5. **Balise de conversion Google Ads « Appel »** sur l'événement personnalisé `phone_call_click`, avec un libellé différent, une valeur `{{value}}` et la devise CAD.
+6. Dans Google Ads, mettre les deux conversions en **principales**. `booking_click` reste hors de Google Ads.
 
 ## Au quotidien, pour le salon
 

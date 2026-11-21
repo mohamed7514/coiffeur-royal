@@ -9,6 +9,25 @@ declare global {
   }
 }
 
+/**
+ * Valeur estimée d'un appel, en CAD, pour Google Ads : le prix d'une coupe.
+ * Un appel n'est pas toujours un rendez-vous, il vaut donc moins qu'une
+ * réservation en ligne, dont la valeur est le prix réel du service.
+ */
+const CALL_VALUE = 25;
+
+/** Où le lien d'appel a été cliqué : data-call explicite, sinon la zone de la page. */
+function callLocation(anchor: HTMLAnchorElement): string {
+  const tagged = anchor.closest<HTMLElement>("[data-call]");
+  if (tagged?.dataset.call) return tagged.dataset.call;
+  // Bouton d'appel voisin d'un bouton « Réserver » : même emplacement.
+  const twin = anchor.parentElement?.querySelector<HTMLElement>("[data-booking]");
+  if (twin?.dataset.booking) return twin.dataset.booking;
+  if (anchor.closest("header, nav")) return "navigation";
+  if (anchor.closest("footer")) return "pied-de-page";
+  return anchor.closest<HTMLElement>("section[id]")?.id || "page";
+}
+
 /** GTM owns Google Ads tags; one listener reports phone and booking clicks. */
 export function PhoneCallTracking() {
   useEffect(() => {
@@ -50,7 +69,13 @@ export function PhoneCallTracking() {
       try {
         window.dataLayer!.push({
           event: "phone_call_click",
+          conversion_type: "appel",
+          value: CALL_VALUE,
+          currency: "CAD",
           phone_number: business.phone,
+          call_location: callLocation(anchor!),
+          // Un clic sur ordinateur n'ouvre souvent aucun appel : GTM peut filtrer dessus.
+          call_device: window.matchMedia("(pointer: coarse)").matches ? "mobile" : "ordinateur",
           page_path: window.location.pathname,
           eventCallback: openPhone,
           eventTimeout: 1000,
